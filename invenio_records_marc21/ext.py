@@ -10,6 +10,11 @@
 from __future__ import absolute_import, print_function
 
 from . import config
+from .services import (
+    Marc21RecordPermissionPolicy,
+    Marc21RecordService,
+    Marc21RecordServiceConfig,
+)
 
 
 class InvenioRecordsMARC21(object):
@@ -23,6 +28,7 @@ class InvenioRecordsMARC21(object):
     def init_app(self, app):
         """Flask application initialization."""
         self.init_config(app)
+        self.init_resource(app)
         app.extensions["invenio-records-marc21"] = self
 
     def init_config(self, app):
@@ -45,3 +51,11 @@ class InvenioRecordsMARC21(object):
                     if k == n and with_endpoints:
                         app.config.setdefault(n, {})
                         app.config[n].update(getattr(config, k))
+
+    def init_resource(self, app):
+        """Initialize vocabulary resources."""
+
+        # Records
+        self.records_service = Marc21RecordService(
+            config=app.config.get(Marc21RecordService.config_name),
+        )
