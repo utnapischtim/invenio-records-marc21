@@ -95,6 +95,9 @@ setup(
         "invenio_i18n.translations": [
             "messages = invenio_records_marc21",
         ],
+        "invenio_jsonschemas.schemas": [
+            "marc21 = invenio_records_marc21.jsonschemas",
+        ],
         # TODO: Edit these entry points to fit your needs.
         # 'invenio_access.actions': [],
         # 'invenio_admin.actions': [],
