@@ -60,6 +60,9 @@ install_requires = [
     "invenio-records>=1.4.0a4,<2.0.0",
     "invenio-records-rest>=1.4.0,<2.0.0",
     "invenio-records-ui>=1.2.0a1,<2.0.0",
+    "invenio-drafts-resources>=0.7.2,<0.8.0",
+    "invenio-records-resources>=0.9.6,<0.10.0",
+    "invenio-records-permissions>=0.10.0,<0.11.0",
 ]
 
 packages = find_packages()
@@ -86,6 +89,9 @@ setup(
     include_package_data=True,
     platforms="any",
     entry_points={
+        "flask.commands": [
+            "marc21 = invenio_records_marc21.cli:marc21",
+        ],
         "invenio_base.apps": [
             "invenio_records_marc21 = invenio_records_marc21:InvenioRecordsMARC21",
         ],
