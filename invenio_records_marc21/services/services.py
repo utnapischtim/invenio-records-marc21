@@ -23,7 +23,7 @@ from invenio_records_resources.services.records.search import terms_filter
 from invenio_records_resources.services.records.service import RecordService
 
 from ..api import Marc21Draft, Marc21Record
-from .components import AccessComponent, CommunitiesComponent, StatsComponent
+from .components import AccessComponent
 from .permissions import Marc21RecordPermissionPolicy
 from .schemas import Marc21RecordSchema
 
