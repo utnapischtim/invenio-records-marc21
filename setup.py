@@ -55,6 +55,8 @@ setup_requires = [
 install_requires = [
     "invenio-i18n>=1.2.0",
     "dojson>=1.4.0",
+    'Faker>=2.0.3',
+    'idutils>=1.1.7',
     "invenio-jsonschemas>=1.1.0",
     "invenio-records>=1.5.0a1,<2.0.0",
     "invenio-records-rest>=1.4.0,<2.0.0",
@@ -62,6 +64,7 @@ install_requires = [
     "invenio-drafts-resources>=0.7.2,<0.8.0",
     "invenio-records-resources>=0.9.6,<0.10.0",
     "invenio-records-permissions>=0.10.0,<0.11.0",
+    'invenio-vocabularies>=0.1.6,<1.0.0',
 ]
 
 packages = find_packages()
