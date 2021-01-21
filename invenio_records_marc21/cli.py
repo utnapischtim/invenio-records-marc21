@@ -26,46 +26,11 @@ from .services import Marc21RecordService
 from .vocabularies import Vocabularies
 
 
-def fake_resource_type():
+def fake_access_right():
     """Generates a fake resource_type."""
-    vocabulary = Vocabularies.get_vocabulary("resource_type")
-    _type, subtype = random.choice(list(vocabulary.data.keys()))
-    resource_type = {"type": _type}
-    if subtype:
-        resource_type.update({"subtype": subtype})
-    return resource_type
-
-
-def fake_edtf_level_0():
-    """Generates a fake publication_date string."""
-
-    def fake_date(end_date=None):
-        fake = Faker()
-        date_pattern = ["%Y", "%m", "%d"]
-        # make it less and less likely to get less and less parts of the date
-
-        if random.choice([True, False]):
-            date_pattern.pop()
-            if random.choice([True, False]):
-                date_pattern.pop()
-
-        return fake.date("-".join(date_pattern), end_datetime=end_date)
-
-    f_date = fake_date()
-
-    # if interval
-    if random.choice([True, False]):
-        # get f_date as date object
-        parser = level0Expression("level0")
-        parsed_date = parser.parseString(f_date)[0]
-        date_tuple = parsed_date.lower_strict()[:3]
-        f_date_object = datetime.date(*date_tuple)
-
-        interval_start = fake_date(end_date=f_date_object)
-
-        return "/".join([interval_start, f_date])
-
-    return f_date
+    vocabulary = Vocabularies.get_vocabulary("access_right")
+    _type = random.choice(list(vocabulary.data.keys()))
+    return _type
 
 
 def create_fake_record():
@@ -76,13 +41,12 @@ def create_fake_record():
             "metadata": False,
             "files": False,
             "owned_by": [1],
-            "access_right": "open",
+            "access_right": fake_access_right(),
             "embargo_date": fake.future_date(end_date="+1y").strftime("%Y-%m-%d"),
         },
         "metadata": {
             "ref": "reference to marc21 schema",
-            "record": " \
-            <record> \
+            "record": "<record> \
             <controlfield tag='001'>990079940640203331</controlfield> \
             <controlfield tag='003'>AT-OBV</controlfield> \
             <controlfield tag='005'>20170703041800.0</controlfield> \
@@ -97,7 +61,16 @@ def create_fake_record():
             <subfield code='a'>(Aleph)007994064ACC01</subfield> \
             <subfield code='a'>(DE-599)OBVAC08088803</subfield> \
             </datafield> \
-            </record>",
+            <datafield tag='245' ind1='0' ind2='0'> \
+		    <subfield code='a'>&lt;&lt;Die&gt;&gt; Internationale Werkbundsiedlung Wien 1932</subfield> \
+		    <subfield code='c'>hrsg. von Josef Frank</subfield> \
+	        </datafield> \
+	        <datafield tag='264' ind1=' ' ind2='55'> \
+            <subfield code='a'>Wien</subfield>\
+            <subfield code='b'>Schroll</subfield> \
+            <subfield code='c'>1932</subfield>\
+	        </datafield>\
+            </record>"
         },
     }
 

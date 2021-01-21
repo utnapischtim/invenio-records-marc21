@@ -10,11 +10,7 @@
 from __future__ import absolute_import, print_function
 
 from . import config
-from .services import (
-    Marc21RecordPermissionPolicy,
-    Marc21RecordService,
-    Marc21RecordServiceConfig,
-)
+from .services import Marc21RecordService
 
 
 class InvenioRecordsMARC21(object):
@@ -54,7 +50,6 @@ class InvenioRecordsMARC21(object):
 
     def init_resource(self, app):
         """Initialize vocabulary resources."""
-
         # Records
         self.records_service = Marc21RecordService(
             config=app.config.get(Marc21RecordService.config_name),

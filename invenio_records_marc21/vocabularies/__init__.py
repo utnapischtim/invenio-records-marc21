@@ -5,11 +5,11 @@
 # Invenio-Records-Marc21 is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
-
 """Models for Invenio Marc21 Records."""
 
-from .access_right import AccessRightVocabulary
+# TODO: remove vocabularies after invenio-vocabularies is released
 
+from .access_right import AccessRightVocabulary
 from .vocabularies import Vocabularies
 from .vocabulary import Vocabulary
 

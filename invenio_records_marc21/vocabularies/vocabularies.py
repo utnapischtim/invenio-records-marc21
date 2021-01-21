@@ -15,14 +15,12 @@ from flask_babelex import lazy_gettext as _
 
 from .access_right import AccessRightVocabulary
 
-
 class Vocabularies:
     """Interface to vocabulary data."""
 
     this_dir = dirname(__file__)
     vocabularies = {
         # NOTE: dotted keys should parallel MetadataSchemaV1 fields
-        
         "access_right": {
             "path": join(this_dir, "access_right.csv"),
             "class": AccessRightVocabulary,
