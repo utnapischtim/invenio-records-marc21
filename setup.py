@@ -53,7 +53,7 @@ setup_requires = [
 ]
 
 install_requires = [
-    "invenio-i18n>=1.2.0",
+    "invenio-i18n>=1.3.0",
     "dojson>=1.4.0",
     'Faker>=2.0.3',
     'idutils>=1.1.7',
