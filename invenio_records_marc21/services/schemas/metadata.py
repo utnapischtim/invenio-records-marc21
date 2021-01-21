@@ -7,42 +7,9 @@
 
 """Marc21 record schemas."""
 
-import time
-from urllib import parse
-
-import arrow
-import idutils
 from dojson.contrib.marc21 import marc21
 from dojson.contrib.marc21.utils import create_record
-from edtf.parser.grammar import level0Expression
-from flask import current_app
-from flask_babelex import lazy_gettext as _
-from marshmallow import (
-    EXCLUDE,
-    INCLUDE,
-    Schema,
-    ValidationError,
-    fields,
-    post_load,
-    validate,
-    validates,
-    validates_schema,
-)
-from marshmallow_utils.fields import (
-    EDTFDateString,
-    GenFunction,
-    ISODateString,
-    ISOLangString,
-    SanitizedUnicode,
-)
-from marshmallow_utils.schemas import GeometryObjectSchema
-
-from .utils import validate_entry
-
-
-def _no_duplicates(value_list):
-    str_list = [str(value) for value in value_list]
-    return len(value_list) == len(set(str_list))
+from marshmallow import INCLUDE, Schema, post_load
 
 
 class MetadataSchema(Schema):
@@ -61,11 +28,10 @@ class MetadataSchema(Schema):
 
         unknown = INCLUDE
 
-    # TODO convert after load from marc21 to json the record item
-
     @post_load
     def postload(self, data, **kwargs):
-        """ Convert record into json"""
+        """Convert record into json."""
         if "record" in data:
-            data["record"] = marc21.do(create_record(data["record"]))
+            data.update(marc21.do(create_record(data["record"])))
+            del data["record"]
         return data

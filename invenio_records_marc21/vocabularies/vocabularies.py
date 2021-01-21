@@ -15,6 +15,7 @@ from flask_babelex import lazy_gettext as _
 
 from .access_right import AccessRightVocabulary
 
+
 class Vocabularies:
     """Interface to vocabulary data."""
 
