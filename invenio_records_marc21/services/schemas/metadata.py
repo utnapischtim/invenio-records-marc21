@@ -63,8 +63,9 @@ class MetadataSchema(Schema):
 
     # TODO convert after load from marc21 to json the record item
 
-    # @post_load
-    # def postload(self, item, many, **kwargs):
-    #    """ Convert record into json"""
-    #    item["record"] = marc21.do(create_record(item["record"]))
-    #    return item
+    @post_load
+    def postload(self, data, **kwargs):
+        """ Convert record into json"""
+        if "record" in data:
+            data["record"] = marc21.do(create_record(data["record"]))
+        return data
