@@ -33,16 +33,23 @@ def fake_access_right():
     return _type
 
 
+def fake_feature_date(days=365):
+    """Generates a fake feature_date."""
+    start_date = date.today()
+    random_number_of_days = random.randrange(days)
+    _date = start_date + timedelta(days=random_number_of_days)
+    return _date.strftime("%Y-%m-%d")
+
+
 def create_fake_record():
     """Create records for demo purposes."""
-    fake = Faker()
     data_to_use = {
         "access": {
             "metadata": False,
             "files": False,
             "owned_by": [1],
             "access_right": fake_access_right(),
-            "embargo_date": fake.future_date(end_date="+1y").strftime("%Y-%m-%d"),
+            "embargo_date": fake_feature_date(),
         },
         "metadata": {
             "ref": "reference to marc21 schema",

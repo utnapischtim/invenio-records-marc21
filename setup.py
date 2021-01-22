@@ -55,7 +55,6 @@ setup_requires = [
 install_requires = [
     "invenio-i18n>=1.3.0",
     "dojson>=1.4.0",
-    'Faker>=2.0.3',
     'idutils>=1.1.7',
     "invenio-jsonschemas>=1.1.0",
     "invenio-records>=1.5.0a1,<2.0.0",
@@ -131,7 +130,6 @@ setup(
         "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
