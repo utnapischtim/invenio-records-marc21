@@ -7,27 +7,20 @@
 
 
 """Command-line tools for demo module."""
-import datetime
 import random
-import uuid
+from datetime import date, timedelta
 
 import click
-from edtf.parser.grammar import level0Expression
-from faker import Faker
 from flask.cli import with_appcontext
 from flask_principal import Identity
 from invenio_access import any_user
-from invenio_db import db
-from invenio_indexer.api import RecordIndexer
-from invenio_pidstore import current_pidstore
-from invenio_search import current_search
 
 from .services import Marc21RecordService
 from .vocabularies import Vocabularies
 
 
 def fake_access_right():
-    """Generates a fake resource_type."""
+    """Generates a fake access_right."""
     vocabulary = Vocabularies.get_vocabulary("access_right")
     _type = random.choice(list(vocabulary.data.keys()))
     return _type

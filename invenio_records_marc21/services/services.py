@@ -12,15 +12,8 @@ from invenio_drafts_resources.services.records import (
     RecordDraftService,
     RecordDraftServiceConfig,
 )
-from invenio_drafts_resources.services.records.components import (
-    DraftFilesComponent,
-    RelationsComponent,
-)
-from invenio_records_resources.services.files.config import FileServiceConfig
-from invenio_records_resources.services.files.service import RecordFileService
 from invenio_records_resources.services.records.components import MetadataComponent
 from invenio_records_resources.services.records.search import terms_filter
-from invenio_records_resources.services.records.service import RecordService
 
 from ..api import Marc21Draft, Marc21Record
 from .components import AccessComponent
@@ -37,6 +30,7 @@ class Marc21RecordServiceConfig(RecordDraftServiceConfig):
     draft_cls = Marc21Draft
 
     schema = Marc21RecordSchema
+    # TODO: ussing from invenio-permissions
     permission_policy_cls = Marc21RecordPermissionPolicy
 
     search_facets_options = dict(

@@ -7,7 +7,7 @@
 
 """Models for Invenio Marc21 Records."""
 
-# TODO: remove vocabularies after invenio-vocabularies is released
+# TODO: remove vocabularies after invenio-vocabularies is released (fixme)
 
 from .access_right import AccessRightVocabulary
 from .vocabularies import Vocabularies

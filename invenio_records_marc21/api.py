@@ -9,18 +9,9 @@
 
 from __future__ import absolute_import, print_function
 
-from flask import current_app
-from invenio_db import db
 from invenio_drafts_resources.records import Draft, Record
-from invenio_jsonschemas import current_jsonschemas
-from invenio_pidstore.models import PersistentIdentifier
-from invenio_pidstore.resolver import Resolver
-from invenio_records.dumpers import ElasticsearchDumper
-from invenio_records.models import RecordMetadata
-from invenio_records.systemfields import ModelField, RelationsField
-from invenio_records_resources.records.systemfields import (  # FilesField,; PIDListRelation,
-    IndexField,
-)
+from invenio_records.systemfields import RelationsField
+from invenio_records_resources.records.systemfields import IndexField
 from werkzeug.local import LocalProxy
 
 from . import models
