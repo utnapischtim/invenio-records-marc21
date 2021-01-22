@@ -59,7 +59,7 @@
         }
       }
     },
-
+    
     "user": {
       "type": "object",
       "description": "..",
@@ -99,6 +99,11 @@
     "pids": {
       "additionalProperties": {"$ref": "#/definitions/external-pid"},
       "description": "Managed persistent identifiers for a record including e.g. OAI-PMH identifier, minted DOIs and more. Managed PIDs are registered in the PIDStore"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Resource metadata.",
+      "additionalProperties": true
     },
     
     "access": {
