@@ -34,27 +34,9 @@ class Marc21RecordServiceConfig(RecordDraftServiceConfig):
     permission_policy_cls = Marc21RecordPermissionPolicy
 
     search_facets_options = dict(
-        aggs={
-            "resource_type": {
-                "terms": {"field": "metadata.resource_type.type"},
-                "aggs": {
-                    "subtype": {
-                        "terms": {"field": "metadata.resource_type.subtype"},
-                    }
-                },
-            },
-            "access_right": {
-                "terms": {"field": "access.access_right"},
-            },
-            "languages": {
-                "terms": {"field": "metadata.languages.id"},
-            },
-        },
+        aggs={},
         post_filters={
-            "subtype": terms_filter("metadata.resource_type.subtype"),
-            "resource_type": terms_filter("metadata.resource_type.type"),
             "access_right": terms_filter("access.access_right"),
-            "languages": terms_filter("metadata.languages.id"),
         },
     )
 
@@ -65,7 +47,7 @@ class Marc21RecordServiceConfig(RecordDraftServiceConfig):
 
 
 class Marc21RecordService(RecordDraftService):
-    """Bibliographic record service."""
+    """Marc21 record service."""
 
-    config_name = "MARC21_RECORDS_BIBLIOGRAPHIC_SERVICE_CONFIG"
+    config_name = "MARC21_RECORDS_SERVICE_CONFIG"
     default_config = Marc21RecordServiceConfig
