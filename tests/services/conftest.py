@@ -23,17 +23,16 @@ from invenio_vocabularies.services.service import VocabulariesService
 from invenio_records_marc21.vocabularies import Vocabularies
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def create_app(instance_path):
     """Application factory fixture."""
     return create_api
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def vocabulary_clear(app):
     """Clears the Vocabulary singleton and pushes an application context.
 
     NOTE: app fixture pushes an application context
     """
     Vocabularies.clear()
-
