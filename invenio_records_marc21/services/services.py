@@ -8,6 +8,8 @@
 
 """Marc21 Record Service."""
 
+from datetime import date
+
 from invenio_drafts_resources.services.records import (
     RecordDraftService,
     RecordDraftServiceConfig,
@@ -51,3 +53,25 @@ class Marc21RecordService(RecordDraftService):
 
     config_name = "MARC21_RECORDS_SERVICE_CONFIG"
     default_config = Marc21RecordServiceConfig
+
+    def create(self, identity, data, links_config=None, access=None):
+        """Create a draft record.
+
+        :param identity: Identity of user creating the record.
+        :param dict data: Input data according to the data schema.
+        :param links_config: Links configuration.
+        :param dict access: provide access additional information
+        """
+        if "access" not in data:
+            default_access = {
+                "access": {
+                    "metadata": False,
+                    "owned_by": [identity.id],
+                    "access_right": "open",
+                    "embargo_date": date.today().strftime("%Y-%m-%d"),
+                },
+            }
+            if access is not None:
+                default_access.update(access)
+            data.update(default_access)
+        return super().create(identity, data, links_config)

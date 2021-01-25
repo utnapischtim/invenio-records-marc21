@@ -73,6 +73,15 @@ def create_fake_record():
             </record>",
         },
     }
+    data_acces = {
+        "access": {
+            "metadata": False,
+            "files": False,
+            "owned_by": [1],
+            "access_right": fake_access_right(),
+            "embargo_date": fake_feature_date(),
+        },
+    }
 
     # identity providing `any_user` system role
     identity = Identity(1)
@@ -80,7 +89,7 @@ def create_fake_record():
 
     service = Marc21RecordService()
 
-    draft = service.create(data=data_to_use, identity=identity)
+    draft = service.create(data=data_to_use, identity=identity, access=data_acces)
 
     record = service.publish(id_=draft.id, identity=identity)
 
