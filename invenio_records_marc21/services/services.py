@@ -72,6 +72,6 @@ class Marc21RecordService(RecordDraftService):
                 },
             }
             if access is not None:
-                default_access.update(access)
+                default_access["access"].update(access)
             data.update(default_access)
         return super().create(identity, data, links_config)

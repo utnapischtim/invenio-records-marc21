@@ -37,13 +37,6 @@ def fake_feature_date(days=365):
 def create_fake_record():
     """Create records for demo purposes."""
     data_to_use = {
-        "access": {
-            "metadata": False,
-            "files": False,
-            "owned_by": [1],
-            "access_right": fake_access_right(),
-            "embargo_date": fake_feature_date(),
-        },
         "metadata": {
             "ref": "reference to marc21 schema",
             "record": "<record>\
@@ -74,13 +67,8 @@ def create_fake_record():
         },
     }
     data_acces = {
-        "access": {
-            "metadata": False,
-            "files": False,
-            "owned_by": [1],
-            "access_right": fake_access_right(),
-            "embargo_date": fake_feature_date(),
-        },
+        "access_right": fake_access_right(),
+        "embargo_date": fake_feature_date(),
     }
 
     # identity providing `any_user` system role
