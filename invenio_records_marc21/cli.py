@@ -7,8 +7,10 @@
 
 
 """Command-line tools for demo module."""
+import json
 import random
 from datetime import date, timedelta
+from os.path import dirname, join
 
 import click
 from flask.cli import with_appcontext
@@ -34,38 +36,14 @@ def fake_feature_date(days=365):
     return _date.strftime("%Y-%m-%d")
 
 
+def _load_json(filename):
+    with open(join(dirname(__file__), filename), "rb") as fp:
+        return json.load(fp)
+
+
 def create_fake_record():
     """Create records for demo purposes."""
-    data_to_use = {
-        "metadata": {
-            "ref": "reference to marc21 schema",
-            "record": "<record>\
-            <controlfield tag='001'>990079940640203331</controlfield>\
-            <controlfield tag='003'>AT-OBV</controlfield>\
-            <controlfield tag='005'>20170703041800.0</controlfield>\
-            <controlfield tag='007'>cr</controlfield> \
-            <controlfield tag='008'>100504|1932</controlfield>\
-            <controlfield tag='009'>AC08088803</controlfield>\
-            <datafield tag='035' ind1=' ' ind2=' '>\
-            <subfield code='a'>AC08088803</subfield>\
-            </datafield>\
-            <datafield tag='035' ind1=' ' ind2=' '>\
-            <subfield code='a'>(AT-OBV)AC08088803</subfield>\
-            <subfield code='a'>(Aleph)007994064ACC01</subfield>\
-            <subfield code='a'>(DE-599)OBVAC08088803</subfield>\
-            </datafield>\
-            <datafield tag='245' ind1='0' ind2='0'>\
-            <subfield code='a'>&lt;&lt;Die&gt;&gt; Internationale Werkbundsiedlung Wien 1932</subfield>\
-            <subfield code='c'>hrsg. von Josef Frank</subfield>\
-            </datafield>\
-            <datafield tag='264' ind1=' ' ind2='55'>\
-            <subfield code='a'>Wien</subfield>\
-            <subfield code='b'>Schroll</subfield>\
-            <subfield code='c'>1932</subfield>\
-            </datafield>\
-            </record>",
-        },
-    }
+    data_to_use = _load_json("data/fake-record.json")
     data_acces = {
         "access_right": fake_access_right(),
         "embargo_date": fake_feature_date(),
