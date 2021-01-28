@@ -16,10 +16,9 @@ readme = open("README.rst").read()
 history = open("CHANGES.rst").read()
 
 tests_require = [
-    "invenio-records>=1.1.0",
     "invenio-app>=1.3.0,<2.0.0",
     "invenio-access>=1.4.1",
-    "invenio-indexer>=1.1.0",
+    "invenio-indexer>=1.2.0",
     "invenio_search>=1.3.1",
     "pytest-invenio>=1.4.0",
     "mock>=4.0.3",
@@ -54,12 +53,17 @@ setup_requires = [
 ]
 
 install_requires = [
-    "invenio-i18n>=1.2.0",
+    "invenio-i18n>=1.3.0",
     "dojson>=1.4.0",
+    'idutils>=1.1.7',
     "invenio-jsonschemas>=1.1.0",
-    "invenio-records>=1.4.0a4,<2.0.0",
+    "invenio-records>=1.5.0a1,<2.0.0",
     "invenio-records-rest>=1.4.0,<2.0.0",
     "invenio-records-ui>=1.2.0a1,<2.0.0",
+    "invenio-drafts-resources>=0.7.2,<0.8.0",
+    "invenio-records-resources>=0.9.6,<0.10.0",
+    "invenio-records-permissions>=0.10.0,<0.11.0",
+    'invenio-vocabularies>=0.1.6,<1.0.0',
 ]
 
 packages = find_packages()
@@ -86,6 +90,9 @@ setup(
     include_package_data=True,
     platforms="any",
     entry_points={
+        "flask.commands": [
+            "marc21 = invenio_records_marc21.cli:marc21",
+        ],
         "invenio_base.apps": [
             "invenio_records_marc21 = invenio_records_marc21:InvenioRecordsMARC21",
         ],
@@ -94,6 +101,9 @@ setup(
         ],
         "invenio_i18n.translations": [
             "messages = invenio_records_marc21",
+        ],
+        "invenio_jsonschemas.schemas": [
+            "marc21 = invenio_records_marc21.jsonschemas",
         ],
         # TODO: Edit these entry points to fit your needs.
         # 'invenio_access.actions': [],
@@ -120,7 +130,6 @@ setup(
         "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
