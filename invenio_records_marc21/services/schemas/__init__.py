@@ -15,7 +15,6 @@ from .metadata import MetadataSchema
 from .pids import PIDSchema
 
 
-# NOTE: Use this one for system fields only
 class AttributeAccessorFieldMixin:
     """Marshmallow field mixin for attribute-based serialization."""
 
@@ -44,43 +43,11 @@ class Marc21RecordSchema(RecordSchema):
     # conceptpid
     pids = fields.List(NestedAttribute(PIDSchema))
     metadata = NestedAttribute(MetadataSchema)
-    # ext = fields.Method('dump_extensions', 'load_extensions')
-    # tombstone
-    # provenance
     access = NestedAttribute(AccessSchema)
     # files = NestedAttribute(FilesSchema, dump_only=True)
-    # notes = fields.List(fields.Nested(InternalNoteSchema))
     created = fields.Str(dump_only=True)
     updated = fields.Str(dump_only=True)
     revision = fields.Integer(dump_only=True)
-
-    # communities = NestedAttribute(CommunitiesSchema)
-    # stats = NestedAttribute(StatsSchema, dump_only=True)
-    # relations = NestedAttribute(RelationsSchema, dump_only=True)
-    # schema_version = fields.Interger(dump_only=True)
-
-    # def dump_extensions(self, obj):
-    #     """Dumps the extensions value.
-
-    #     :params obj: invenio_records_files.api.Record instance
-    #     """
-    #     current_app_metadata_extensions = (
-    #         current_app.extensions['invenio-rdm-records'].metadata_extensions
-    #     )
-    #     ExtensionSchema = current_app_metadata_extensions.to_schema()
-    #     return ExtensionSchema().dump(obj.get('extensions', {}))
-
-    # def load_extensions(self, value):
-    #     """Loads the 'extensions' field.
-
-    #     :params value: content of the input's 'extensions' field
-    #     """
-    #     current_app_metadata_extensions = (
-    #         current_app.extensions['invenio-rdm-records'].metadata_extensions
-    #     )
-    #     ExtensionSchema = current_app_metadata_extensions.to_schema()
-
-    #     return ExtensionSchema().load(value)
 
     @post_dump
     def default_nested(self, data, many, **kwargs):
