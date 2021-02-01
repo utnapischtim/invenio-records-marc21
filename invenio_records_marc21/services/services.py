@@ -23,6 +23,37 @@ from .permissions import Marc21RecordPermissionPolicy
 from .schemas import Marc21RecordSchema
 
 
+class Metadata:
+    """Marc21 Metadata object."""
+
+    _json = {}
+    _xml = ""
+
+    @property
+    def json(self):
+        """Metadata json getter method."""
+        return self._json
+
+    @json.setter
+    def json(self, json: dict):
+        """Metadata json setter method."""
+        if not isinstance(json, dict):
+            raise TypeError("json must be from type dict")
+        self._json = json
+
+    @property
+    def xml(self):
+        """Metadata xml getter method."""
+        return self._xml
+
+    @xml.setter
+    def xml(self, xml: str):
+        """Metadata xml setter method."""
+        if not isinstance(xml, str):
+            raise TypeError("xml must be from type str")
+        self._xml = xml
+
+
 class Marc21RecordServiceConfig(RecordDraftServiceConfig):
     """Marc21 record service config."""
 
@@ -53,6 +84,19 @@ class Marc21RecordService(RecordDraftService):
 
     config_name = "MARC21_RECORDS_SERVICE_CONFIG"
     default_config = Marc21RecordServiceConfig
+
+    def create_metadata(
+        self, identity, metadata: Metadata, links_config=None, access=None
+    ):
+        """Create a draft record with metadata.
+
+        :param identity: Identity of user creating the record.
+        :param Metadata metadata: Input data according to the metadata schema.
+        :param links_config: Links configuration.
+        :param dict access: provide access additional information
+        """
+        data = {"metadata": {"xml": metadata.xml, "json": metadata.json}}
+        return self.create(identity, data, links_config, access)
 
     def create(self, identity, data, links_config=None, access=None):
         """Create a draft record.

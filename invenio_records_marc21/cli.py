@@ -17,8 +17,15 @@ from flask.cli import with_appcontext
 from flask_principal import Identity
 from invenio_access import any_user
 
-from .services import Marc21RecordService
+from .services import Marc21RecordService, Metadata
 from .vocabularies import Vocabularies
+
+
+def system_identity():
+    """System identity."""
+    identity = Identity(1)
+    identity.provides.add(any_user)
+    return identity
 
 
 def fake_access_right():
@@ -41,6 +48,28 @@ def _load_json(filename):
         return json.load(fp)
 
 
+def create_fake_metadata():
+    """Create records for demo purposes."""
+    metadata = Metadata()
+    metadata.xml = "<record><controlfield tag='001'>990079940640203331</controlfield><controlfield tag='007'>cr</controlfield> <controlfield tag='008'>100504|1932</controlfield><controlfield tag='009'>AC08088803</controlfield><datafield tag='035' ind1=' ' ind2=' '><subfield code='a'>AC08088803</subfield></datafield><datafield tag='035' ind1=' ' ind2=' '><subfield code='a'>(AT-OBV)AC08088803</subfield><subfield code='a'>(Aleph)007994064ACC01</subfield><subfield code='a'>(DE-599)OBVAC08088803</subfield></datafield><datafield tag='245' ind1='0' ind2='0'><subfield code='a'>&lt;&lt;Die&gt;&gt; Internationale Werkbundsiedlung Wien 1932</subfield><subfield code='c'>hrsg. von Josef Frank</subfield></datafield></record>"
+    data_acces = {
+        "access_right": fake_access_right(),
+        "embargo_date": fake_feature_date(),
+    }
+
+    service = Marc21RecordService()
+
+    draft = service.create_metadata(
+        metadata=metadata,
+        identity=system_identity(),
+        access=data_acces,
+    )
+
+    record = service.publish(id_=draft.id, identity=system_identity())
+
+    return record
+
+
 def create_fake_record():
     """Create records for demo purposes."""
     data_to_use = _load_json("data/fake-record.json")
@@ -49,15 +78,13 @@ def create_fake_record():
         "embargo_date": fake_feature_date(),
     }
 
-    # identity providing `any_user` system role
-    identity = Identity(1)
-    identity.provides.add(any_user)
-
     service = Marc21RecordService()
 
-    draft = service.create(data=data_to_use, identity=identity, access=data_acces)
+    draft = service.create(
+        data=data_to_use, identity=system_identity(), access=data_acces
+    )
 
-    record = service.publish(id_=draft.id, identity=identity)
+    record = service.publish(id_=draft.id, identity=system_identity())
 
     return record
 
@@ -74,7 +101,10 @@ def demo():
     """Create 10 fake records for demo purposes."""
     click.secho("Creating demo records...", fg="blue")
 
-    for _ in range(10):
+    for _ in range(5):
+        create_fake_metadata()
+
+    for _ in range(5):
         create_fake_record()
 
     click.secho("Created records!", fg="green")
