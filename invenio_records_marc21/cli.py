@@ -59,7 +59,7 @@ def create_fake_metadata():
 
     service = Marc21RecordService()
 
-    draft = service.create_metadata(
+    draft = service.create(
         metadata=metadata,
         identity=system_identity(),
         access=data_acces,
