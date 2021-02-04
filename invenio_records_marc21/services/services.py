@@ -66,7 +66,7 @@ class Marc21RecordService(RecordDraftService):
             default_access = {
                 "access": {
                     "metadata": False,
-                    "owned_by": [identity.id],
+                    "owned_by": [{"user": identity.id}],
                     "access_right": "open",
                     "embargo_date": date.today().strftime("%Y-%m-%d"),
                 },

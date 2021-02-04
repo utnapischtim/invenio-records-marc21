@@ -76,7 +76,7 @@ def empty_data():
             "expect": {
                 "access": {
                     "metadata": False,
-                    "owned_by": [1],
+                    "owned_by": [{"user": 1}],
                     "access_right": "open",
                 },
             },
@@ -88,7 +88,7 @@ def empty_data():
             "expect": {
                 "access": {
                     "metadata": False,
-                    "owned_by": [1],
+                    "owned_by": [{"user": 1}],
                     "access_right": "closed",
                 },
             },
@@ -101,7 +101,7 @@ def empty_data():
             "expect": {
                 "access": {
                     "metadata": False,
-                    "owned_by": [1],
+                    "owned_by": [{"user": 1}],
                     "access_right": "embargoed",
                     "embargo_date": (date.today() + timedelta(days=2)).strftime(
                         "%Y-%m-%d"
@@ -117,7 +117,7 @@ def empty_data():
             "expect": {
                 "access": {
                     "metadata": False,
-                    "owned_by": [1],
+                    "owned_by": [{"user": 1}],
                     "access_right": "restricted",
                     "embargo_date": (date.today() + timedelta(days=3)).strftime(
                         "%Y-%m-%d"
