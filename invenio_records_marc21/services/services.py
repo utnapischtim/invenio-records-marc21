@@ -10,17 +10,14 @@
 
 from datetime import date
 
-from invenio_drafts_resources.services.records import (
-    RecordDraftService,
-    RecordDraftServiceConfig,
-)
+from invenio_drafts_resources.services.records import RecordDraftService
 from invenio_records_resources.services.records.components import MetadataComponent
-from invenio_records_resources.services.records.search import terms_filter
 
 from ..api import Marc21Draft, Marc21Record
 from .components import AccessComponent
+from .config import Marc21RecordServiceConfig
 from .permissions import Marc21RecordPermissionPolicy
-from .schemas import Marc21RecordSchema
+from .schemas import Marc21RecordSchema, MetadataSchema
 
 
 class Metadata:
@@ -52,31 +49,6 @@ class Metadata:
         if not isinstance(xml, str):
             raise TypeError("xml must be from type str")
         self._xml = xml
-
-
-class Marc21RecordServiceConfig(RecordDraftServiceConfig):
-    """Marc21 record service config."""
-
-    # Record class
-    record_cls = Marc21Record
-    # Draft class
-    draft_cls = Marc21Draft
-
-    schema = Marc21RecordSchema
-    # TODO: ussing from invenio-permissions
-    permission_policy_cls = Marc21RecordPermissionPolicy
-
-    search_facets_options = dict(
-        aggs={},
-        post_filters={
-            "access_right": terms_filter("access.access_right"),
-        },
-    )
-
-    components = [
-        MetadataComponent,
-        AccessComponent,
-    ]
 
 
 class Marc21RecordService(RecordDraftService):
