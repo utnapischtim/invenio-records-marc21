@@ -55,7 +55,7 @@ setup_requires = [
 install_requires = [
     "invenio-i18n>=1.3.0",
     "dojson>=1.4.0",
-    'idutils>=1.1.7',
+    "idutils>=1.1.7",
     "invenio-jsonschemas>=1.1.0",
     "invenio-records>=1.5.0a1,<2.0.0",
     "invenio-records-rest>=1.4.0,<2.0.0",
@@ -63,7 +63,7 @@ install_requires = [
     "invenio-drafts-resources>=0.7.2,<0.8.0",
     "invenio-records-resources>=0.9.6,<0.10.0",
     "invenio-records-permissions>=0.10.0,<0.11.0",
-    'invenio-vocabularies>=0.1.6,<1.0.0',
+    "invenio-vocabularies>=0.1.6,<1.0.0",
 ]
 
 packages = find_packages()
@@ -104,6 +104,9 @@ setup(
         ],
         "invenio_jsonschemas.schemas": [
             "marc21 = invenio_records_marc21.jsonschemas",
+        ],
+        "invenio_search.mappings": [
+            "marc21records = invenio_records_marc21.mappings",
         ],
         # TODO: Edit these entry points to fit your needs.
         # 'invenio_access.actions': [],

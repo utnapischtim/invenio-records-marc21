@@ -22,7 +22,9 @@ class Marc21Draft(Draft):
 
     model_cls = models.DraftMetadata
 
-    index = IndexField("marc21-drafts-marc21-v1.0.0", search_alias="marc21-drafts")
+    index = IndexField(
+        "marc21records-drafts-marc21-v1.0.0", search_alias="marc21records-marc21"
+    )
 
 
 class Marc21Record(Record):
@@ -30,4 +32,6 @@ class Marc21Record(Record):
 
     model_cls = models.RecordMetadata
 
-    index = IndexField("marc21-marc21-v1.0.0", search_alias="marc21-marc21")
+    index = IndexField(
+        "marc21records-marc21-marc21-v1.0.0", search_alias="marc21records-marc21"
+    )
