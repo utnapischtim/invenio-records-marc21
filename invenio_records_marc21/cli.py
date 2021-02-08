@@ -43,15 +43,21 @@ def fake_feature_date(days=365):
     return _date.strftime("%Y-%m-%d")
 
 
+def _load_file(filename):
+    with open(join(dirname(__file__), filename), "rb") as fp:
+        input = fp.read()
+        return input.decode("utf-8")
+
+
 def _load_json(filename):
     with open(join(dirname(__file__), filename), "rb") as fp:
         return json.load(fp)
 
 
-def create_fake_metadata():
+def create_fake_metadata(filename):
     """Create records for demo purposes."""
     metadata = Metadata()
-    metadata.xml = "<record><controlfield tag='001'>990079940640203331</controlfield><controlfield tag='007'>cr</controlfield> <controlfield tag='008'>100504|1932</controlfield><controlfield tag='009'>AC08088803</controlfield><datafield tag='035' ind1=' ' ind2=' '><subfield code='a'>AC08088803</subfield></datafield><datafield tag='035' ind1=' ' ind2=' '><subfield code='a'>(AT-OBV)AC08088803</subfield><subfield code='a'>(Aleph)007994064ACC01</subfield><subfield code='a'>(DE-599)OBVAC08088803</subfield></datafield><datafield tag='245' ind1='0' ind2='0'><subfield code='a'>&lt;&lt;Die&gt;&gt; Internationale Werkbundsiedlung Wien 1932</subfield><subfield code='c'>hrsg. von Josef Frank</subfield></datafield></record>"
+    metadata.xml = _load_file(filename)
     data_acces = {
         "access_right": fake_access_right(),
         "embargo_date": fake_feature_date(),
@@ -70,9 +76,9 @@ def create_fake_metadata():
     return record
 
 
-def create_fake_record():
+def create_fake_record(filename):
     """Create records for demo purposes."""
-    data_to_use = _load_json("data/fake-record.json")
+    data_to_use = _load_json(filename)
     data_acces = {
         "access_right": fake_access_right(),
         "embargo_date": fake_feature_date(),
@@ -96,15 +102,38 @@ def marc21():
 
 
 @marc21.command("demo")
+@click.option(
+    "--number",
+    "-n",
+    default=10,
+    show_default=True,
+    type=int,
+    help="Number of records will be created.",
+)
+@click.option(
+    "--file",
+    "-f",
+    default="data/fake-metadata.xml",
+    show_default=True,
+    type=str,
+    help="Relative path to file",
+)
+@click.option(
+    "--metadata_only",
+    "-m",
+    default="True",
+    type=bool,
+    help="Provided metadata only in file",
+)
 @with_appcontext
-def demo():
-    """Create 10 fake records for demo purposes."""
+def demo(number, file, metadata_only):
+    """Create number of fake records for demo purposes."""
     click.secho("Creating demo records...", fg="blue")
 
-    for _ in range(5):
-        create_fake_metadata()
-
-    for _ in range(5):
-        create_fake_record()
+    for _ in range(number):
+        if metadata_only:
+            create_fake_metadata(file)
+        else:
+            create_fake_record(file)
 
     click.secho("Created records!", fg="green")
