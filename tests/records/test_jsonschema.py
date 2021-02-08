@@ -52,7 +52,7 @@ def fails_meta(data):
 def marc21():
     """marc21 record."""
     return {
-        "record": "<record><controlfield tag='001'>990079940640203331</controlfield> \
+        "xml": "<record><controlfield tag='001'>990079940640203331</controlfield> \
        <controlfield tag='003'>AT-OBV</controlfield> \
        <controlfield tag='005'>20170703041800.0</controlfield>\
        <controlfield tag='007'>cr</controlfield>\
@@ -166,7 +166,7 @@ def test_metadata(appctx):
 
 def test_metadata_record(appctx):
     """Test title property."""
-    assert validates_meta({"record": "<record></record>"})
+    assert validates_meta({"xml": "<record></record>"})
 
 
 def test_marc21(appctx, marc21):

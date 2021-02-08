@@ -30,7 +30,7 @@ def _assert_fields(fields, values, expected):
 @pytest.fixture()
 def marc21():
     """marc21 record."""
-    return {"metadata": {"record": "<record></record>"}}
+    return {"metadata": {"xml": "<record></record>"}}
 
 
 def test_create_with_service(app, marc21):
@@ -63,7 +63,7 @@ def test_create_with_service(app, marc21):
 @pytest.fixture()
 def empty_data():
     """marc21 record."""
-    return {"metadata": {"record": "<record></record>"}}
+    return {"metadata": {"xml": "<record></record>"}}
 
 
 @pytest.mark.parametrize(

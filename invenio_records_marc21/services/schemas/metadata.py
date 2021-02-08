@@ -9,7 +9,7 @@
 
 from dojson.contrib.marc21 import marc21
 from dojson.contrib.marc21.utils import create_record
-from marshmallow import INCLUDE, Schema, post_load
+from marshmallow import INCLUDE, Schema, fields, post_load
 
 
 class MetadataSchema(Schema):
@@ -23,15 +23,18 @@ class MetadataSchema(Schema):
         # TODO: define "can_admin" action
     }
 
+    xml = fields.Str(required=False)
+    json = fields.Dict(required=False)
+
     class Meta:
         """Meta class to accept unknwon fields."""
 
         unknown = INCLUDE
 
     @post_load
-    def postload(self, data, **kwargs):
-        """Convert record into json."""
-        if "record" in data:
-            data.update(marc21.do(create_record(data["record"])))
-            del data["record"]
+    def convert_xml(self, data, **kwargs):
+        """Convert marc21 xml into json."""
+        if "xml" in data:
+            data["json"] = marc21.do(create_record(data["xml"]))
+            del data["xml"]
         return data

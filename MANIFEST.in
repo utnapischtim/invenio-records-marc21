@@ -35,6 +35,7 @@ recursive-include docs *.txt
 recursive-include docs Makefile
 recursive-include invenio_records_marc21 *.html
 recursive-include invenio_records_marc21 *.json
+recursive-include invenio_records_marc21 *.xml
 recursive-include invenio_records_marc21 *.py
 recursive-include invenio_records_marc21 *.csv
 recursive-include tests *.py
