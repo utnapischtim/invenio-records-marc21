@@ -119,7 +119,7 @@ def marc21():
     help="Relative path to file",
 )
 @click.option(
-    "--metadata_only",
+    "--metadata-only",
     "-m",
     default="True",
     type=bool,
