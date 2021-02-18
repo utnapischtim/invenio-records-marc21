@@ -8,8 +8,9 @@
 
 """High-level API for wokring with Marc21 records, pids and search."""
 
+from .config import Marc21RecordServiceConfig
 from .permissions import Marc21RecordPermissionPolicy
-from .services import Marc21RecordService, Marc21RecordServiceConfig, Metadata
+from .services import Marc21RecordService, Metadata
 
 __all__ = (
     "Metadata",
