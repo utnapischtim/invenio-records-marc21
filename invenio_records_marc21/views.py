@@ -23,3 +23,16 @@ The sole purpose of this blueprint is to ensure that Invenio can find the
 templates and static files located in the folders of the same names next to
 this file.
 """
+
+
+
+def create_records_bp(app):
+    """Create records blueprint."""
+    ext = app.extensions
+    return ext["invenio-records-marc21"].records_resource.as_blueprint("marc21_records_resource")
+
+
+def create_drafts_bp(app):
+    """Create drafts blueprint."""
+    ext = app.extensions
+    return ext["invenio-records-marc21"].drafts_resource.as_blueprint("marc21_draft_resource")
