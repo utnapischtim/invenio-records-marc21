@@ -8,9 +8,10 @@
 """Marc21 Record Resource."""
 
 
-from invenio_drafts_resources.resources import RecordResource, DraftResource
+from invenio_drafts_resources.resources import DraftResource, RecordResource
 
 from . import config
+
 
 #
 # Records
