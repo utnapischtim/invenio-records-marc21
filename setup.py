@@ -92,13 +92,13 @@ setup(
             "invenio_records_marc21 = invenio_records_marc21:InvenioRecordsMARC21",
         ],
         "invenio_base.api_blueprints": [
-            "invenio_records_marc21_record = invenio_records_marc21.views:create_records_bp",
-            "invenio_records_marc21_draft = invenio_records_marc21.views:create_drafts_bp",
+            "invenio_records_marc21_record = invenio_records_marc21.views:create_records_blueprint",
+            "invenio_records_marc21_draft = invenio_records_marc21.views:create_drafts_blueprint",
         ],
         "invenio_base.blueprints": [
             "invenio_records_marc21 = invenio_records_marc21.views:blueprint",
-            "invenio_records_marc21_record = invenio_records_marc21.views:create_records_bp",
-            "invenio_records_marc21_draft = invenio_records_marc21.views:create_drafts_bp",
+            "invenio_records_marc21_record = invenio_records_marc21.views:create_records_blueprint",
+            "invenio_records_marc21_draft = invenio_records_marc21.views:create_drafts_blueprint",
         ],
         "invenio_i18n.translations": [
             "messages = invenio_records_marc21",

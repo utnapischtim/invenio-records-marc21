@@ -25,7 +25,7 @@ this file.
 """
 
 
-def create_records_bp(app):
+def create_records_blueprint(app):
     """Create records blueprint."""
     ext = app.extensions
     return ext["invenio-records-marc21"].records_resource.as_blueprint(
@@ -33,7 +33,7 @@ def create_records_bp(app):
     )
 
 
-def create_drafts_bp(app):
+def create_drafts_blueprint(app):
     """Create drafts blueprint."""
     ext = app.extensions
     return ext["invenio-records-marc21"].drafts_resource.as_blueprint(

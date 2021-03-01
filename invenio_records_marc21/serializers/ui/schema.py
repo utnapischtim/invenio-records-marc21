@@ -7,13 +7,13 @@
 
 """Schema ui."""
 from copy import deepcopy
-from functools import partial
 
 from dojson.contrib.to_marc21 import to_marc21
 from dojson.contrib.to_marc21.utils import dumps
 from marshmallow import INCLUDE, Schema, missing, pre_dump
 from marshmallow.fields import Dict, Method, Nested, Str
-from marshmallow_utils.fields import SanitizedUnicode
+
+from invenio_records_marc21.vocabularies import Vocabularies
 
 
 #
@@ -72,12 +72,11 @@ class UIListSchema(Schema):
     def get_aggs(self, obj_list):
         """Apply aggregations transformation."""
         aggs = obj_list.get("aggregations")
-        missing = ""
         if not aggs:
             return missing
 
         for name, agg in aggs.items():
-            vocab = ""
+            vocab = Vocabularies.get_vocabulary(name)
             if not vocab:
                 continue
 
@@ -94,10 +93,10 @@ def apply_labels(vocab, buckets):
     :params agg: Current aggregation object.
     :params vocab: The vocabulary
     """
-    for b in buckets:
-        b["label"] = vocab.get_title_by_dict(b["key"])
+    for bucket in buckets:
+        bucket["label"] = vocab.get_title_by_dict(bucket["key"])
 
         # Recursively apply to subbuckets
-        for data in b.values():
+        for data in bucket.values():
             if isinstance(data, dict) and "buckets" in data:
                 apply_labels(vocab, data["buckets"])

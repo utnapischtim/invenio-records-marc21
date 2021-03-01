@@ -50,7 +50,7 @@ class InvenioRecordsMARC21(object):
                         app.config[n].update(getattr(config, k))
 
     def init_resource(self, app):
-        """Initialize vocabulary resources."""
+        """Initialize resources."""
         # Records
         self.records_service = Marc21RecordService(
             config=app.config.get(Marc21RecordService.config_name),
