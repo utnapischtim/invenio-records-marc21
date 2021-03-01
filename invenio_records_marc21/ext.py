@@ -10,6 +10,7 @@
 from __future__ import absolute_import, print_function
 
 from . import config
+from .resources import Marc21DraftResource, Marc21RecordResource
 from .services import Marc21RecordService
 
 
@@ -49,8 +50,19 @@ class InvenioRecordsMARC21(object):
                         app.config[n].update(getattr(config, k))
 
     def init_resource(self, app):
-        """Initialize vocabulary resources."""
+        """Initialize resources."""
         # Records
         self.records_service = Marc21RecordService(
             config=app.config.get(Marc21RecordService.config_name),
+        )
+
+        self.records_resource = Marc21RecordResource(
+            service=self.records_service,
+            config=app.config.get(Marc21RecordResource.config_name),
+        )
+
+        # Drafts
+        self.drafts_resource = Marc21DraftResource(
+            service=self.records_service,
+            config=app.config.get(Marc21DraftResource.config_name),
         )
