@@ -104,10 +104,10 @@ setup(
             "messages = invenio_records_marc21",
         ],
         "invenio_jsonschemas.schemas": [
-            "marc21 = invenio_records_marc21.jsonschemas",
+            "marc21 = invenio_records_marc21.records.jsonschemas",
         ],
         "invenio_search.mappings": [
-            "marc21records = invenio_records_marc21.mappings",
+            "marc21records = invenio_records_marc21.records.mappings",
         ],
         # TODO: Edit these entry points to fit your needs.
         # 'invenio_access.actions': [],

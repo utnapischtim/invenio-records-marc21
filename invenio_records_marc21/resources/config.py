@@ -17,7 +17,7 @@ from invenio_records_resources.resources.records.schemas_links import (
     SearchLinksSchema,
 )
 
-from ..serializers.ui import UIJSONSerializer
+from .serializers.ui import UIJSONSerializer
 
 #
 # Links
