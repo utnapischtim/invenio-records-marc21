@@ -13,7 +13,7 @@ import pytest
 from flask_principal import Identity
 from invenio_access import any_user
 
-from invenio_records_marc21.models import DraftMetadata, RecordMetadata
+from invenio_records_marc21.records import DraftMetadata, RecordMetadata
 from invenio_records_marc21.services import Marc21RecordService
 
 
