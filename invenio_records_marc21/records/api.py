@@ -11,10 +11,16 @@ from __future__ import absolute_import, print_function
 
 from invenio_drafts_resources.records import Draft, Record
 from invenio_records.systemfields import RelationsField
-from invenio_records_resources.records.systemfields import IndexField
+from invenio_records_resources.records.systemfields import IndexField, PIDField
 from werkzeug.local import LocalProxy
 
 from . import models
+from .systemfields import (
+    MarcDraftProvider,
+    MarcPIDFieldContext,
+    MarcRecordProvider,
+    MarcResolver,
+)
 
 
 class Marc21Draft(Draft):
@@ -26,6 +32,22 @@ class Marc21Draft(Draft):
         "marc21records-drafts-marc21-v1.0.0", search_alias="marc21records-marc21"
     )
 
+    pid = PIDField(
+        key="id",
+        provider=MarcDraftProvider,
+        context_cls=MarcPIDFieldContext,
+        resolver_cls=MarcResolver,
+        delete=False,
+    )
+
+    conceptpid = PIDField(
+        key="conceptid",
+        provider=MarcDraftProvider,
+        context_cls=MarcPIDFieldContext,
+        resolver_cls=MarcResolver,
+        delete=False,
+    )
+
 
 class Marc21Record(Record):
     """Define API for Marc21 creation and manipulation."""
@@ -34,4 +56,20 @@ class Marc21Record(Record):
 
     index = IndexField(
         "marc21records-marc21-marc21-v1.0.0", search_alias="marc21records-marc21"
+    )
+
+    pid = PIDField(
+        key="id",
+        provider=MarcRecordProvider,
+        delete=False,
+        context_cls=MarcPIDFieldContext,
+        resolver_cls=MarcResolver,
+    )
+
+    conceptpid = PIDField(
+        key="conceptid",
+        provider=MarcRecordProvider,
+        delete=False,
+        context_cls=MarcPIDFieldContext,
+        resolver_cls=MarcResolver,
     )

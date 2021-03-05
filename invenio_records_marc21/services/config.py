@@ -14,6 +14,7 @@ from invenio_records_resources.services.records.search import terms_filter
 
 from invenio_records_marc21.records import Marc21Draft, Marc21Record
 
+from .components import AccessComponent, PIDComponent
 from .permissions import Marc21RecordPermissionPolicy
 from .schemas import Marc21RecordSchema, MetadataSchema
 
@@ -40,4 +41,5 @@ class Marc21RecordServiceConfig(RecordDraftServiceConfig):
     components = [
         MetadataComponent,
         AccessComponent,
+        PIDComponent,
     ]
