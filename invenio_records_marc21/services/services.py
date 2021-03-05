@@ -13,8 +13,7 @@ from datetime import date
 from invenio_drafts_resources.services.records import RecordDraftService
 from invenio_records_resources.services.records.components import MetadataComponent
 
-from invenio_records_marc21.records import Marc21Draft, Marc21Record
-
+from ..records import Marc21Draft, Marc21Record
 from .components import AccessComponent
 from .config import Marc21RecordServiceConfig
 from .permissions import Marc21RecordPermissionPolicy
