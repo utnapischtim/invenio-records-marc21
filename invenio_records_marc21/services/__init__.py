@@ -10,11 +10,12 @@
 
 from .config import Marc21RecordServiceConfig
 from .permissions import Marc21RecordPermissionPolicy
-from .services import Marc21RecordService, Metadata
+from .services import Marc21RecordService, Metadata, RecordItem
 
 __all__ = (
     "Metadata",
     "Marc21RecordService",
     "Marc21RecordServiceConfig",
     "Marc21RecordPermissionPolicy",
+    "RecordItem",
 )
