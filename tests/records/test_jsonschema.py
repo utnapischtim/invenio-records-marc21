@@ -15,7 +15,7 @@ from os.path import dirname, join
 import pytest
 from jsonschema.exceptions import ValidationError
 
-from invenio_records_marc21.api import Marc21Record as Record
+from invenio_records_marc21.records import Marc21Record as Record
 
 
 #
