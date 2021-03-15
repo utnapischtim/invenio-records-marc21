@@ -17,7 +17,7 @@ from flask.cli import with_appcontext
 from flask_principal import Identity
 from invenio_access import any_user
 
-from .services import Marc21RecordService, Metadata
+from .services import Marc21DraftFilesService, Marc21RecordService, Metadata
 from .vocabularies import Vocabularies
 
 
@@ -64,11 +64,15 @@ def create_fake_metadata(filename):
     }
 
     service = Marc21RecordService()
-
+    draft_files_service = Marc21DraftFilesService()
     draft = service.create(
         metadata=metadata,
         identity=system_identity(),
         access=data_acces,
+    )
+
+    draft_files_service.update_files_options(
+        id_=draft.id, identity=system_identity(), data={"enabled": False}
     )
 
     record = service.publish(id_=draft.id, identity=system_identity())
@@ -85,9 +89,12 @@ def create_fake_record(filename):
     }
 
     service = Marc21RecordService()
-
+    draft_files_service = Marc21DraftFilesService()
     draft = service.create(
         data=data_to_use, identity=system_identity(), access=data_acces
+    )
+    draft_files_service.update_files_options(
+        id_=draft.id, identity=system_identity, data={"enabled": False}
     )
 
     record = service.publish(id_=draft.id, identity=system_identity())
