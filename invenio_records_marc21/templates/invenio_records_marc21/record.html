@@ -6,7 +6,15 @@
   under the terms of the MIT License; see LICENSE file for more details.
 #}
 
-{%- extends config.RECORDS_UI_BASE_TEMPLATE %}
+{%- extends config.MARC21_BASE_TEMPLATE %}
+
+
+{%- from "invenio_records_marc21/records/macros/detail.html" import record_detail %}
+
+{%- set metadata = record.metadata %}
+
+{%- set marcrecord = record.metadata.json %}
+
 
 {%- macro record_content(data) %}
   {% for key, value in data.items() recursive %}
@@ -37,13 +45,71 @@
 {%- endmacro %}
 
 {%- block page_body %}
-<div class="container">
-  <h2>{{record.title}}</h2>
-  <div class="panel panel-default">
-    <ul class="list-group">
-      {{ record_content(record) }}
-    </ul>
+
+<div class="ui container">
+  <div class="ui relaxed grid">
+    <div class="two column row top-padded">
+      <div class="eleven wide column">
+        {%- block record_body %}
+        {%- block record_header -%}
+
+        <div class="ui grid middle aligned">
+          <div class="two column row">
+            <div class="left floated left aligned column">
+              <span class="ui" title="{{_('Creation date')}}">{{  record.created }}</span>
+              {%- if record.revision_id %}
+              <span class="label text-muted"> | Version {{ record.revision_id }}</span>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        {%- endblock record_header -%}
+        {%- block record_title -%}
+          <h1>{{ record.metadata.json.title_statement.title | sanitize_title() }}</h1>
+        {%- endblock record_title -%}
+        {%- block record_content -%}
+          <div class="right floated column">
+            <span class="ui label access-right">
+              <span class="icon lock open"></span>
+              {{ record.access.access_right  | vocabulary_title('access_right') }}
+              {%- for right in record.metadata.rights %}
+              <a target="_blank" href="{{right.url}}">{{ '(' ~ right.identifier ~ ')' }}</a>
+              {%- endfor %}
+
+            </span>
+          </div>
+
+          {%- include "invenio_records_marc21/records/details/subjects.html" %}
+
+
+        {%- endblock record_content -%}
+        {%- block record_details -%}
+        <!-- TODO: show details of record -->
+        {%- endblock record_details -%}
+        {%- block record_footer -%}
+
+          <div class="ui grid">
+            <div class="two column row top-bottom-padded font-small">
+              <div class="four wide column">
+                <p><b>Upload infromation</b></p>
+              </div>
+              <div class="twelve wide column">
+                <span class="label text-muted">
+                  <b>Created:</b> {{ record.created }} | <b>Modified:</b> {{ record.updated }}
+                </span>
+              </div>
+            </div>
+          </div>
+        {%- endblock record_footer -%}
+        {%- endblock record_body %} 
+      </div>
+    </div>
   </div>
 </div>
-{%- endblock %}
+{%- endblock page_body %}
 
+
+{%- block javascript %}
+{{ super() }}
+{%- endblock javascript %}

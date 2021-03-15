@@ -16,7 +16,7 @@ from .errors import (
     record_permission_denied_error,
     record_tombstone_error,
 )
-from .filters import pid_url
+from .filters import pid_url, sanitize_title
 from .records import marc21_index, record_detail
 
 
@@ -54,5 +54,5 @@ def create_blueprint(app):
     )
 
     blueprint.add_app_template_filter(pid_url)
-
+    blueprint.add_app_template_filter(sanitize_title)
     return blueprint

@@ -8,6 +8,8 @@
 
 """Filters to be used in the Jinja templates."""
 
+import re
+
 import idutils
 from flask import current_app
 
@@ -28,3 +30,7 @@ def pid_url(identifier, scheme=None, url_scheme="https"):
             exc_info=True,
         )
     return ""
+
+
+def sanitize_title(title):
+    return re.sub("[^A-Za-z0-9\s]", "", title)
