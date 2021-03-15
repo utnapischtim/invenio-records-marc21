@@ -36,4 +36,5 @@ def marc21_index(permissions=None):
     return render_template(
         "invenio_records_marc21/index.html",
         permissions=permissions,
+        module_name=__name__,
     )

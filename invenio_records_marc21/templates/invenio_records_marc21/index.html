@@ -9,6 +9,15 @@
 {%- extends config.MARC21_BASE_TEMPLATE %}
 
 {%- block page_body %}
-{{_('Welcome to %(module_name)s', module_name=module_name)}}
+<div class="ui container">
+  <div class="ui padded relaxed grid">
+    <div class="two column row">
+      <div class="ten wide column">
+
+      <h1>{{_('Welcome to %(module_name)s', module_name=module_name)}}</h1>
+
+    </div>
+  </div>
+</div>
 {%- endblock %}
 
