@@ -9,6 +9,7 @@
 """Marc21 Record Service config."""
 
 from invenio_drafts_resources.services.records import RecordDraftServiceConfig
+from invenio_records_resources.services.files.config import FileServiceConfig
 from invenio_records_resources.services.records.components import MetadataComponent
 from invenio_records_resources.services.records.search import terms_filter
 
@@ -42,3 +43,19 @@ class Marc21RecordServiceConfig(RecordDraftServiceConfig):
         AccessComponent,
         PIDComponent,
     ]
+
+
+#
+# Record files
+#
+class Marc21RecordFilesServiceConfig(Marc21RecordServiceConfig, FileServiceConfig):
+    """Marc21 record files service configuration."""
+
+
+#
+# Draft files
+#
+class Marc21DraftFilesServiceConfig(Marc21RecordServiceConfig, FileServiceConfig):
+    """Marc21 draft files service configuration."""
+
+    record_cls = Marc21Draft

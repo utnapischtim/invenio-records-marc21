@@ -18,6 +18,7 @@ import tempfile
 import pytest
 from flask import Flask
 from flask_babelex import Babel
+from invenio_files_rest.models import Location
 
 from invenio_records_marc21 import InvenioRecordsMARC21
 from invenio_records_marc21.views import blueprint
@@ -30,6 +31,21 @@ def celery_config():
     TODO: Remove this fixture if you add Celery support.
     """
     return {}
+
+
+@pytest.fixture(scope='module')
+def app(base_app, database):
+    """Application with just a database.
+
+    Pytest-Invenio also initialises ES with the app fixture.
+    """
+    location_obj = Location(
+        name="marctest-location", uri=tempfile.mkdtemp(), default=True
+    )
+
+    database.session.add(location_obj)
+    database.session.commit()
+    yield base_app
 
 
 @pytest.fixture(scope="module")

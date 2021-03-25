@@ -8,14 +8,27 @@
 
 """High-level API for wokring with Marc21 records, pids and search."""
 
-from .config import Marc21RecordServiceConfig
+from .config import (
+    Marc21DraftFilesServiceConfig,
+    Marc21RecordFilesServiceConfig,
+    Marc21RecordServiceConfig,
+)
 from .permissions import Marc21RecordPermissionPolicy
-from .services import Marc21RecordService, Metadata, RecordItem
+from .services import (
+    Marc21DraftFilesService,
+    Marc21RecordFilesService,
+    Marc21RecordService,
+    Metadata,
+)
 
 __all__ = (
     "Metadata",
     "Marc21RecordService",
+    "Marc21DraftFilesService",
+    "Marc21RecordFilesService",
     "Marc21RecordServiceConfig",
+    "Marc21DraftFilesServiceConfig",
+    "Marc21RecordFilesServiceConfig",
     "Marc21RecordPermissionPolicy",
     "RecordItem",
 )

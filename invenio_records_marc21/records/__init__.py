@@ -8,11 +8,13 @@
 
 """Marc21 Records module."""
 
-from .api import Marc21Draft, Marc21Record
+from .api import DraftFile, Marc21Draft, Marc21Record, RecordFile
 from .models import DraftMetadata, RecordMetadata
 
 __all__ = (
+    "DraftFile",
     "Marc21Draft",
+    "RecordFile",
     "Marc21Record",
     "DraftMetadata",
     "RecordMetadata",

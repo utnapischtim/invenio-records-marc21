@@ -10,11 +10,16 @@
 from __future__ import absolute_import, print_function
 
 from invenio_drafts_resources.records import Draft, Record
-from invenio_records.systemfields import RelationsField
-from invenio_records_resources.records.systemfields import IndexField, PIDField
+from invenio_records.systemfields import ModelField
+from invenio_records_resources.records.api import RecordFile as BaseRecordFile
+from invenio_records_resources.records.systemfields import (
+    FilesField,
+    IndexField,
+    PIDField,
+)
 from werkzeug.local import LocalProxy
 
-from . import models
+from .models import DraftFile, DraftMetadata, RecordFile, RecordMetadata
 from .systemfields import (
     MarcDraftProvider,
     MarcPIDFieldContext,
@@ -23,10 +28,17 @@ from .systemfields import (
 )
 
 
+class DraftFile(BaseRecordFile):
+    """Marc21 file associated with a marc21 draft model."""
+
+    model_cls = DraftFile
+    record_cls = LocalProxy(lambda: Marc21Draft)
+
+
 class Marc21Draft(Draft):
     """Marc21 draft API."""
 
-    model_cls = models.DraftMetadata
+    model_cls = DraftMetadata
 
     index = IndexField(
         "marc21records-drafts-marc21-v1.0.0", search_alias="marc21records-marc21"
@@ -48,11 +60,28 @@ class Marc21Draft(Draft):
         delete=False,
     )
 
+    files = FilesField(
+        store=False,
+        file_cls=DraftFile,
+        delete=False,
+    )
+
+    bucket_id = ModelField(dump=False)
+
+    bucket = ModelField(dump=False)
+
+
+class RecordFile(BaseRecordFile):
+    """Marc21 record file API."""
+
+    model_cls = RecordFile
+    record_cls = LocalProxy(lambda: Marc21Record)
+
 
 class Marc21Record(Record):
-    """Define API for Marc21 creation and manipulation."""
+    """Define API for Marc21 create and manipulate."""
 
-    model_cls = models.RecordMetadata
+    model_cls = RecordMetadata
 
     index = IndexField(
         "marc21records-marc21-marc21-v1.0.0", search_alias="marc21records-marc21"
@@ -73,3 +102,14 @@ class Marc21Record(Record):
         context_cls=MarcPIDFieldContext,
         resolver_cls=MarcResolver,
     )
+
+    files = FilesField(
+        store=False,
+        file_cls=RecordFile,
+        create=False,
+        delete=False,
+    )
+
+    bucket_id = ModelField(dump=False)
+
+    bucket = ModelField(dump=False)

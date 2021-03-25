@@ -18,17 +18,9 @@ import time
 import pytest
 from dojson.contrib.marc21.utils import create_record
 from dojson.contrib.to_marc21 import to_marc21
-from invenio_pidstore.errors import (
-    PIDDeletedError,
-    PIDDoesNotExistError,
-    PIDUnregistered,
-)
+from invenio_pidstore.errors import PIDDoesNotExistError
 from invenio_pidstore.models import PIDStatus
-from invenio_search import current_search, current_search_client
-from marshmallow.exceptions import ValidationError
 from sqlalchemy.orm.exc import NoResultFound
-
-from invenio_records_marc21.services import Metadata
 
 #
 # Operations tests
@@ -42,7 +34,9 @@ def test_create_draft(app, service, identity_simple, metadata):
     draft_dict = draft.to_dict()
 
     assert draft.id
-    assert draft._record.revision_id == 1
+
+    # files attribute in record causes at create change the revision_id twice
+    assert draft._record.revision_id == 2
 
     # Check for pid and parent pid
     assert draft["id"]
@@ -56,7 +50,6 @@ def test_create_empty_draft(app, service, identity_simple):
 
     Errors (missing required fields) are reported, but don't prevent creation.
     """
-    # Needs `app` context because of invenio_access/permissions.py#166
     input_data = {"metadata": {}}
 
     draft = service.create(identity_simple, input_data)
@@ -69,7 +62,6 @@ def test_create_empty_draft(app, service, identity_simple):
 
 
 def test_read_draft(app, service, identity_simple, metadata):
-    # Needs `app` context because of invenio_access/permissions.py#166
     draft = service.create(identity_simple, metadata=metadata)
     assert draft.id
 
@@ -78,16 +70,14 @@ def test_read_draft(app, service, identity_simple, metadata):
 
 
 def test_delete_draft(app, service, identity_simple, metadata):
-    # Needs `app` context because of invenio_access/permissions.py#166
     draft = service.create(identity=identity_simple, metadata=metadata)
     assert draft.id
 
     success = service.delete_draft(draft.id, identity_simple)
     assert success
 
-    # Check draft deletion
+    # Check draft deleted
     with pytest.raises(PIDDoesNotExistError):
-        # NOTE: Draft and Record have the same `id`
         delete_draft = service.read_draft(draft.id, identity=identity_simple)
 
 
@@ -99,6 +89,8 @@ def _create_and_publish(service, metadata, identity_simple):
     record = service.publish(draft.id, identity=identity_simple)
 
     assert record.id == draft.id
+
+    # files attribute in record causes at create change the revision_id twice
     assert record._record.revision_id == 1
 
     return record
@@ -109,14 +101,12 @@ def test_publish_draft(app, service, identity_simple, metadata):
 
     Note that the publish action requires a draft to be created first.
     """
-    # Needs `app` context because of invenio_access/permissions.py#166
     record = _create_and_publish(service, metadata, identity_simple)
     assert record._record.pid.status == PIDStatus.REGISTERED
     assert record._record.conceptpid.status == PIDStatus.REGISTERED
 
-    # Check draft deletion
+    # Check draft deleted
     with pytest.raises(NoResultFound):
-        # NOTE: Draft and Record have the same `id`
         draft = service.read_draft(id_=record.id, identity=identity_simple)
 
     # Test record exists
@@ -134,7 +124,6 @@ def _test_metadata(metadata, metadata2):
 
 
 def test_update_draft(app, service, identity_simple, metadata, metadata2):
-    # Needs `app` context because of invenio_access/permissions.py#166
     draft = service.create(identity=identity_simple, metadata=metadata)
     assert draft.id
 
@@ -158,12 +147,11 @@ def test_update_draft(app, service, identity_simple, metadata, metadata2):
     )
 
 
-def test_mutiple_edit(app, service, identity_simple, metadata):
+def test_mutiple_edit(base_app, service, identity_simple, metadata):
     """Test the revision_id when editing record multiple times..
 
     This tests the `edit` service method.
     """
-    # Needs `app` context because of invenio_access/permissions.py#166
     record = _create_and_publish(service, metadata, identity_simple)
     marcid = record.id
 
@@ -171,12 +159,14 @@ def test_mutiple_edit(app, service, identity_simple, metadata):
     draft = service.edit(marcid, identity_simple)
     assert draft.id == marcid
     assert draft._record.fork_version_id == record._record.revision_id
-    assert draft._record.revision_id == 4
+    # files attribute in record causes at create change the revision_id twice
+    assert draft._record.revision_id == 5
 
     draft = service.edit(marcid, identity_simple)
     assert draft.id == marcid
     assert draft._record.fork_version_id == record._record.revision_id
-    assert draft._record.revision_id == 4
+    # files attribute in record causes at create change the revision_id twice
+    assert draft._record.revision_id == 5
 
     # Publish it to check the increment in version_id
     record = service.publish(marcid, identity_simple)
@@ -184,7 +174,9 @@ def test_mutiple_edit(app, service, identity_simple, metadata):
     draft = service.edit(marcid, identity_simple)
     assert draft.id == marcid
     assert draft._record.fork_version_id == record._record.revision_id
-    assert draft._record.revision_id == 7  # soft-delete, undelete, update
+    # files attribute in record causes at create change the revision_id twice
+    # create(2), soft-delete, undelete, update
+    assert draft._record.revision_id == 8
 
 
 def test_create_publish_new_version(app, service, identity_simple, metadata):
@@ -192,14 +184,14 @@ def test_create_publish_new_version(app, service, identity_simple, metadata):
 
     This tests the `new_version` service method.
     """
-    # Needs `app` context because of invenio_access/permissions.py#166
     record = _create_and_publish(service, metadata, identity_simple)
     marcid = record.id
 
     # Create new version
     draft = service.new_version(marcid, identity_simple)
 
-    assert draft._record.revision_id == 1
+    # files attribute in record causes at create change the revision_id twice
+    assert draft._record.revision_id == 2
     assert draft["conceptid"] == record["conceptid"]
     assert draft["id"] != record["id"]
     assert draft._record.pid.status == PIDStatus.NEW
@@ -211,6 +203,7 @@ def test_create_publish_new_version(app, service, identity_simple, metadata):
     assert record_2.id
     assert record_2._record.pid.status == PIDStatus.REGISTERED
     assert record_2._record.conceptpid.status == PIDStatus.REGISTERED
+    # files attribute in record causes at create change the revision_id twice
     assert record_2._record.revision_id == 1
     assert record_2["conceptid"] == record["conceptid"]
     assert record_2["id"] != record["id"]

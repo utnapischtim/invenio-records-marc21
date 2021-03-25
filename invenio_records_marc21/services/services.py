@@ -8,17 +8,16 @@
 
 """Marc21 Record Service."""
 
-from datetime import date
 
 from invenio_drafts_resources.services.records import RecordDraftService
-from invenio_records_resources.services.records.components import MetadataComponent
+from invenio_records_resources.services.files.service import RecordFileService
 from invenio_records_resources.services.records.results import RecordItem
 
-from ..records import Marc21Draft, Marc21Record
-from .components import AccessComponent
-from .config import Marc21RecordServiceConfig
-from .permissions import Marc21RecordPermissionPolicy
-from .schemas import Marc21RecordSchema, MetadataSchema
+from .config import (
+    Marc21DraftFilesServiceConfig,
+    Marc21RecordFilesServiceConfig,
+    Marc21RecordServiceConfig,
+)
 
 
 class Metadata:
@@ -115,3 +114,23 @@ class Marc21RecordService(RecordDraftService):
         """
         data = self._create_data(identity, data, metadata, access)
         return super().update_draft(id_, identity, data, links_config, revision_id)
+
+
+#
+# Record files
+#
+class Marc21RecordFilesService(RecordFileService):
+    """Marc21 record files service."""
+
+    config_name = "MARC21_RECORDS_FILES_SERVICE_CONFIG"
+    default_config = Marc21RecordFilesServiceConfig
+
+
+#
+# Draft files
+#
+class Marc21DraftFilesService(RecordFileService):
+    """Marc21 draft files service."""
+
+    config_name = "MARC21_DRAFT_FILES_SERVICE_CONFIG"
+    default_config = Marc21DraftFilesServiceConfig
