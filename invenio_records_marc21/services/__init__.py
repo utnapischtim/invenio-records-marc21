@@ -19,6 +19,7 @@ from .services import (
     Marc21RecordFilesService,
     Marc21RecordService,
     Metadata,
+    RecordItem,
 )
 
 __all__ = (
