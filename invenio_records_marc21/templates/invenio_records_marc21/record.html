@@ -11,46 +11,18 @@
 
 {%- from "invenio_records_marc21/records/macros/detail.html" import record_detail %}
 
-{%- set metadata = record.metadata %}
+{%- set metadata = record.ui.metadata %}
 
-{%- set marcrecord = record.metadata.json %}
-
-
-{%- macro record_content(data) %}
-  {% for key, value in data.items() recursive %}
-    <li class="list-group-item">
-    {% if value is mapping %}
-        <strong>{{ key }}:</strong>
-        <ul class="list-group">{{ loop(value.items()) }}</ul>
-    {% elif value is iterable and value is not string %}
-        <strong>{{ key }}:</strong>
-        <ol>
-        {% for item in value %}
-          <li>
-          {% if item is mapping %}
-            <ul class="list-group">
-              {{ record_content(item) }}
-            </ul>
-          {% else %}
-            {{ item }}
-          {% endif %}
-          </li>
-        {% endfor %}
-        </ol>
-    {% else %}
-      <strong>{{ key }}:</strong> {{ value }}
-    {% endif %}
-    </li>
-  {% endfor %}
-{%- endmacro %}
+{%- set marcrecord = record.ui.metadata.json %}
 
 {%- block page_body %}
 
 <div class="ui container">
   <div class="ui relaxed grid">
-    <div class="two column row top-padded">
-      <div class="eleven wide column">
+    <div class="three column row">
+      <div class="ten wide column">
         {%- block record_body %}
+
         {%- block record_header -%}
 
         <div class="ui grid middle aligned">
@@ -63,46 +35,64 @@
             </div>
           </div>
         </div>
+        <div class="right floated column">
+          <span class="ui label access-right">
+            <span class="icon lock open"></span>
+            {{ record.access.access_right  | vocabulary_title('access_right') }}
+            {%- for right in record.access.access_right %}
+            <a target="_blank" href="{{right.url}}">{{ '(' ~ right.identifier ~ ')' }}</a>
+            {%- endfor %}
 
+          </span>
+        </div>
         {%- endblock record_header -%}
+
         {%- block record_title -%}
           <h1>{{ record.metadata.json.title_statement.title | sanitize_title() }}</h1>
         {%- endblock record_title -%}
         {%- block record_content -%}
-          <div class="right floated column">
-            <span class="ui label access-right">
-              <span class="icon lock open"></span>
-              {{ record.access.access_right  | vocabulary_title('access_right') }}
-              {%- for right in record.metadata.rights %}
-              <a target="_blank" href="{{right.url}}">{{ '(' ~ right.identifier ~ ')' }}</a>
-              {%- endfor %}
+        
+          {%- include "invenio_records_marc21/records/helpers/authors.html" %}
 
-            </span>
-          </div>
+          {%- include "invenio_records_marc21/records/helpers/subjects.html" %}
 
-          {%- include "invenio_records_marc21/records/details/subjects.html" %}
-
-
+          {%- include "invenio_records_marc21/records/helpers/description.html" %}
+          
+          
         {%- endblock record_content -%}
+        {%- block record_files -%}
+
+          {%- include "invenio_records_marc21/records/helpers/files.html" %}
+        
+        {%- endblock record_files -%}
         {%- block record_details -%}
-        <!-- TODO: show details of record -->
+
+        {%- include "invenio_records_marc21/records/helpers/details.html" %}
         {%- endblock record_details -%}
         {%- block record_footer -%}
-
+          <hr class="thin-line"/>
           <div class="ui grid">
             <div class="two column row top-bottom-padded font-small">
               <div class="four wide column">
-                <p><b>Upload infromation</b></p>
+                <p><strong>{{_("Upload infromation")}}</strong></p>
               </div>
               <div class="twelve wide column">
                 <span class="label text-muted">
-                  <b>Created:</b> {{ record.created }} | <b>Modified:</b> {{ record.updated }}
+                  <b>{{_("Created:")}}</b> {{ record.created }} | <b>{{_("Modified:")}}</b> {{ record.updated }}
                 </span>
               </div>
             </div>
           </div>
         {%- endblock record_footer -%}
         {%- endblock record_body %} 
+      </div>
+    
+
+      <div class="one wide column">
+        {% block record_sidebar %}
+        <!-- TODO: show sidbar export metadata of marc21 records -->
+        {%- include "invenio_records_marc21/records/helpers/side_bar.html" %}
+        {% endblock record_sidebar %}
       </div>
     </div>
   </div>
