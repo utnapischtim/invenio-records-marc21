@@ -11,6 +11,8 @@
 import re
 
 import idutils
+from dojson.contrib.marc21.utils import create_record
+from dojson.contrib.to_marc21 import to_marc21
 from flask import current_app
 
 
@@ -32,5 +34,16 @@ def pid_url(identifier, scheme=None, url_scheme="https"):
     return ""
 
 
+def marc21_to_json(marcxml):
+    """Convert record into json."""
+    return create_record(marcxml)
+
+
+def json_to_marc21(json):
+    """Convert record into marc21 xml."""
+    return to_marc21.do(json)
+
+
 def sanitize_title(title):
-    return re.sub("[^A-Za-z0-9\s]", "", title)
+    """Sanitize record title."""
+    return re.sub("[A-Za-z0-9]+", "", title)
