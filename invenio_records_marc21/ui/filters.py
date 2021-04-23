@@ -46,4 +46,4 @@ def json_to_marc21(json):
 
 def sanitize_title(title):
     """Sanitize record title."""
-    return re.sub("[A-Za-z0-9]+", "", title)
+    return re.sub("[<>]", "", title)

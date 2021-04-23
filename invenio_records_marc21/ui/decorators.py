@@ -57,8 +57,6 @@ def pass_draft(f):
         draft = service().read_draft(
             id_=pid_value, identity=g.identity, links_config=draft_links_config()
         )
-        # TODO: Remove - all this should happen in service
-        # Dereference relations (languages, licenses, etc.)
         draft._record.relations.dereference()
         kwargs["draft"] = draft
         return f(**kwargs)
@@ -77,12 +75,8 @@ def user_permissions(actions=[]):
         def view(**kwargs):
             action_args = {}
             if "record" in kwargs:
-                # Permissions deal with record data objects, not result items
                 action_args["record"] = kwargs["record"]._record
             elif "draft" in kwargs:
-                # Permissions deal with record data objects, not result items
-                # TODO: We need a way in the service to pass a result item
-                # and ask for the permissions (to avoid accessing internal obj)
                 action_args["record"] = kwargs["draft"]._record
             permissions = {}
             for action in actions:
