@@ -1,12 +1,9 @@
-{% macro show_authors(title, value) %}
-<div class="ui relaxed grid">
-  <div class="two column row">
-    <div class="four wide column">
-      <p><b>{{ _(title) }}</b></p>
-    </div>
-    <div class="twelve wide column">
-        {{ value }}
-    </div>
-  </div>
-</div>
+{% macro show_authors(authors) %}
+  {% for author in authors %}
+  {% set idx = loop %}
+  <span class="ui tooltip-popup text-muted" data-content="{{author}}" >
+    {{author}}
+  </span>
+  <sup class="font-tiny">{{idx.index}}</sup>
+  {% endfor %}
 {%- endmacro %}

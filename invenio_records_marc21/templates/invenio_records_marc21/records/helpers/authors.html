@@ -7,5 +7,9 @@
 #}
 
 {%- from "invenio_records_marc21/records/macros/authors.html" import show_authors %}
-
-<dt><b>{{_('Authors')}}</b></dt>
+{% set production = marcrecord.production_publication_distribution_manufacture_and_copyright_notice %}
+{% if production and production[0]["name_of_producer_publisher_distributor_manufacturer"] %}
+{% set authors = production[0]["name_of_producer_publisher_distributor_manufacturer"] %}
+  <dt><b>{{_("Rights Holder(s)")}}</b></dt>
+  {{ show_authors(authors) }}
+{% endif %}
