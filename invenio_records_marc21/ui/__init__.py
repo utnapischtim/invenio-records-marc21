@@ -25,7 +25,7 @@ from .records import marc21_index, record_detail
 #
 def create_blueprint(app):
     """Register blueprint routes on app."""
-    routes = app.config.get("MARC21_UI_ENDPOINTS")
+    routes = app.config.get("INVENIO_MARC21_UI_ENDPOINTS")
 
     blueprint = Blueprint(
         "invenio_records_marc21",

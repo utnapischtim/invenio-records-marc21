@@ -9,12 +9,21 @@
 
 from __future__ import absolute_import, print_function
 
-MARC21_BASE_TEMPLATE = "invenio_records_marc21/base.html"
+INVENIO_MARC21_BASE_TEMPLATE = "invenio_records_marc21/base.html"
 
-MARC21_REST_ENDPOINTS = {}
+INVENIO_MARC21_REST_ENDPOINTS = {}
 """REST API for invenio-records-marc21."""
 
-MARC21_UI_ENDPOINTS = {
+INVENIO_MARC21_RECORD_EXPORTERS = {
+    "json": {
+        "name": "JSON",
+        "serializer": (
+            "invenio_records_marc21.resources.serializers.ui:" "UIJSONSerializer"
+        ),
+    }
+}
+
+INVENIO_MARC21_UI_ENDPOINTS = {
     "index": "/marc21/",
     "record_search": "/marc21/search",
     "record_detail": "/marc21/<pid_value>",
@@ -24,5 +33,5 @@ MARC21_UI_ENDPOINTS = {
 SEARCH_UI_JSTEMPLATE_RESULTS = "templates/invenio_records_marc21/results.html"
 """Result list template."""
 
-MARC21_ENDPOINTS_ENABLED = True
+INVENIO_MARC21_ENDPOINTS_ENABLED = True
 """Enable/disable automatic endpoint registration."""
