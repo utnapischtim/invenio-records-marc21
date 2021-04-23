@@ -20,6 +20,7 @@ from invenio_records_marc21.vocabularies import Vocabularies
 
 FormatDatetime = partial(BaseFormatDatetime, locale=get_locale)
 
+
 #
 # Object schema
 #
