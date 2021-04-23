@@ -27,6 +27,7 @@ INVENIO_MARC21_UI_ENDPOINTS = {
     "index": "/marc21/",
     "record_search": "/marc21/search",
     "record_detail": "/marc21/<pid_value>",
+    "record_export": "/marc21/<pid_value>/export/<export_format>",
 }
 """Records UI for invenio-records-marc21."""
 

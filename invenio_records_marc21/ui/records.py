@@ -8,7 +8,8 @@
 
 """Routes for record-related pages provided by Invenio-App-RDM."""
 
-from flask import render_template
+from flask import abort, current_app, render_template
+from invenio_base.utils import obj_or_import_string
 
 from ..resources.serializers.ui import UIJSONSerializer
 from .decorators import pass_record, user_permissions
@@ -37,4 +38,30 @@ def marc21_index(permissions=None):
         "invenio_records_marc21/index.html",
         permissions=permissions,
         module_name=__name__,
+    )
+
+
+@pass_record
+def record_export(record=None, export_format=None, pid_value=None, permissions=None):
+    """Export marc21 record page view."""
+    exporter = current_app.config.get("INVENIO_MARC21_RECORD_EXPORTERS", {}).get(
+        export_format
+    )
+    if exporter is None:
+        abort(404)
+
+    serializer = obj_or_import_string(exporter["serializer"])(
+        options={
+            "indent": 2,
+            "sort_keys": True,
+        }
+    )
+    exported_record = serializer.serialize_object(record.to_dict())
+
+    return render_template(
+        "invenio_records_marc21/records/export.html",
+        export_format=exporter.get("name", export_format),
+        exported_record=exported_record,
+        record=UIJSONSerializer().serialize_object_to_dict(record.to_dict()),
+        permissions=permissions,
     )

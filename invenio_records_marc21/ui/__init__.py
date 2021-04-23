@@ -17,7 +17,7 @@ from .errors import (
     record_tombstone_error,
 )
 from .filters import pid_url, sanitize_title
-from .records import marc21_index, record_detail
+from .records import marc21_index, record_detail, record_export
 
 
 #
@@ -43,6 +43,11 @@ def create_blueprint(app):
     blueprint.add_url_rule(
         routes["record_detail"],
         view_func=record_detail,
+    )
+
+    blueprint.add_url_rule(
+        routes["record_export"],
+        view_func=record_export,
     )
 
     # Register error handlers
