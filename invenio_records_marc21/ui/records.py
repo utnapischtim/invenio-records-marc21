@@ -33,7 +33,7 @@ def record_detail(record=None, files=None, pid_value=None, permissions=None):
 
 
 def marc21_index(permissions=None):
-    """Record detail page (aka landing page)."""
+    """Marc21 index page."""
     return render_template(
         "invenio_records_marc21/index.html",
         permissions=permissions,

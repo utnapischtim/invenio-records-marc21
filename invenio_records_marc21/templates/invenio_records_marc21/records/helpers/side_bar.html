@@ -7,15 +7,15 @@
 #}
 <div class="four wide column">
   <div class="ui segment" style="padding-bottom: 10px;">
-    <h4>{{ _('Export')}}</h4>
+    <h4 class="ui header">{{ _('Export')}}</h4>
     <hr class="thin-line"/>
-    <dd class="top-bottom-padded">
+    <div class="top-bottom-padded">
       {%- for fmt, val in config.get("INVENIO_MARC21_RECORD_EXPORTERS", {}).items() -%}
       {%- set name = val.get("name", fmt) -%}
       {%- set export_url = url_for('invenio_records_marc21.record_export', pid_value=record.id, export_format=fmt) -%}
       <a class="export-format" href="{{ export_url }}">{{ name }}</a>
     {%- endfor -%}
-    </dd>
+    </div>
   </div>
   <div style="text-align: center;">
   </div>

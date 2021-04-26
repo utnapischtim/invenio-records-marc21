@@ -9,8 +9,8 @@
 
 {% set subjects = metadata.json.get('subject_added_entry_topical_term') %}
 {% if subjects %}
-<dt><b>{{_('Subjects')}}</b></dt>
-<dd class="top-bottom-padded">
+<h5 class="ui header">{{_('Subjects')}}</h5>
+<div class="top-bottom-padded">
   {% if subjects is iterable and (subjects is not string and subjects is not mapping) %}
     {% for subjecttag in subjects %}
       {%- set subjects = subjecttag.get("miscellaneous_information") %}
@@ -23,5 +23,5 @@
       {% endif %}
       {%- endfor %}
   {% endif %}
-</dd>
+</div>
 {% endif %}

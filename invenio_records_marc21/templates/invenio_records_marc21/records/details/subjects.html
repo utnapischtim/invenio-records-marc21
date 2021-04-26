@@ -9,10 +9,10 @@
 
 {% set subjects = metadata.get('subject_added_entry_corporate_name') %}
 {% if subjects %}
-<dt><b>{{_('Subjects')}}</b></dt>
-<dd class="top-bottom-padded">
+<span class="label">{{_('Subjects')}}</span>
+<div class="top-bottom-padded">
   {%- for keyword, value in subjects %}
   <span class="label label-keyword">{{ value }}</span>
   {%- endfor %}
-</dd>
+</div>
 {% endif %}
