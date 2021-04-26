@@ -6,10 +6,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: invenio-records-marc21 0.0.1\n"
+"Project-Id-Version: invenio-records-marc21 0.2.1\n"
 "Report-Msgid-Bugs-To: info@tugraz.at\n"
-"POT-Creation-Date: 2021-03-01 16:41+0100\n"
-"PO-Revision-Date: 2021-03-01 16:41+0100\n"
+"POT-Creation-Date: 2021-04-26 11:02+0200\n"
+"PO-Revision-Date: 2021-04-26 11:02+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
 "Language-Team: en <LL@li.org>\n"
@@ -23,9 +23,75 @@ msgstr ""
 msgid "Embargo date must be in the future."
 msgstr ""
 
-#: invenio_records_marc21/templates/invenio_records_marc21/index.html:13
+#: invenio_records_marc21/templates/invenio_records_marc21/record.html:32
+msgid "Creation date"
+msgstr ""
+
+#: invenio_records_marc21/templates/invenio_records_marc21/tombstone.html:11
+msgid "Tombstone"
+msgstr ""
+
+#: invenio_records_marc21/templates/invenio_records_marc21/tombstone.html:14
+msgid "Gone"
+msgstr ""
+
+#: invenio_records_marc21/templates/invenio_records_marc21/tombstone.html:16
 #, python-format
-msgid "Welcome to %(module_name)s"
+msgid ""
+"\n"
+"    The record  you are trying to access was removed from %(sitename)s. "
+"The\n"
+"    metadata of the record is kept for archival purposes.\n"
+"  "
+msgstr ""
+
+#: invenio_records_marc21/templates/invenio_records_marc21/records/export.html:27
+msgid "Back to details"
+msgstr ""
+
+#: invenio_records_marc21/templates/invenio_records_marc21/records/details/subjects.html:12
+#: invenio_records_marc21/templates/invenio_records_marc21/records/helpers/subjects.html:12
+msgid "Subjects"
+msgstr ""
+
+#: invenio_records_marc21/templates/invenio_records_marc21/records/helpers/authors.html:13
+msgid "Rights Holder(s)"
+msgstr ""
+
+#: invenio_records_marc21/templates/invenio_records_marc21/records/helpers/description.html:15
+msgid "Desciption"
+msgstr ""
+
+#: invenio_records_marc21/templates/invenio_records_marc21/records/helpers/details.html:12
+msgid "Details"
+msgstr ""
+
+#: invenio_records_marc21/templates/invenio_records_marc21/records/helpers/details.html:15
+msgid "Subtitle"
+msgstr ""
+
+#: invenio_records_marc21/templates/invenio_records_marc21/records/helpers/details.html:16
+msgid "Publisher"
+msgstr ""
+
+#: invenio_records_marc21/templates/invenio_records_marc21/records/helpers/details.html:17
+msgid "Publication date"
+msgstr ""
+
+#: invenio_records_marc21/templates/invenio_records_marc21/records/helpers/footer.html:14
+msgid "Upload infromation"
+msgstr ""
+
+#: invenio_records_marc21/templates/invenio_records_marc21/records/helpers/footer.html:18
+msgid "Created:"
+msgstr ""
+
+#: invenio_records_marc21/templates/invenio_records_marc21/records/helpers/footer.html:18
+msgid "Modified:"
+msgstr ""
+
+#: invenio_records_marc21/templates/invenio_records_marc21/records/helpers/side_bar.html:10
+msgid "Export"
 msgstr ""
 
 #: invenio_records_marc21/vocabularies/vocabulary.py:106
