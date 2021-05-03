@@ -15,7 +15,7 @@ from functools import wraps
 from flask import g
 from invenio_records_resources.services.errors import PermissionDeniedError
 
-from ..proxies import current_records_marc21
+from ...proxies import current_records_marc21
 
 
 def links_config():

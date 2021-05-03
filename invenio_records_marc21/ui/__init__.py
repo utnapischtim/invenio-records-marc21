@@ -8,16 +8,9 @@
 """Records user interface."""
 
 from flask import Blueprint
-from invenio_pidstore.errors import PIDDeletedError, PIDDoesNotExistError
-from invenio_records_resources.services.errors import PermissionDeniedError
 
-from .errors import (
-    not_found_error,
-    record_permission_denied_error,
-    record_tombstone_error,
-)
-from .filters import pid_url, sanitize_title
-from .records import marc21_index, record_detail, record_export
+from .records import init_records_views
+from .theme import init_theme_views
 
 
 #
@@ -25,7 +18,6 @@ from .records import marc21_index, record_detail, record_export
 #
 def create_blueprint(app):
     """Register blueprint routes on app."""
-    routes = app.config.get("INVENIO_MARC21_UI_ENDPOINTS")
 
     blueprint = Blueprint(
         "invenio_records_marc21",
@@ -33,31 +25,7 @@ def create_blueprint(app):
         template_folder="../templates",
     )
 
-    # Record URL rules
-    blueprint.add_url_rule(
-        routes["index"],
-        view_func=marc21_index,
-    )
+    blueprint = init_records_views(blueprint, app)
+    blueprint = init_theme_views(blueprint, app)
 
-    # Record URL rules
-    blueprint.add_url_rule(
-        routes["record_detail"],
-        view_func=record_detail,
-    )
-
-    blueprint.add_url_rule(
-        routes["record_export"],
-        view_func=record_export,
-    )
-
-    # Register error handlers
-    blueprint.register_error_handler(PIDDeletedError, record_tombstone_error)
-    blueprint.register_error_handler(PIDDoesNotExistError, not_found_error)
-    blueprint.register_error_handler(KeyError, not_found_error)
-    blueprint.register_error_handler(
-        PermissionDeniedError, record_permission_denied_error
-    )
-
-    blueprint.add_app_template_filter(pid_url)
-    blueprint.add_app_template_filter(sanitize_title)
     return blueprint
