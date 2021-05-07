@@ -21,7 +21,7 @@ msgstr ""
 
 #: invenio_records_marc21/services/schemas/access.py:55
 msgid "Embargo date must be in the future."
-msgstr "Sperrfrist muss in der Zukunft liegen."
+msgstr "Das Ende des Embargos muss in der Zukunft liegen."
 
 #: invenio_records_marc21/templates/invenio_records_marc21/index.html:17
 #, python-format
@@ -56,7 +56,7 @@ msgstr "\n"
 
 #: invenio_records_marc21/templates/invenio_records_marc21/records/export.html:27
 msgid "Back to details"
-msgstr "Zurück zu Details"
+msgstr "Zurück zu den Details"
 
 #: invenio_records_marc21/templates/invenio_records_marc21/records/details/subjects.html:12
 #: invenio_records_marc21/templates/invenio_records_marc21/records/helpers/subjects.html:12
@@ -105,5 +105,5 @@ msgstr "Export"
 
 #: invenio_records_marc21/vocabularies/vocabulary.py:106
 msgid "Invalid value. Choose one of {choices}."
-msgstr "Unzulässige eingabe. Wähle eines aus {choices}."
+msgstr "Wählen Sie bitte eines aus {choice}"
 
