@@ -1,0 +1,89 @@
+{# -*- coding: utf-8 -*-
+
+  Copyright (C) 2021 Graz University of Technology.
+
+  Invenio-Records-Marc21 is free software; you can redistribute it and/or modify it
+  under the terms of the MIT License; see LICENSE file for more details.
+#}
+
+{% macro show_sanitized_detail(title, value) %}
+<div class="ui relaxed grid">
+  <div class="two column row">
+    <div class="four wide column">
+      <p><b>{{ title | sanitize_html()| safe}}</b></p>
+    </div>
+    <div class="twelve wide column">
+      {{ value | sanitize_html()| safe }}
+    </div>
+  </div>
+</div>
+{%- endmacro %}
+
+
+{% macro show_detail(title, value) %}
+<div class="ui relaxed grid">
+  <div class="two column row">
+    <div class="four wide column">
+      <p><b>{{ _(title) }}</b></p>
+    </div>
+    <div class="twelve wide column">
+      {% if value is iterable and (value is not string and value is not mapping) %}
+        {%- set value = value|join(', ') %}
+      {% endif %}
+        {{ value }}
+    </div>
+  </div>
+</div>
+{%- endmacro %}
+
+{% macro show_subtitles(titles) %}
+  {% for key, value in titles.items() %}
+    {% if key != "title" and key != "nonfiling_characters" %}
+      {% if key == "statement_of_responsibility" %}
+        {% set key = "Responsible" %}
+      {% elif key == "title_added_entry"%}
+        {% set key = "Added Title" %}
+      {% elif key == "title_added_entry"%}
+        {% set key = "Added Title" %}
+      {% elif key == "remainder_of_title"%}
+        {% set key = "Subtitle" %}
+      {% endif %}
+    {{ show_detail(key, value) }}
+    {% endif %}
+  {% endfor %}
+{%- endmacro %}
+
+
+
+{% macro show_publisher(publishers) %}
+  {% for publisher in publishers %}
+  {% for key, value in publisher.items() %}
+    {% if key == "sequence_of_statements" %}
+      {% set key = "Sequence" %}
+    {% elif key == "name_of_producer_publisher_distributor_manufacturer"%}
+      {% set key = "Publisher" %}
+    {% elif key == "place_of_production_publication_distribution_manufacture"%}
+      {% set key = "Place of publication" %}
+      {% elif key == "date_of_production_publication_distribution_manufacture_or_copyright_notice"%}
+      {% set key = "Publication Date" %}
+    {% endif %}
+    {{ show_detail(key, value) }}
+  {% endfor %}
+  {% endfor %}
+{%- endmacro %}
+
+
+{% macro show_pages(pages) %}
+  {% for publisher in publishers %}
+  {% for key, value in publisher.items() %}
+    {% if key == "sequence_of_statements" %}
+      {% set key = "Sequence" %}
+    {% elif key == "name_of_producer_publisher_distributor_manufacturer"%}
+      {% set key = "Publisher" %}
+    {% elif key == "place_of_production_publication_distribution_manufacture"%}
+      {% set key = "Place of publication" %}
+    {% endif %}
+    {{ show_detail(key, value) }}
+  {% endfor %}
+  {% endfor %}
+{%- endmacro %}

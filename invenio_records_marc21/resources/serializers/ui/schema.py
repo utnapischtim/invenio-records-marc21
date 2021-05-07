@@ -7,13 +7,18 @@
 
 """Schema ui."""
 from copy import deepcopy
+from functools import partial
 
 from dojson.contrib.to_marc21 import to_marc21
 from dojson.contrib.to_marc21.utils import dumps
+from flask_babelex import get_locale
 from marshmallow import INCLUDE, Schema, missing, pre_dump
 from marshmallow.fields import Dict, Method, Nested, Str
+from marshmallow_utils.fields import FormatDate as BaseFormatDatetime
 
 from invenio_records_marc21.vocabularies import Vocabularies
+
+FormatDatetime = partial(BaseFormatDatetime, locale=get_locale)
 
 
 #
@@ -46,6 +51,10 @@ class UIObjectSchema(Schema):
     metadata = Nested(MetadataSchema, attribute="metadata")
 
     access_right = Nested(AccessRightSchema, attribute="access")
+
+    created = FormatDatetime(attribute="created", format="long")
+
+    updated = FormatDatetime(attribute="updated", format="long")
 
 
 #

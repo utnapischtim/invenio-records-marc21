@@ -1,4 +1,4 @@
-# English translations for invenio-records-marc21.
+# German translations for invenio-records-marc21.
 # Copyright (C) 2021 Graz University of Technology
 # This file is distributed under the same license as the
 # invenio-records-marc21 project.
@@ -11,8 +11,8 @@ msgstr ""
 "POT-Creation-Date: 2021-04-26 12:03+0200\n"
 "PO-Revision-Date: 2021-04-26 12:03+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language: en\n"
-"Language-Team: en <LL@li.org>\n"
+"Language: de\n"
+"Language-Team: de <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -21,16 +21,16 @@ msgstr ""
 
 #: invenio_records_marc21/services/schemas/access.py:55
 msgid "Embargo date must be in the future."
-msgstr ""
+msgstr "Das Ende des Embargos muss in der Zukunft liegen."
 
 #: invenio_records_marc21/templates/invenio_records_marc21/index.html:17
 #, python-format
 msgid "Welcome to %(module_name)s"
-msgstr ""
+msgstr "Willkommen zu %(module_name)s"
 
 #: invenio_records_marc21/templates/invenio_records_marc21/record.html:32
 msgid "Creation date"
-msgstr ""
+msgstr "Erstellungsdatum"
 
 #: invenio_records_marc21/templates/invenio_records_marc21/tombstone.html:11
 msgid "Tombstone"
@@ -38,7 +38,7 @@ msgstr ""
 
 #: invenio_records_marc21/templates/invenio_records_marc21/tombstone.html:14
 msgid "Gone"
-msgstr ""
+msgstr "Gelöscht"
 
 #: invenio_records_marc21/templates/invenio_records_marc21/tombstone.html:16
 #, python-format
@@ -48,58 +48,62 @@ msgid ""
 "The\n"
 "    metadata of the record is kept for archival purposes.\n"
 "  "
-msgstr ""
+msgstr "\n"
+"   Der angeforderte Datensatz, wurde gelöscht von %(sitename)s. "
+"Die\n"
+"   Metadaten wurden archiviert.\n"
+"  "
 
 #: invenio_records_marc21/templates/invenio_records_marc21/records/export.html:27
 msgid "Back to details"
-msgstr ""
+msgstr "Zurück zu den Details"
 
 #: invenio_records_marc21/templates/invenio_records_marc21/records/details/subjects.html:12
 #: invenio_records_marc21/templates/invenio_records_marc21/records/helpers/subjects.html:12
 msgid "Subjects"
-msgstr ""
+msgstr "Themen"
 
 #: invenio_records_marc21/templates/invenio_records_marc21/records/helpers/authors.html:13
 msgid "Rights Holder(s)"
-msgstr ""
+msgstr "Rechteinhaber"
 
 #: invenio_records_marc21/templates/invenio_records_marc21/records/helpers/description.html:15
 msgid "Desciption"
-msgstr ""
+msgstr "Beschreibung"
 
 #: invenio_records_marc21/templates/invenio_records_marc21/records/helpers/details.html:12
 msgid "Details"
-msgstr ""
+msgstr "Details"
 
 #: invenio_records_marc21/templates/invenio_records_marc21/records/helpers/details.html:15
 msgid "Subtitle"
-msgstr ""
+msgstr "Untertitel"
 
 #: invenio_records_marc21/templates/invenio_records_marc21/records/helpers/details.html:16
 msgid "Publisher"
-msgstr ""
+msgstr "Herausgeber"
 
 #: invenio_records_marc21/templates/invenio_records_marc21/records/helpers/details.html:17
 msgid "Publication date"
-msgstr ""
+msgstr "Erscheinungsdatum"
 
 #: invenio_records_marc21/templates/invenio_records_marc21/records/helpers/footer.html:14
 msgid "Upload infromation"
-msgstr ""
+msgstr "Upload infromation"
 
 #: invenio_records_marc21/templates/invenio_records_marc21/records/helpers/footer.html:18
 msgid "Created:"
-msgstr ""
+msgstr "Erstellt:"
 
 #: invenio_records_marc21/templates/invenio_records_marc21/records/helpers/footer.html:18
 msgid "Modified:"
-msgstr ""
+msgstr "Bearbeitet:"
 
 #: invenio_records_marc21/templates/invenio_records_marc21/records/helpers/side_bar.html:10
 msgid "Export"
-msgstr ""
+msgstr "Export"
 
 #: invenio_records_marc21/vocabularies/vocabulary.py:106
 msgid "Invalid value. Choose one of {choices}."
-msgstr ""
+msgstr "Wählen Sie bitte eines aus {choice}"
 
