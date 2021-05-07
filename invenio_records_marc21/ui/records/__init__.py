@@ -24,7 +24,6 @@ from .records import record_detail, record_export
 #
 def init_records_views(blueprint, app):
     """Register blueprint routes on app."""
-    
     routes = app.config.get("INVENIO_MARC21_UI_ENDPOINTS")
 
     # Record URL rules

@@ -18,7 +18,6 @@ from .theme import init_theme_views
 #
 def create_blueprint(app):
     """Register blueprint routes on app."""
-
     blueprint = Blueprint(
         "invenio_records_marc21",
         __name__,
