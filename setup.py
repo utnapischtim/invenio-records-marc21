@@ -98,6 +98,9 @@ setup(
         "invenio_base.blueprints": [
             "invenio_records_marc21_ui = invenio_records_marc21.ui:create_blueprint",
         ],
+        "invenio_db.models": [
+            "invenio_records_marc21_model = invenio_records_marc21.records.models",
+        ],
         "invenio_i18n.translations": [
             "messages = invenio_records_marc21",
         ],
