@@ -16,8 +16,6 @@ from marshmallow import INCLUDE, Schema, missing, pre_dump
 from marshmallow.fields import Dict, Method, Nested, Str
 from marshmallow_utils.fields import FormatDate as BaseFormatDatetime
 
-from invenio_records_marc21.vocabularies import Vocabularies
-
 FormatDatetime = partial(BaseFormatDatetime, locale=get_locale)
 
 
