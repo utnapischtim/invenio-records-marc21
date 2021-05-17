@@ -10,8 +10,14 @@
 from __future__ import absolute_import, print_function
 
 from . import config
-from .resources import Marc21DraftResource, Marc21RecordResource
-from .services import Marc21RecordService
+from .services import (
+    Marc21DraftFilesServiceConfig,
+    Marc21RecordFilesServiceConfig,
+    Marc21RecordPermissionPolicy,
+    Marc21RecordService,
+    Marc21RecordServiceConfig,
+)
+
 
 
 class InvenioRecordsMARC21(object):
@@ -25,7 +31,7 @@ class InvenioRecordsMARC21(object):
     def init_app(self, app):
         """Flask application initialization."""
         self.init_config(app)
-        self.init_resource(app)
+        self.init_services(app)
         app.extensions["invenio-records-marc21"] = self
 
     def init_config(self, app):
@@ -48,10 +54,17 @@ class InvenioRecordsMARC21(object):
                         app.config.setdefault(n, {})
                         app.config[n].update(getattr(config, k))
 
-    def init_resource(self, app):
-        """Initialize resources."""
+    def init_services(self, app):
+        """Initialize services."""
+        service_config = Marc21RecordServiceConfig
+        service_config.permission_policy_cls = obj_or_import_string(
+            app.config.get("RECORDS_PERMISSIONS_RECORD_POLICY1"),
+            default=Marc21RecordPermissionPolicy,
+        )
         self.records_service = Marc21RecordService(
-            config=app.config.get(Marc21RecordService.config_name),
+            config=service_config,
+            files_service=FileService(Marc21RecordFilesServiceConfig),
+            draft_files_service=FileService(Marc21DraftFilesServiceConfig),
         )
 
         self.records_resource = Marc21RecordResource(
