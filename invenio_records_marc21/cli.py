@@ -17,8 +17,9 @@ from flask.cli import with_appcontext
 from flask_principal import Identity
 from invenio_access import any_user
 
-from .services import Marc21DraftFilesService, Marc21RecordService, Metadata
-from .vocabularies import Vocabularies
+from .proxies import current_records_marc21
+from .services import Metadata
+from .services.components import AccessStatusEnum
 
 
 def system_identity():
@@ -30,8 +31,7 @@ def system_identity():
 
 def fake_access_right():
     """Generates a fake access_right."""
-    vocabulary = Vocabularies.get_vocabulary("access_right")
-    _type = random.choice(list(vocabulary.data.keys()))
+    _type = random.choice(list(AccessStatusEnum)).value
     return _type
 
 
@@ -58,21 +58,27 @@ def create_fake_metadata(filename):
     """Create records for demo purposes."""
     metadata = Metadata()
     metadata.xml = _load_file(filename)
+    metadata_access = fake_access_right()
     data_acces = {
-        "access_right": fake_access_right(),
-        "embargo_date": fake_feature_date(),
+        "owned_by": [{"user": system_identity().id}],
+        "files": "public",
+        "metadata": metadata_access,
     }
+    if metadata_access == AccessStatusEnum.EMBARGOED.value:
+        embargo = {
+            "embargo": {
+                "until": fake_feature_date(),
+                "active": True,
+                "reason": "Because I can!",
+            }
+        }
+        data_acces.update(embargo)
 
-    service = Marc21RecordService()
-    draft_files_service = Marc21DraftFilesService()
+    service = current_records_marc21.records_service
     draft = service.create(
         metadata=metadata,
         identity=system_identity(),
         access=data_acces,
-    )
-
-    draft_files_service.update_files_options(
-        id_=draft.id, identity=system_identity(), data={"enabled": False}
     )
 
     record = service.publish(id_=draft.id, identity=system_identity())
@@ -83,18 +89,19 @@ def create_fake_metadata(filename):
 def create_fake_record(filename):
     """Create records for demo purposes."""
     data_to_use = _load_json(filename)
+    metadata_access = fake_access_right()
     data_acces = {
-        "access_right": fake_access_right(),
-        "embargo_date": fake_feature_date(),
+        "owned_by": [{"user": system_identity().id}],
+        "files": AccessStatusEnum.PUBLIC.value,
+        "metadata": metadata_access,
     }
+    if metadata_access == AccessStatusEnum.EMBARGOED.value:
+        data_acces.update({"embargo_date": fake_feature_date()})
 
-    service = Marc21RecordService()
-    draft_files_service = Marc21DraftFilesService()
+    service = current_records_marc21.records_service
+
     draft = service.create(
         data=data_to_use, identity=system_identity(), access=data_acces
-    )
-    draft_files_service.update_files_options(
-        id_=draft.id, identity=system_identity, data={"enabled": False}
     )
 
     record = service.publish(id_=draft.id, identity=system_identity())
@@ -109,6 +116,7 @@ def marc21():
 
 
 @marc21.command("demo")
+@with_appcontext
 @click.option(
     "--number",
     "-n",

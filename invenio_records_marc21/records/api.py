@@ -10,8 +10,10 @@
 from __future__ import absolute_import, print_function
 
 from invenio_drafts_resources.records import Draft, Record
-from invenio_records.systemfields import ModelField
-from invenio_records_resources.records.api import RecordFile as BaseRecordFile
+from invenio_drafts_resources.records.api import ParentRecord as BaseParentRecord
+from invenio_drafts_resources.records.systemfields import ParentField
+from invenio_records.systemfields import ConstantField, ModelField
+from invenio_records_resources.records.api import FileRecord as BaseFileRecord
 from invenio_records_resources.records.systemfields import (
     FilesField,
     IndexField,
@@ -19,7 +21,14 @@ from invenio_records_resources.records.systemfields import (
 )
 from werkzeug.local import LocalProxy
 
-from .models import DraftFile, DraftMetadata, RecordFile, RecordMetadata
+from .models import (
+    DraftFile,
+    DraftMetadata,
+    ParentMetadata,
+    RecordFile,
+    RecordMetadata,
+    VersionsState,
+)
 from .systemfields import (
     MarcDraftProvider,
     MarcPIDFieldContext,
@@ -28,7 +37,27 @@ from .systemfields import (
 )
 
 
-class DraftFile(BaseRecordFile):
+#
+# Parent record API
+#
+class Marc21Parent(BaseParentRecord):
+    """Parent record."""
+
+    versions_model_cls = VersionsState
+    model_cls = ParentMetadata
+
+    schema = ConstantField("$schema", "local://marc21/parent-v1.0.0.json")
+
+    pid = PIDField(
+        key="id",
+        provider=MarcDraftProvider,
+        context_cls=MarcPIDFieldContext,
+        resolver_cls=MarcResolver,
+        delete=False,
+    )
+
+
+class DraftFile(BaseFileRecord):
     """Marc21 file associated with a marc21 draft model."""
 
     model_cls = DraftFile
@@ -39,21 +68,17 @@ class Marc21Draft(Draft):
     """Marc21 draft API."""
 
     model_cls = DraftMetadata
+    versions_model_cls = VersionsState
+    parent_record_cls = Marc21Parent
 
     index = IndexField(
         "marc21records-drafts-marc21-v1.0.0", search_alias="marc21records-marc21"
     )
 
+    parent = ParentField(Marc21Parent, create=True, soft_delete=False, hard_delete=True)
+
     pid = PIDField(
         key="id",
-        provider=MarcDraftProvider,
-        context_cls=MarcPIDFieldContext,
-        resolver_cls=MarcResolver,
-        delete=False,
-    )
-
-    conceptpid = PIDField(
-        key="conceptid",
         provider=MarcDraftProvider,
         context_cls=MarcPIDFieldContext,
         resolver_cls=MarcResolver,
@@ -71,7 +96,7 @@ class Marc21Draft(Draft):
     bucket = ModelField(dump=False)
 
 
-class RecordFile(BaseRecordFile):
+class RecordFile(BaseFileRecord):
     """Marc21 record file API."""
 
     model_cls = RecordFile
@@ -82,25 +107,21 @@ class Marc21Record(Record):
     """Define API for Marc21 create and manipulate."""
 
     model_cls = RecordMetadata
+    versions_model_cls = VersionsState
+    parent_record_cls = Marc21Parent
 
     index = IndexField(
         "marc21records-marc21-marc21-v1.0.0", search_alias="marc21records-marc21"
     )
 
+    parent = ParentField(Marc21Parent, create=True, soft_delete=False, hard_delete=True)
+
     pid = PIDField(
         key="id",
         provider=MarcRecordProvider,
-        delete=False,
         context_cls=MarcPIDFieldContext,
         resolver_cls=MarcResolver,
-    )
-
-    conceptpid = PIDField(
-        key="conceptid",
-        provider=MarcRecordProvider,
         delete=False,
-        context_cls=MarcPIDFieldContext,
-        resolver_cls=MarcResolver,
     )
 
     files = FilesField(

@@ -8,33 +8,95 @@
 
 """Marc21 Record Service config."""
 
-from invenio_drafts_resources.services.records import RecordDraftServiceConfig
+from flask import current_app
+from invenio_drafts_resources.services.records.config import (
+    RecordServiceConfig,
+    SearchDraftsOptions,
+    SearchOptions,
+    is_record,
+)
+from invenio_records_resources.services import ConditionalLink, FileServiceConfig
 from invenio_records_resources.services.files.config import FileServiceConfig
-from invenio_records_resources.services.records.components import MetadataComponent
+from invenio_records_resources.services.records.links import RecordLink
 from invenio_records_resources.services.records.search import terms_filter
 
-from ..records import Marc21Draft, Marc21Record
-from .components import AccessComponent, PIDComponent
+from ..records import Marc21Draft, Marc21Parent, Marc21Record
+from .components import AccessComponent, MetadataComponent, PIDComponent
 from .permissions import Marc21RecordPermissionPolicy
-from .schemas import Marc21RecordSchema, MetadataSchema
+from .schemas import Marc21RecordSchema
+from .schemas.parent import Marc21ParentSchema
 
 
-class Marc21RecordServiceConfig(RecordDraftServiceConfig):
+class Marc21SearchOptions(SearchOptions):
+    """Search options for record search."""
+
+    facets_options = dict(
+        aggs={
+            "title": {
+                "terms": {"field": "metadata.json.title_statement.title"},
+            },
+            "access_right": {
+                "terms": {"field": "access.metadata"},
+            },
+        },
+        post_filters={
+            "title": terms_filter(
+                "metadata.json.title_statement.title",
+            ),
+            "access_right": terms_filter("access.metadata"),
+        },
+    )
+
+
+class Marc21SearchDraftsOptions(SearchDraftsOptions):
+    """Search options for drafts search."""
+
+    facets_options = dict(
+        aggs={
+            "resource_type": {
+                "terms": {"field": "metadata"},
+                "aggs": {},
+            },
+            "access_right": {
+                "terms": {"field": "access.metadata"},
+            },
+            "is_published": {
+                "terms": {"field": "is_published"},
+            },
+        },
+        post_filters={
+            "access_right": terms_filter("access.metadata"),
+            "is_published": terms_filter("is_published"),
+        },
+    )
+
+
+class Marc21RecordServiceConfig(RecordServiceConfig):
     """Marc21 record service config."""
 
     # Record class
     record_cls = Marc21Record
     # Draft class
     draft_cls = Marc21Draft
+    # Parent class
+    parent_record_cls = Marc21Parent
 
+    # Schemas
     schema = Marc21RecordSchema
+    schema_parent = Marc21ParentSchema
+
     # TODO: ussing from invenio-permissions
     permission_policy_cls = Marc21RecordPermissionPolicy
 
     search_facets_options = dict(
-        aggs={},
+        aggs={
+            "is_published": {
+                "terms": {"field": "is_published"},
+            },
+        },
         post_filters={
-            "access_right": terms_filter("access.access_right"),
+            "access_right": terms_filter("access.status"),
+            "is_published": terms_filter("is_published"),
         },
     )
 
@@ -43,6 +105,19 @@ class Marc21RecordServiceConfig(RecordDraftServiceConfig):
         AccessComponent,
         PIDComponent,
     ]
+
+    links_item = {
+        "self": ConditionalLink(
+            cond=is_record,
+            if_=RecordLink("{+api}/marc21/{id}"),
+            else_=RecordLink("{+api}/marc21/{id}/draft"),
+        ),
+        "self_html": ConditionalLink(
+            cond=is_record,
+            if_=RecordLink("{+ui}/marc21/{id}"),
+            else_=RecordLink("{+ui}/uploads/{id}"),
+        ),
+    }
 
 
 #

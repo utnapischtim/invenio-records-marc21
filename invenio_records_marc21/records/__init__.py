@@ -8,7 +8,7 @@
 
 """Marc21 Records module."""
 
-from .api import DraftFile, Marc21Draft, Marc21Record, RecordFile
+from .api import DraftFile, Marc21Draft, Marc21Parent, Marc21Record, RecordFile
 from .models import DraftMetadata, RecordMetadata
 
 __all__ = (
@@ -16,6 +16,7 @@ __all__ = (
     "Marc21Draft",
     "RecordFile",
     "Marc21Record",
+    "Marc21Parent",
     "DraftMetadata",
     "RecordMetadata",
 )
