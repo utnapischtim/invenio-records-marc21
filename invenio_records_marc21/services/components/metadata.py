@@ -35,9 +35,3 @@ class MetadataComponent(BaseMetadataComponent):
     def edit(self, identity, draft=None, record=None, **kwargs):
         """Update draft metadata."""
         draft.metadata = record.get("metadata", {})
-
-    def new_version(self, identity, draft=None, record=None, **kwargs):
-        """Update draft metadata."""
-        draft.metadata = record.get("metadata", {})
-        for f in self.new_version_skip_fields:
-            draft.metadata.pop(f, None)
