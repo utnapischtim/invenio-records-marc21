@@ -23,8 +23,7 @@ from invenio_records_resources.services.records.search import terms_filter
 from ..records import Marc21Draft, Marc21Parent, Marc21Record
 from .components import AccessComponent, MetadataComponent, PIDComponent
 from .permissions import Marc21RecordPermissionPolicy
-from .schemas import Marc21RecordSchema
-from .schemas.parent import Marc21ParentSchema
+from .schemas import Marc21ParentSchema, Marc21RecordSchema
 
 
 class Marc21SearchOptions(SearchOptions):

@@ -9,13 +9,16 @@
 
 from flask_babelex import lazy_gettext as _
 from marshmallow import Schema, fields
-from marshmallow_utils.fields import SanitizedUnicode
+from marshmallow_utils.fields import Integer, List, SanitizedUnicode
+from marshmallow_utils.fields.nestedattr import NestedAttribute
+
+from .embargo import EmbargoSchema
 
 
 class Agent(Schema):
     """An agent schema."""
 
-    user = fields.Integer(required=True)
+    user = Integer(required=True)
 
 
 class ParentAccessSchema(Schema):
@@ -24,4 +27,5 @@ class ParentAccessSchema(Schema):
     metadata = SanitizedUnicode(required=True)
     files = SanitizedUnicode(required=True)
     status = SanitizedUnicode(dump_only=False)
-    owned_by = fields.List(fields.Nested(Agent))
+    embargo = NestedAttribute(EmbargoSchema)
+    owned_by = List(fields.Nested(Agent))

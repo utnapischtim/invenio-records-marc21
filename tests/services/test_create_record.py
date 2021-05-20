@@ -14,7 +14,10 @@ from flask_principal import Identity
 from invenio_access import any_user
 
 from invenio_records_marc21.records import DraftMetadata, RecordMetadata
-from invenio_records_marc21.services import Marc21RecordService
+from invenio_records_marc21.services import (
+    Marc21RecordService,
+    Marc21RecordServiceConfig,
+)
 
 
 def _assert_fields_exists(fields, data):
@@ -35,7 +38,7 @@ def marc21():
 
 def test_create_with_service(app, marc21, identity_simple):
 
-    service = Marc21RecordService()
+    service = Marc21RecordService(config=Marc21RecordServiceConfig)
 
     draft = service.create(data=marc21, identity=identity_simple, access=None)
 
@@ -127,7 +130,7 @@ def empty_data():
 )
 def test_create_with_access(app, empty_data, identity_simple, access):
 
-    service = Marc21RecordService()
+    service = Marc21RecordService(config=Marc21RecordServiceConfig)
     draft = service.create(
         data=empty_data, identity=identity_simple, access=access["input"]
     )
