@@ -15,8 +15,6 @@ fixtures are available.
 import pytest
 from invenio_app.factory import create_api
 
-from invenio_records_marc21.vocabularies import Vocabularies
-
 
 @pytest.fixture(scope="module")
 def create_app(instance_path):
@@ -24,7 +22,3 @@ def create_app(instance_path):
     return create_api
 
 
-@pytest.fixture(scope="function")
-def vocabulary_clear(appctx):
-    """Clears the Vocabulary singleton and pushes an appctx."""
-    Vocabularies.clear()

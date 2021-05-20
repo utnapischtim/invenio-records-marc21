@@ -17,8 +17,6 @@ import pytest
 from flask_principal import Identity
 from invenio_access import any_user
 from invenio_app.factory import create_api
-from invenio_vocabularies.records.models import VocabularyType
-from invenio_vocabularies.services.service import VocabulariesService
 
 from invenio_records_marc21.records import Marc21Draft
 from invenio_records_marc21.services import (
