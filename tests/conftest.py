@@ -12,7 +12,6 @@ See https://pytest-invenio.readthedocs.io/ for documentation on which test
 fixtures are available.
 """
 
-import shutil
 import tempfile
 
 import pytest

@@ -10,7 +10,7 @@
 
 from io import BytesIO
 
-from invenio_files_rest.models import Bucket, FileInstance, Location, ObjectVersion
+from invenio_files_rest.models import Bucket, FileInstance, ObjectVersion
 from invenio_records.systemfields import ModelField
 from invenio_records_resources.records.systemfields.files import FilesField
 
@@ -100,7 +100,7 @@ def test_record_file_update(testapp, db):
 
     assert models.RecordFile.query.count() == 0
     assert FileInstance.query.count() == 1
-    assert ObjectVersion.query.count() == 2
+    assert ObjectVersion.query.count() == 0
     assert Bucket.query.count() == 1
     assert len(record.files) == 0
     assert "test.pdf" not in record.files
@@ -145,7 +145,7 @@ def test_record_files_clear(testapp, db):
 
     assert models.RecordFile.query.count() == 0
     assert FileInstance.query.count() == 2
-    assert ObjectVersion.query.count() == 4
+    assert ObjectVersion.query.count() == 0
     assert Bucket.query.count() == 1
     assert len(record.files) == 0
     assert "f1.pdf" not in record.files
