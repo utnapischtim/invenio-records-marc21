@@ -86,15 +86,9 @@ def test_id(appctx):
     assert fails({"id": 1})
 
 
-def test_conceptid(appctx):
-    """Test conceptid."""
-    assert validates({"conceptid": "12345-abcd"})
-    assert fails({"conceptid": {"id": "val"}})
-
-
-@pytest.mark.parametrize("prop", ["pid", "conceptpid"])
-def test_pid_conceptpid(appctx, prop):
-    """Test pid/conceptpid."""
+@pytest.mark.parametrize("prop", ["pid"])
+def test_pid(appctx, prop):
+    """Test pid."""
     pid = {
         "pk": 1,
         "status": "R",
