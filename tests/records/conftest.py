@@ -20,5 +20,3 @@ from invenio_app.factory import create_api
 def create_app(instance_path):
     """Application factory fixture."""
     return create_api
-
-

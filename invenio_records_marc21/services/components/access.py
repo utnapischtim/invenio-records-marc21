@@ -25,6 +25,7 @@ class AccessStatusEnum(Enum):
 
     @staticmethod
     def list():
+        """List all access statuses."""
         return list(map(lambda c: c.value, AccessStatusEnum))
 
 
@@ -51,7 +52,7 @@ class AccessComponent(ServiceComponent):
     def _init_owned_by(self, identity, record, **kwargs):
         """Initialize the owned by atribute in access component."""
         access_data = record.parent.get("access", {})
-        if not "owned_by" in access_data and identity.id:
+        if "owned_by" not in access_data and identity.id:
             access_data.setdefault("owned_by", [{"user": identity.id}])
             record.parent.update(access_data)
 

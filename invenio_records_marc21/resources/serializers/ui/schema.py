@@ -82,15 +82,6 @@ class UIListSchema(Schema):
         if not aggs:
             return missing
 
-        for name, agg in aggs.items():
-            vocab = Vocabularies.get_vocabulary(name)
-            if not vocab:
-                continue
-
-            buckets = agg.get("buckets")
-            if buckets:
-                apply_labels(vocab, buckets)
-
         return aggs
 
 

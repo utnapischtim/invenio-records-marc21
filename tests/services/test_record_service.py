@@ -126,10 +126,6 @@ def test_update_draft(app, service, identity_simple, metadata, metadata2):
         draft.id, identity=identity_simple, metadata=metadata2
     )
 
-    assert draft.id == update_draft.id
-    _test_metadata(
-        to_marc21.do(update_draft["metadata"]["json"]), create_record(metadata.xml)
-    )
     # Check the updates where savedif "json" in data:
 
     read_draft = service.read_draft(id_=draft.id, identity=identity_simple)
@@ -154,13 +150,13 @@ def test_mutiple_edit(base_app, service, identity_simple, metadata):
     assert draft.id == marcid
     assert draft._record.fork_version_id == record._record.revision_id
     # files attribute in record causes at create change the revision_id twice
-    assert draft._record.revision_id == 5
+    assert draft._record.revision_id == 6
 
     draft = service.edit(marcid, identity_simple)
     assert draft.id == marcid
     assert draft._record.fork_version_id == record._record.revision_id
     # files attribute in record causes at create change the revision_id twice
-    assert draft._record.revision_id == 5
+    assert draft._record.revision_id == 6
 
     # Publish it to check the increment in version_id
     record = service.publish(marcid, identity_simple)
@@ -170,7 +166,7 @@ def test_mutiple_edit(base_app, service, identity_simple, metadata):
     assert draft._record.fork_version_id == record._record.revision_id
     # files attribute in record causes at create change the revision_id twice
     # create(2), soft-delete, undelete, update
-    assert draft._record.revision_id == 8
+    assert draft._record.revision_id == 9
 
 
 def test_create_publish_new_version(app, service, identity_simple, metadata):
@@ -185,7 +181,7 @@ def test_create_publish_new_version(app, service, identity_simple, metadata):
     draft = service.new_version(marcid, identity_simple)
 
     # files attribute in record causes at create change the revision_id twice
-    assert draft._record.revision_id == 2
+    assert draft._record.revision_id == 3
     assert draft["id"] != record["id"]
     assert draft._record.pid.status == PIDStatus.NEW
 
