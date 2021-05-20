@@ -41,21 +41,26 @@ def test_create_with_service(app, marc21, identity_simple):
 
     root_fields = [
         "id",
-        "conceptid",
+        "versions",
+        "links",
+        "is_published",
+        "parent",
+        "revision_id",
         "created",
         "updated",
         "metadata",
-        "access",
     ]
     expected = {"metadata": {}}
     _assert_fields_exists(root_fields, draft.data)
     _assert_fields(["metadata"], draft.data, expected)
+    assert not draft["is_published"]
 
     record = service.publish(id_=draft.id, identity=identity_simple)
 
     assert record
     _assert_fields_exists(root_fields, record.data)
     _assert_fields(["metadata"], record.data, expected)
+    assert record["is_published"]
 
 
 @pytest.fixture()
