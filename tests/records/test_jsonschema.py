@@ -23,7 +23,7 @@ from invenio_records_marc21.records import Marc21Record as Record
 #
 def validates(data):
     """Assertion function used to validate according to the schema."""
-    data["$schema"] = "https://localhost/schemas/marc21/marc21-v1.0.0.json"
+    data["$schema"] = "local://marc21/marc21-v1.0.0.json"
     Record(data).validate()
     return True
 

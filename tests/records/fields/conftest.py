@@ -19,13 +19,16 @@ from flask import Flask
 from invenio_db import InvenioDB
 from invenio_files_rest import InvenioFilesREST
 from invenio_files_rest.models import Location
+from invenio_jsonschemas import InvenioJSONSchemas
+from invenio_records import InvenioRecords
 
 from invenio_records_marc21 import InvenioRecordsMARC21
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def create_app(instance_path):
     """Application factory fixture for use with pytest-invenio."""
+
     def _create_app(**config):
         app_ = Flask(
             __name__,
@@ -36,10 +39,11 @@ def create_app(instance_path):
         InvenioFilesREST(app_)
         InvenioRecordsMARC21(app_)
         return app_
+
     return _create_app
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture(scope="module")
 def testapp(base_app, database):
     """Application with just a database.
 
@@ -51,4 +55,6 @@ def testapp(base_app, database):
 
     database.session.add(location_obj)
     database.session.commit()
+    InvenioRecords(base_app)
+    InvenioJSONSchemas(base_app)
     yield base_app
