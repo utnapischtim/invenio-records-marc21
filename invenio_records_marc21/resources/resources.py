@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 #
+#
+# Copyright (C) 2020-2021 CERN.
+# Copyright (C) 2020 Northwestern University.
+# Copyright (C) 2021 TU Wien.
 # Copyright (C) 2021 Graz University of Technology.
 #
 # Invenio-Records-Marc21 is free software; you can redistribute it and/or modify it
@@ -8,7 +12,8 @@
 """Marc21 Record Resource."""
 
 
-from invenio_drafts_resources.resources import DraftResource, RecordResource
+from flask_resources import route
+from invenio_drafts_resources.resources import RecordResource
 
 from . import config
 
@@ -22,12 +27,32 @@ class Marc21RecordResource(RecordResource):
     config_name = "MARC21_RECORDS_RECORD_CONFIG"
     default_config = config.Marc21RecordResourceConfig
 
+    def p(self, route):
+        """Prefix a route with the URL prefix."""
+        return f"{self.config.url_prefix}{route}"
 
-#
-# Drafts
-#
-class Marc21DraftResource(DraftResource):
-    """Bibliographic record draft resource."""
+    def create_url_rules(self):
+        """Create the URL rules for the record resource."""
+        routes = self.config.routes
+        url_rules = super(RecordResource, self).create_url_rules()
+        return url_rules
 
-    config_name = "MARC21_RECORDS_DRAFT_CONFIG"
-    default_config = config.Marc21DraftResourceConfig
+
+class Marc21ParentRecordLinksResource(RecordResource):
+    """Secret links resource."""
+
+    def create_url_rules(self):
+        """Create the URL rules for the record resource."""
+
+        def p(route):
+            """Prefix a route with the URL prefix."""
+            return f"{self.config.url_prefix}{route}"
+
+        routes = self.config.routes
+        return [
+            route("GET", p(routes["list"]), self.search),
+            route("POST", p(routes["list"]), self.create),
+            route("GET", p(routes["item"]), self.read),
+            route("PUT", p(routes["item"]), self.update),
+            route("DELETE", p(routes["item"]), self.delete),
+        ]

@@ -15,7 +15,11 @@ from invenio_drafts_resources.services.records.config import (
     SearchOptions,
     is_record,
 )
-from invenio_records_resources.services import ConditionalLink, FileServiceConfig
+from invenio_records_resources.services import (
+    ConditionalLink,
+    FileServiceConfig,
+    pagination_links,
+)
 from invenio_records_resources.services.files.config import FileServiceConfig
 from invenio_records_resources.services.records.links import RecordLink
 from invenio_records_resources.services.records.search import terms_filter
@@ -98,6 +102,13 @@ class Marc21RecordServiceConfig(RecordServiceConfig):
             "is_published": terms_filter("is_published"),
         },
     )
+
+    links_search = pagination_links("{+api}/marc21{?args*}")
+
+    links_search_drafts = pagination_links("{+api}/marc21/draft{?args*}")
+
+    links_search_versions = pagination_links(
+        "{+api}/marc21/{id}/versions{?args*}")
 
     components = [
         MetadataComponent,

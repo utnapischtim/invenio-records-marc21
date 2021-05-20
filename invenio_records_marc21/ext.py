@@ -15,6 +15,14 @@ from invenio_records_resources.services import FileService
 from werkzeug.utils import import_string
 
 from . import config
+from .resources import (
+    Marc21DraftFilesResourceConfig,
+    Marc21ParentRecordLinksResource,
+    Marc21ParentRecordLinksResourceConfig,
+    Marc21RecordFilesResourceConfig,
+    Marc21RecordResource,
+    Marc21RecordResourceConfig,
+)
 from .services import (
     Marc21DraftFilesServiceConfig,
     Marc21RecordFilesServiceConfig,
@@ -50,6 +58,7 @@ class InvenioRecordsMARC21(object):
         """Flask application initialization."""
         self.init_config(app)
         self.init_services(app)
+        self.init_resources(app)
         app.extensions["invenio-records-marc21"] = self
 
     def init_config(self, app):
@@ -85,12 +94,22 @@ class InvenioRecordsMARC21(object):
             draft_files_service=FileService(Marc21DraftFilesServiceConfig),
         )
 
-        self.records_resource = Marc21RecordResource(
+    def init_resources(self, app):
+        """Initialize resources."""
+        self.record_resource = Marc21RecordResource(
             service=self.records_service,
-            config=app.config.get(Marc21RecordResource.config_name),
+            config=Marc21RecordResourceConfig,
         )
 
-        self.drafts_resource = Marc21DraftResource(
-            service=self.records_service,
-            config=app.config.get(Marc21DraftResource.config_name),
+        self.record_files_resource = FileResource(
+            service=self.records_service.files, config=Marc21RecordFilesResourceConfig
+        )
+
+        self.draft_files_resource = FileResource(
+            service=self.records_service.draft_files,
+            config=Marc21DraftFilesResourceConfig,
+        )
+
+        self.parent_record_links_resource = Marc21ParentRecordLinksResource(
+            service=self.records_service, config=Marc21ParentRecordLinksResourceConfig
         )

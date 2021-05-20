@@ -7,85 +7,104 @@
 
 
 """Resources configuration."""
-
-from flask_resources.serializers import JSONSerializer
-from invenio_drafts_resources.resources import DraftResourceConfig, RecordResourceConfig
-from invenio_records_resources.resources import RecordResponse
-from invenio_records_resources.resources.records.schemas_links import (
-    ItemLink,
-    ItemLinksSchema,
-    SearchLinksSchema,
+import marshmallow as ma
+from flask_resources import (
+    JSONDeserializer,
+    JSONSerializer,
+    RequestBodyParser,
+    ResponseHandler,
 )
+from flask_resources.serializers import JSONSerializer
+from invenio_drafts_resources.resources import RecordResourceConfig
+from invenio_records_resources.resources.files import FileResourceConfig
+from invenio_records_resources.resources.records.args import SearchRequestArgsSchema
 
 from .serializers.ui import UIJSONSerializer
 
-#
-# Links
-#
-RecordLinks = ItemLinksSchema.create(
-    links={
-        "self": ItemLink(template="/api/marc21/{pid_value}"),
-        "self_html": ItemLink(template="/marc21/{pid_value}"),
-    }
-)
+record_serializer = {
+    "application/json": ResponseHandler(UIJSONSerializer()),
+    "application/vnd.inveniomarc21.v1+json": ResponseHandler(UIJSONSerializer()),
+}
 
+url_prefix = "/marc21"
 
-DraftLinks = ItemLinksSchema.create(
-    links={
-        "self": ItemLink(template="/api/marc21/{pid_value}/draft"),
-        "self_html": ItemLink(template="/marc21/uploads/{pid_value}"),
-        "publish": ItemLink(
-            template="/api/marc21/{pid_value}/draft/actions/publish",
-            permission="publish",
-        ),
-    }
-)
-
-
-SearchLinks = SearchLinksSchema.create(template="/api/marc21{?params*}")
-
-#
-# Response handlers
-#
-record_serializers = {
-    "application/json": RecordResponse(UIJSONSerializer()),
-    "application/vnd.inveniomarc21.v1+json": RecordResponse(UIJSONSerializer()),
+record_ui_routes = {
+    "search" : f"{url_prefix}",
+    "list": f"{url_prefix}/list",
+    "item": f"{url_prefix}/<pid_value>",
+    "item-versions": f"{url_prefix}/<pid_value>/versions",
+    "item-latest": f"{url_prefix}/<pid_value>/versions/latest",
+    "item-draft": f"{url_prefix}/<pid_value>/draft",
+    "item-publish": f"{url_prefix}/<pid_value>/draft/actions/publish",
+    "item-files-import": f"{url_prefix}/<pid_value>/draft/actions/files-import",
 }
 
 
-#
-# marc21
-#
 class Marc21RecordResourceConfig(RecordResourceConfig):
-    """Record resource configuration."""
+    """Marc21 Record resource configuration."""
 
-    list_route = "/marc21"
+    blueprint_name = "marc21_records"
+    url_prefix = url_prefix
 
-    item_route = "/marc21/<pid_value>"
+    default_accept_mimetype = "application/json"
 
-    links_config = {
-        "record": RecordLinks,
-        "search": SearchLinks,
+    response_handlers = record_serializer
+
+    request_view_args = {
+        "pid_value": ma.fields.Str(),
+        "pid_type": ma.fields.Str(),
+    }
+    links_config = {}
+
+    routes = record_ui_routes
+
+    # Request parsing
+    request_args = SearchRequestArgsSchema
+    request_view_args = {"pid_value": ma.fields.Str()}
+    request_headers = {"if_match": ma.fields.Int()}
+    request_body_parsers = {"application/json": RequestBodyParser(JSONDeserializer())}
+
+    request_view_args = {
+        "pid_value": ma.fields.Str(),
+        "pid_type": ma.fields.Str(),
     }
 
-    draft_links_config = {
-        "record": DraftLinks,
-    }
 
-    response_handlers = record_serializers
+class Marc21RecordFilesResourceConfig(FileResourceConfig):
+    """Bibliographic record files resource config."""
+
+    allow_upload = False
+    blueprint_name = "marc21_files"
+    url_prefix = f"{url_prefix}/<pid_value>"
+
+    links_config = {}
 
 
 #
-# Drafts and draft actions
+# Draft files
 #
-class Marc21DraftResourceConfig(DraftResourceConfig):
-    """Draft resource configuration."""
+class Marc21DraftFilesResourceConfig(FileResourceConfig):
+    """Bibliographic record files resource config."""
 
-    list_route = "/marc21/<pid_value>/draft"
+    blueprint_name = "marc21_draft_files"
+    url_prefix = f"{url_prefix}/<pid_value>/draft"
 
-    item_route = "/marc21/<pid_value>"
 
-    links_config = {
-        "record": DraftLinks,
-        "search": SearchLinks,
+class Marc21ParentRecordLinksResourceConfig(RecordResourceConfig):
+    """User records resource configuration."""
+
+    blueprint_name = "marc21_access"
+
+    url_prefix = f"{url_prefix}/<pid_value>/access"
+
+    routes = {
+        "search" : "",
+        "list": "/links",
+        "item": "/links/<link_id>",
     }
+
+    links_config = {}
+
+    request_view_args = {"pid_value": ma.fields.Str(), "link_id": ma.fields.Str()}
+
+    response_handlers = {"application/json": ResponseHandler(JSONSerializer())}

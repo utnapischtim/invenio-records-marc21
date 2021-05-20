@@ -20,12 +20,12 @@ from ...proxies import current_records_marc21
 
 def links_config():
     """Get the record links config."""
-    return current_records_marc21.records_resource.config.links_config
+    return current_records_marc21.record_resource.config.links_config
 
 
 def draft_links_config():
     """Get the drafts links config."""
-    return current_records_marc21.records_resource.config.draft_links_config
+    return current_records_marc21.record_resource.config.draft_links_config
 
 
 def service():
@@ -39,9 +39,7 @@ def pass_record(f):
     @wraps(f)
     def view(**kwargs):
         pid_value = kwargs.get("pid_value")
-        record = service().read(
-            id_=pid_value, identity=g.identity, links_config=links_config()
-        )
+        record = service().read(id_=pid_value, identity=g.identity)
         kwargs["record"] = record
         return f(**kwargs)
 
@@ -54,9 +52,7 @@ def pass_draft(f):
     @wraps(f)
     def view(**kwargs):
         pid_value = kwargs.get("pid_value")
-        draft = service().read_draft(
-            id_=pid_value, identity=g.identity, links_config=draft_links_config()
-        )
+        draft = service().read_draft(id_=pid_value, identity=g.identity)
         draft._record.relations.dereference()
         kwargs["draft"] = draft
         return f(**kwargs)
