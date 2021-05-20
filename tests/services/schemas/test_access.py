@@ -10,41 +10,47 @@
 
 import pytest
 from flask_babelex import lazy_gettext as _
+from marshmallow import ValidationError
 from marshmallow.exceptions import ValidationError
 
 from invenio_records_marc21.services.schemas.access import AccessSchema
 
-from .test_utils import assert_raises_messages
+
+def _assert_raises_messages(lambda_expression, expected_messages):
+    with pytest.raises(ValidationError) as e:
+        lambda_expression()
+
+    messages = e.value.normalized_messages()
+    assert expected_messages == messages
 
 
-def test_valid_full(vocabulary_clear):
+def test_valid_full():
     valid_full = {
-        "metadata": False,
+        "metadata": "public",
         "owned_by": [{"user": 1}],
-        "embargo_date": "2120-10-06",
-        "access_right": "open",
-        "access_condition": {
-            "condition": "because it is needed",
-            "default_link_validity": 30,
+        "embargo": {
+            "until": "2120-10-06",
+            "active": True,
+            "reason": "Because I can!"
         },
+        "files": "public",
     }
     assert valid_full == AccessSchema().load(valid_full)
 
 
-def test_invalid_access_right(vocabulary_clear):
+def test_invalid_access_right():
     invalid_access_right = {
-        "metadata": False,
+        "files": "public",
         "owned_by": [{"user": 1}],
-        "access_right": "invalid value",
+        "metadata": "invalid value",
     }
 
-    assert_raises_messages(
+    _assert_raises_messages(
         lambda: AccessSchema().load(invalid_access_right),
         {
-            "access_right": [
+            "metadata": [
                 _(
-                    "Invalid value. Choose one of ['closed', 'embargoed', "
-                    "'open', 'restricted']."
+                    "'record' must be either 'public', 'embargoed' or 'restricted'"
                 )
             ]
         },
@@ -56,18 +62,18 @@ def test_invalid_access_right(vocabulary_clear):
     [
         (
             {
-                "metadata": False,
-                "access_right": "open",
+                "metadata": "public",
+                "files": "public",
                 "owned_by": [1],
             },
             "owned_by",
         ),
         (
-            {"metadata": False, "owned_by": [{"user": 1}]},
-            "access_right",
+            {"metadata": "public", "owned_by": [{"user": 1}]},
+            "files",
         ),
         (
-            {"owned_by": [{"user": 1}], "access_right": "open"},
+            {"owned_by": [{"user": 1}], "files": "public"},
             "metadata",
         ),
     ],
