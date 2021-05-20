@@ -9,33 +9,26 @@
 
 from __future__ import absolute_import, print_function
 
-from flask import Blueprint
 
-blueprint = Blueprint(
-    "invenio_records_marc21",
-    __name__,
-    template_folder="templates",
-    static_folder="static",
-)
-"""Blueprint used for loading templates and static assets
-
-The sole purpose of this blueprint is to ensure that Invenio can find the
-templates and static files located in the folders of the same names next to
-this file.
-"""
-
-
-def create_records_blueprint(app):
+def create_record_bp(app):
     """Create records blueprint."""
-    ext = app.extensions
-    return ext["invenio-records-marc21"].records_resource.as_blueprint(
-        "marc21_records_resource"
-    )
+    ext = app.extensions["invenio-records-marc21"]
+    return ext.record_resource.as_blueprint()
 
 
-def create_drafts_blueprint(app):
-    """Create drafts blueprint."""
-    ext = app.extensions
-    return ext["invenio-records-marc21"].drafts_resource.as_blueprint(
-        "marc21_draft_resource"
-    )
+def create_record_files_bp(app):
+    """Create records files blueprint."""
+    ext = app.extensions["invenio-records-marc21"]
+    return ext.record_files_resource.as_blueprint()
+
+
+def create_draft_files_bp(app):
+    """Create draft files blueprint."""
+    ext = app.extensions["invenio-records-marc21"]
+    return ext.draft_files_resource.as_blueprint()
+
+
+def create_parent_record_links_bp(app):
+    """Create parent record links blueprint."""
+    ext = app.extensions["invenio-records-marc21"]
+    return ext.parent_record_links_resource.as_blueprint()

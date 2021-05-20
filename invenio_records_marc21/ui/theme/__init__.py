@@ -19,9 +19,9 @@ from .views import index, search
 #
 def init_theme_views(blueprint, app):
     """Blueprint for the routes and resources provided by Invenio-Records-Marc21."""
-    routes = app.config.get("INVENIO_MARC21_UI_ENDPOINTS")
+    routes = app.config.get("INVENIO_MARC21_UI_THEME_ENDPOINTS")
 
     blueprint.add_url_rule(routes["index"], view_func=index)
-    blueprint.add_url_rule(routes["record_search"], view_func=search)
+    blueprint.add_url_rule(routes["record-search"], view_func=search)
 
     return blueprint
