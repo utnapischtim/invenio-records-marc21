@@ -57,13 +57,6 @@ class Marc21Parent(BaseParentRecord):
     )
 
 
-class DraftFile(BaseFileRecord):
-    """Marc21 file associated with a marc21 draft model."""
-
-    model_cls = DraftFile
-    record_cls = LocalProxy(lambda: Marc21Draft)
-
-
 class Marc21Draft(Draft):
     """Marc21 draft API."""
 
@@ -96,11 +89,11 @@ class Marc21Draft(Draft):
     bucket = ModelField(dump=False)
 
 
-class RecordFile(BaseFileRecord):
-    """Marc21 record file API."""
+class DraftFile(BaseFileRecord):
+    """Marc21 file associated with a marc21 draft model."""
 
-    model_cls = RecordFile
-    record_cls = LocalProxy(lambda: Marc21Record)
+    model_cls = DraftFile
+    record_cls = LocalProxy(lambda: Marc21Draft)
 
 
 class Marc21Record(Record):
@@ -134,3 +127,10 @@ class Marc21Record(Record):
     bucket_id = ModelField(dump=False)
 
     bucket = ModelField(dump=False)
+
+
+class RecordFile(BaseFileRecord):
+    """Marc21 record file API."""
+
+    model_cls = RecordFile
+    record_cls = LocalProxy(lambda: Marc21Record)
