@@ -7,16 +7,22 @@
 
 """Marc21 record schemas."""
 
+from invenio_drafts_resources.services.records.schema import ParentSchema
 from invenio_records_resources.services.records.schema import BaseRecordSchema
 from marshmallow import EXCLUDE, INCLUDE, Schema, fields, missing, post_dump
 from marshmallow_utils.fields import NestedAttribute
 
-from .access import AccessSchema
+from .access import AccessSchema, ParentAccessSchema
 from .files import FilesSchema
 from .metadata import MetadataSchema
-from .parent import Marc21ParentSchema
 from .pids import PIDSchema
 from .versions import VersionsSchema
+
+
+class Marc21ParentSchema(ParentSchema):
+    """Record schema."""
+
+    access = fields.Nested(ParentAccessSchema)
 
 
 class Marc21RecordSchema(BaseRecordSchema):
@@ -58,4 +64,7 @@ class Marc21RecordSchema(BaseRecordSchema):
         return data
 
 
-__all__ = ("Marc21RecordSchema",)
+__all__ = (
+    "Marc21RecordSchema",
+    "Marc21ParentSchema",
+)
