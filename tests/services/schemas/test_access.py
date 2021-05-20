@@ -26,13 +26,9 @@ def _assert_raises_messages(lambda_expression, expected_messages):
 
 def test_valid_full():
     valid_full = {
-        "metadata": "public",
+        "metadata": "embargoed",
         "owned_by": [{"user": 1}],
-        "embargo": {
-            "until": "2120-10-06",
-            "active": True,
-            "reason": "Because I can!"
-        },
+        "embargo": {"until": "2120-10-06", "active": True, "reason": "Because I can!"},
         "files": "public",
     }
     assert valid_full == AccessSchema().load(valid_full)
@@ -49,9 +45,7 @@ def test_invalid_access_right():
         lambda: AccessSchema().load(invalid_access_right),
         {
             "metadata": [
-                _(
-                    "'record' must be either 'public', 'embargoed' or 'restricted'"
-                )
+                _("'record' must be either 'public', 'embargoed' or 'restricted'")
             ]
         },
     )
