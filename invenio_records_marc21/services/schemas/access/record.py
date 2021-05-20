@@ -10,7 +10,8 @@
 import arrow
 from flask_babelex import lazy_gettext as _
 from marshmallow import Schema, ValidationError, validates, validates_schema
-from marshmallow_utils.fields import Integer, List, SanitizedUnicode
+from marshmallow.fields import Integer, List, Nested
+from marshmallow_utils.fields import SanitizedUnicode
 from marshmallow_utils.fields.nestedattr import NestedAttribute
 
 from ...components import AccessStatusEnum
@@ -30,7 +31,7 @@ class AccessSchema(Schema):
     files = SanitizedUnicode(required=True)
     embargo = NestedAttribute(EmbargoSchema)
     status = SanitizedUnicode(dump_only=False)
-    owned_by = List(fields.Nested(Agent))
+    owned_by = List(Nested(Agent))
 
     def validate_protection_value(self, value, field_name):
         """Check that the protection value is valid."""

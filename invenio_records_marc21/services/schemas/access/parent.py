@@ -9,7 +9,8 @@
 
 from flask_babelex import lazy_gettext as _
 from marshmallow import Schema, fields
-from marshmallow_utils.fields import Integer, List, SanitizedUnicode
+from marshmallow.fields import Integer, List
+from marshmallow_utils.fields import SanitizedUnicode
 from marshmallow_utils.fields.nestedattr import NestedAttribute
 
 from .embargo import EmbargoSchema
