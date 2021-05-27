@@ -45,7 +45,7 @@ def test_invalid_access_right():
         lambda: AccessSchema().load(invalid_access_right),
         {
             "metadata": [
-                _("'record' must be either 'public', 'embargoed' or 'restricted'")
+                _("'metadata' must be either 'public', 'embargoed' or 'restricted'")
             ]
         },
     )

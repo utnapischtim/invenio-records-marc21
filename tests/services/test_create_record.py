@@ -75,57 +75,42 @@ def empty_data():
     [
         {
             "input": {
-                "access_right": "open",
+                "metadata": "public",
             },
             "expect": {
                 "access": {
-                    "metadata": False,
+                    "metadata": "public",
                     "owned_by": [{"user": 1}],
-                    "access_right": "open",
+                    "files": "public",
                 },
             },
         },
         {
             "input": {
-                "access_right": "closed",
+                "metadata": "restricted",
             },
             "expect": {
                 "access": {
-                    "metadata": False,
+                    "files": "public",
                     "owned_by": [{"user": 1}],
-                    "access_right": "closed",
+                    "metadata": "restricted",
                 },
             },
         },
         {
             "input": {
-                "access_right": "embargoed",
-                "embargo_date": (date.today() + timedelta(days=2)).strftime("%Y-%m-%d"),
-            },
-            "expect": {
-                "access": {
-                    "metadata": False,
-                    "owned_by": [{"user": 1}],
-                    "access_right": "embargoed",
-                    "embargo_date": (date.today() + timedelta(days=2)).strftime(
-                        "%Y-%m-%d"
-                    ),
+                "metadata": "embargoed",
+                "embargo": {
+                    "until": (date.today() + timedelta(days=2)).strftime("%Y-%m-%d"),
+                    "active": True,
+                    "reason": "Because I can!",
                 },
             },
-        },
-        {
-            "input": {
-                "access_right": "restricted",
-                "embargo_date": (date.today() + timedelta(days=3)).strftime("%Y-%m-%d"),
-            },
             "expect": {
                 "access": {
-                    "metadata": False,
+                    "files": "public",
                     "owned_by": [{"user": 1}],
-                    "access_right": "restricted",
-                    "embargo_date": (date.today() + timedelta(days=3)).strftime(
-                        "%Y-%m-%d"
-                    ),
+                    "metadata": "embargoed"
                 },
             },
         },
@@ -138,9 +123,8 @@ def test_create_with_access(app, empty_data, identity_simple, access):
         data=empty_data, identity=identity_simple, access=access["input"]
     )
     record = service.publish(id_=draft.id, identity=identity_simple)
-
     _assert_fields(
         ["access"],
-        record.data,
+        record.data["parent"],
         access["expect"],
     )
