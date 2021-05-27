@@ -11,7 +11,7 @@
 from flask import abort, current_app, render_template
 from invenio_base.utils import obj_or_import_string
 
-from ..resources.serializers.ui import UIJSONSerializer
+from ...resources.serializers.ui import UIJSONSerializer
 from .decorators import pass_record, user_permissions
 
 
@@ -29,15 +29,6 @@ def record_detail(record=None, files=None, pid_value=None, permissions=None):
         pid=pid_value,
         files=files_dict,
         permissions=permissions,
-    )
-
-
-def marc21_index(permissions=None):
-    """Marc21 index page."""
-    return render_template(
-        "invenio_records_marc21/index.html",
-        permissions=permissions,
-        module_name=__name__,
     )
 
 

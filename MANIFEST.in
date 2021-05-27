@@ -38,5 +38,6 @@ recursive-include invenio_records_marc21 *.json
 recursive-include invenio_records_marc21 *.xml
 recursive-include invenio_records_marc21 *.py
 recursive-include invenio_records_marc21 *.csv
+recursive-include invenio_records_marc21 *.js
 recursive-include tests *.py
 recursive-include tests *.json

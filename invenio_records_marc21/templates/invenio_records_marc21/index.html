@@ -9,14 +9,26 @@
 {%- extends config.INVENIO_MARC21_BASE_TEMPLATE %}
 
 {%- block page_body %}
+
 <div class="ui container">
-  <div class="ui padded relaxed grid">
-    <div class="two column row">
-      <div class="ten wide column">
+  {%- block frontpage_search %}
 
-      <h1>{{_('Welcome to %(module_name)s', module_name=module_name)}}</h1>
 
+  {%- block frontpage_form %}
+  <div class="ui center aligned grid">
+    <div class="sixteen wide column">
+      <form action="{{url_for('invenio_records_marc21.search') }}" class="ui form" role="search">
+        <div class="ui fluid big action icon input">
+          <input type="text" name="q" autofocus="autofocus" placeholder="{{ _('Type and press enter to search') }}">
+          <button type="submit" class="ui icon search button">
+            <i class="icon search"></i>
+          </button>
+        </div>
+      </form>
     </div>
   </div>
-</div>
+  <div class="ui divider hidden"></div>
+  {%- endblock frontpage_form %}
+  {%- endblock frontpage_search %}
+
 {%- endblock %}

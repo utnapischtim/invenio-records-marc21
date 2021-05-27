@@ -13,7 +13,7 @@ from invenio_drafts_resources.resources import DraftResourceConfig, RecordResour
 from invenio_records_resources.resources import RecordResponse
 from invenio_records_resources.resources.records.schemas_links import (
     ItemLink,
-    LinksSchema,
+    ItemLinksSchema,
     SearchLinksSchema,
 )
 
@@ -22,7 +22,7 @@ from .serializers.ui import UIJSONSerializer
 #
 # Links
 #
-RecordLinks = LinksSchema.create(
+RecordLinks = ItemLinksSchema.create(
     links={
         "self": ItemLink(template="/api/marc21/{pid_value}"),
         "self_html": ItemLink(template="/marc21/{pid_value}"),
@@ -30,7 +30,7 @@ RecordLinks = LinksSchema.create(
 )
 
 
-DraftLinks = LinksSchema.create(
+DraftLinks = ItemLinksSchema.create(
     links={
         "self": ItemLink(template="/api/marc21/{pid_value}/draft"),
         "self_html": ItemLink(template="/marc21/uploads/{pid_value}"),
@@ -64,12 +64,12 @@ class Marc21RecordResourceConfig(RecordResourceConfig):
     item_route = "/marc21/<pid_value>"
 
     links_config = {
-        "marc21": RecordLinks,
+        "record": RecordLinks,
         "search": SearchLinks,
     }
 
     draft_links_config = {
-        "marc21": DraftLinks,
+        "record": DraftLinks,
     }
 
     response_handlers = record_serializers
@@ -83,6 +83,9 @@ class Marc21DraftResourceConfig(DraftResourceConfig):
 
     list_route = "/marc21/<pid_value>/draft"
 
-    item_route = "/marc21/<pid_value>"  # None
+    item_route = "/marc21/<pid_value>"
 
-    links_config = {"marc21": DraftLinks}
+    links_config = {
+        "record": DraftLinks,
+        "search": SearchLinks,
+    }

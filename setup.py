@@ -107,6 +107,9 @@ setup(
         "invenio_search.mappings": [
             "marc21records = invenio_records_marc21.records.mappings",
         ],
+        "invenio_assets.webpack": [
+            "invenio_records_marc21_theme = invenio_records_marc21.ui.theme.webpack:theme",
+        ],
         # TODO: Edit these entry points to fit your needs.
         # 'invenio_access.actions': [],
         # 'invenio_admin.actions': [],

@@ -35,7 +35,7 @@ class MetadataSchema(Schema):
     """Access right vocabulary."""
 
     xml = Str(required=False)
-    # json = Dict(required=False)
+    json = Dict(required=True)
 
     @pre_dump
     def convert_xml(self, data, **kwargs):
