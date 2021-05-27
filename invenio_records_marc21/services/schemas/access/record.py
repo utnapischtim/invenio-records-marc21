@@ -11,8 +11,7 @@ import arrow
 from flask_babelex import lazy_gettext as _
 from marshmallow import Schema, ValidationError, validates, validates_schema
 from marshmallow.fields import Integer, List, Nested
-from marshmallow_utils.fields import SanitizedUnicode
-from marshmallow_utils.fields.nestedattr import NestedAttribute
+from marshmallow_utils.fields import NestedAttribute, SanitizedUnicode
 
 from ...components import AccessStatusEnum
 from .embargo import EmbargoSchema
@@ -47,7 +46,18 @@ class AccessSchema(Schema):
     @validates("metadata")
     def validate_record_protection(self, value):
         """Validate the record protection value."""
-        self.validate_protection_value(value, "record")
+        self.validate_protection_value(value, "metadata")
+
+    @validates_schema
+    def validate_embargo(self, data, **kwargs):
+        """Validate that the properties are consistent with each other."""
+        metadata = data.get("metadata", "")
+        embargo = data.get("embargo", "")
+        if AccessStatusEnum.EMBARGOED.value == metadata and not embargo:
+            raise ValidationError(
+                _("Embargo must be set if metadata is Embargoed"),
+                field_name="embargo",
+            )
 
     @validates("files")
     def validate_files_protection(self, value):

@@ -8,11 +8,11 @@
 """Marc21 parent record access schemas."""
 
 from flask_babelex import lazy_gettext as _
-from marshmallow import Schema, fields
-from marshmallow.fields import Integer, List
-from marshmallow_utils.fields import SanitizedUnicode
-from marshmallow_utils.fields.nestedattr import NestedAttribute
+from marshmallow import Schema, ValidationError, fields, validates_schema
+from marshmallow.fields import Integer, List, Nested
+from marshmallow_utils.fields import NestedAttribute, SanitizedUnicode
 
+from ...components import AccessStatusEnum
 from .embargo import EmbargoSchema
 
 
@@ -30,3 +30,14 @@ class ParentAccessSchema(Schema):
     status = SanitizedUnicode(dump_only=False)
     embargo = NestedAttribute(EmbargoSchema)
     owned_by = List(fields.Nested(Agent))
+
+    @validates_schema
+    def validate_embargo(self, data, **kwargs):
+        """Validate that the properties are consistent with each other."""
+        metadata = data.get("metadata", "")
+        embargo = data.get("embargo", None)
+        if AccessStatusEnum.EMBARGOED.value == metadata and not embargo:
+            raise ValidationError(
+                _("Embargo schema must be set if metadata is Embargoed"),
+                field_name="embargo",
+            )
