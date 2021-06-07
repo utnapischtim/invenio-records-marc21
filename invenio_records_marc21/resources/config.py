@@ -29,7 +29,7 @@ record_serializer = {
 url_prefix = "/marc21"
 
 record_ui_routes = {
-    "search" : f"{url_prefix}",
+    "search": f"{url_prefix}",
     "list": f"{url_prefix}/list",
     "item": f"{url_prefix}/<pid_value>",
     "item-versions": f"{url_prefix}/<pid_value>/versions",
@@ -98,7 +98,7 @@ class Marc21ParentRecordLinksResourceConfig(RecordResourceConfig):
     url_prefix = f"{url_prefix}/<pid_value>/access"
 
     routes = {
-        "search" : "",
+        "search": "",
         "list": "/links",
         "item": "/links/<link_id>",
     }

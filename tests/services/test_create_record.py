@@ -110,7 +110,7 @@ def empty_data():
                 "access": {
                     "files": "public",
                     "owned_by": [{"user": 1}],
-                    "metadata": "embargoed"
+                    "metadata": "embargoed",
                 },
             },
         },
