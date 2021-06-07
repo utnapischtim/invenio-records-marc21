@@ -28,12 +28,12 @@ def init_records_views(blueprint, app):
 
     # Record URL rules
     blueprint.add_url_rule(
-        routes["record_detail"],
+        routes["record-detail"],
         view_func=record_detail,
     )
 
     blueprint.add_url_rule(
-        routes["record_export"],
+        routes["record-export"],
         view_func=record_export,
     )
 

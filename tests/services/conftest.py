@@ -17,27 +17,19 @@ import pytest
 from flask_principal import Identity
 from invenio_access import any_user
 from invenio_app.factory import create_api
-from invenio_vocabularies.records.models import VocabularyType
-from invenio_vocabularies.services.service import VocabulariesService
 
 from invenio_records_marc21.records import Marc21Draft
-from invenio_records_marc21.services import Marc21RecordService, Metadata
-from invenio_records_marc21.vocabularies import Vocabularies
+from invenio_records_marc21.services import (
+    Marc21RecordService,
+    Marc21RecordServiceConfig,
+    Metadata,
+)
 
 
 @pytest.fixture(scope="module")
 def create_app(instance_path):
     """Application factory fixture."""
     return create_api
-
-
-@pytest.fixture(scope="function")
-def vocabulary_clear(app):
-    """Clears the Vocabulary singleton and pushes an application context.
-
-    NOTE: app fixture pushes an application context
-    """
-    Vocabularies.clear()
 
 
 @pytest.fixture()
@@ -51,7 +43,7 @@ def identity_simple():
 @pytest.fixture()
 def service(appctx):
     """Service instance."""
-    return Marc21RecordService()
+    return Marc21RecordService(config=Marc21RecordServiceConfig())
 
 
 @pytest.fixture()

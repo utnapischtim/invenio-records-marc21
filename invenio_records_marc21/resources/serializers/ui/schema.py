@@ -16,8 +16,6 @@ from marshmallow import INCLUDE, Schema, missing, pre_dump
 from marshmallow.fields import Dict, Method, Nested, Str
 from marshmallow_utils.fields import FormatDate as BaseFormatDatetime
 
-from invenio_records_marc21.vocabularies import Vocabularies
-
 FormatDatetime = partial(BaseFormatDatetime, locale=get_locale)
 
 
@@ -83,15 +81,6 @@ class UIListSchema(Schema):
         aggs = obj_list.get("aggregations")
         if not aggs:
             return missing
-
-        for name, agg in aggs.items():
-            vocab = Vocabularies.get_vocabulary(name)
-            if not vocab:
-                continue
-
-            buckets = agg.get("buckets")
-            if buckets:
-                apply_labels(vocab, buckets)
 
         return aggs
 

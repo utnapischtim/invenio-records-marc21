@@ -8,9 +8,19 @@
 
 """Invenio Marc21 module to create REST APIs."""
 
-from .resources import Marc21DraftResource, Marc21RecordResource
+from .config import (
+    Marc21DraftFilesResourceConfig,
+    Marc21ParentRecordLinksResourceConfig,
+    Marc21RecordFilesResourceConfig,
+    Marc21RecordResourceConfig,
+)
+from .resources import Marc21ParentRecordLinksResource, Marc21RecordResource
 
 __all__ = (
-    "Marc21DraftResource",
     "Marc21RecordResource",
+    "Marc21DraftFilesResourceConfig",
+    "Marc21RecordFilesResourceConfig",
+    "Marc21RecordResourceConfig",
+    "Marc21ParentRecordLinksResourceConfig",
+    "Marc21ParentRecordLinksResource",
 )

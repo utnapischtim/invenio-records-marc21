@@ -7,14 +7,15 @@
 
 
 """Module tests."""
+
 from datetime import date, timedelta
 
 import pytest
-from flask_principal import Identity
-from invenio_access import any_user
 
-from invenio_records_marc21.records import DraftMetadata, RecordMetadata
-from invenio_records_marc21.services import Marc21RecordService
+from invenio_records_marc21.services import (
+    Marc21RecordService,
+    Marc21RecordServiceConfig,
+)
 
 
 def _assert_fields_exists(fields, data):
@@ -35,27 +36,32 @@ def marc21():
 
 def test_create_with_service(app, marc21, identity_simple):
 
-    service = Marc21RecordService()
+    service = Marc21RecordService(config=Marc21RecordServiceConfig)
 
     draft = service.create(data=marc21, identity=identity_simple, access=None)
 
     root_fields = [
         "id",
-        "conceptid",
+        "versions",
+        "links",
+        "is_published",
+        "parent",
+        "revision_id",
         "created",
         "updated",
         "metadata",
-        "access",
     ]
     expected = {"metadata": {}}
     _assert_fields_exists(root_fields, draft.data)
     _assert_fields(["metadata"], draft.data, expected)
+    assert not draft["is_published"]
 
     record = service.publish(id_=draft.id, identity=identity_simple)
 
     assert record
     _assert_fields_exists(root_fields, record.data)
     _assert_fields(["metadata"], record.data, expected)
+    assert record["is_published"]
 
 
 @pytest.fixture()
@@ -69,57 +75,42 @@ def empty_data():
     [
         {
             "input": {
-                "access_right": "open",
+                "metadata": "public",
             },
             "expect": {
                 "access": {
-                    "metadata": False,
+                    "metadata": "public",
                     "owned_by": [{"user": 1}],
-                    "access_right": "open",
+                    "files": "public",
                 },
             },
         },
         {
             "input": {
-                "access_right": "closed",
+                "metadata": "restricted",
             },
             "expect": {
                 "access": {
-                    "metadata": False,
+                    "files": "public",
                     "owned_by": [{"user": 1}],
-                    "access_right": "closed",
+                    "metadata": "restricted",
                 },
             },
         },
         {
             "input": {
-                "access_right": "embargoed",
-                "embargo_date": (date.today() + timedelta(days=2)).strftime("%Y-%m-%d"),
-            },
-            "expect": {
-                "access": {
-                    "metadata": False,
-                    "owned_by": [{"user": 1}],
-                    "access_right": "embargoed",
-                    "embargo_date": (date.today() + timedelta(days=2)).strftime(
-                        "%Y-%m-%d"
-                    ),
+                "metadata": "embargoed",
+                "embargo": {
+                    "until": (date.today() + timedelta(days=2)).strftime("%Y-%m-%d"),
+                    "active": True,
+                    "reason": "Because I can!",
                 },
             },
-        },
-        {
-            "input": {
-                "access_right": "restricted",
-                "embargo_date": (date.today() + timedelta(days=3)).strftime("%Y-%m-%d"),
-            },
             "expect": {
                 "access": {
-                    "metadata": False,
+                    "files": "public",
                     "owned_by": [{"user": 1}],
-                    "access_right": "restricted",
-                    "embargo_date": (date.today() + timedelta(days=3)).strftime(
-                        "%Y-%m-%d"
-                    ),
+                    "metadata": "embargoed",
                 },
             },
         },
@@ -127,14 +118,13 @@ def empty_data():
 )
 def test_create_with_access(app, empty_data, identity_simple, access):
 
-    service = Marc21RecordService()
+    service = Marc21RecordService(config=Marc21RecordServiceConfig)
     draft = service.create(
         data=empty_data, identity=identity_simple, access=access["input"]
     )
     record = service.publish(id_=draft.id, identity=identity_simple)
-
     _assert_fields(
         ["access"],
-        record.data,
+        record.data["parent"],
         access["expect"],
     )

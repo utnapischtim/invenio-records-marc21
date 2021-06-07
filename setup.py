@@ -54,8 +54,8 @@ install_requires = [
     "invenio-i18n>=1.3.0",
     "dojson>=1.4.0",
     "invenio-records-rest>=1.5.0,<2.0.0",
-    "invenio-drafts-resources>=0.9.7,<0.10.0",
-    "invenio-vocabularies>=0.3.3,<0.4.0",
+    "invenio-drafts-resources>=0.12.0,<0.13.0",
+    "invenio-vocabularies>=0.6.0,<0.7.0",
 ]
 
 packages = find_packages()
@@ -92,11 +92,16 @@ setup(
             "invenio_records_marc21 = invenio_records_marc21:InvenioRecordsMARC21",
         ],
         "invenio_base.api_blueprints": [
-            "invenio_records_marc21_record = invenio_records_marc21.views:create_records_blueprint",
-            "invenio_records_marc21_draft = invenio_records_marc21.views:create_drafts_blueprint",
+            "invenio_records_marc21_record = invenio_records_marc21.views:create_record_bp",
+            "invenio_records_marc21_record_files = invenio_records_marc21.views:create_record_files_bp",
+            "invenio_records_marc21_draft_files = invenio_records_marc21.views:create_draft_files_bp",
+            "invenio_records_marc21_parent_links = invenio_records_marc21.views:create_parent_record_links_bp",
         ],
         "invenio_base.blueprints": [
             "invenio_records_marc21_ui = invenio_records_marc21.ui:create_blueprint",
+        ],
+        "invenio_db.models": [
+            "invenio_records_marc21_model = invenio_records_marc21.records.models",
         ],
         "invenio_i18n.translations": [
             "messages = invenio_records_marc21",

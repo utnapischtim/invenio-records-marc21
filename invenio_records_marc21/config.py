@@ -24,11 +24,15 @@ INVENIO_MARC21_RECORD_EXPORTERS = {
 }
 
 INVENIO_MARC21_UI_ENDPOINTS = {
-    "index": "/marc21/",
-    "record_search": "/marc21/search",
-    "record_detail": "/marc21/<pid_value>",
-    "record_export": "/marc21/<pid_value>/export/<export_format>",
+    "record-detail": "/<pid_value>",
+    "record-export": "/<pid_value>/export/<export_format>",
 }
+
+INVENIO_MARC21_UI_THEME_ENDPOINTS = {
+    "index": "/",
+    "record-search": "/search",
+}
+
 """Records UI for invenio-records-marc21."""
 
 SEARCH_UI_JSTEMPLATE_RESULTS = "templates/invenio_records_marc21/results.html"

@@ -9,10 +9,11 @@
 """Marc21 Record Service."""
 
 
-from invenio_drafts_resources.services.records import RecordDraftService
-from invenio_records_resources.services.files.service import RecordFileService
+from invenio_drafts_resources.services.records import RecordService
+from invenio_records_resources.services.files.service import FileService
 from invenio_records_resources.services.records.results import RecordItem
 
+from .components import AccessStatusEnum
 from .config import (
     Marc21DraftFilesServiceConfig,
     Marc21RecordFilesServiceConfig,
@@ -51,7 +52,7 @@ class Metadata:
         self._xml = xml
 
 
-class Marc21RecordService(RecordDraftService):
+class Marc21RecordService(RecordService):
     """Marc21 record service."""
 
     config_name = "MARC21_RECORDS_SERVICE_CONFIG"
@@ -70,9 +71,9 @@ class Marc21RecordService(RecordDraftService):
         if "access" not in data:
             default_access = {
                 "access": {
-                    "metadata": False,
                     "owned_by": [{"user": identity.id}],
-                    "access_right": "open",
+                    "metadata": AccessStatusEnum.PUBLIC.value,
+                    "files": AccessStatusEnum.PUBLIC.value,
                 },
             }
             if access is not None:
@@ -81,7 +82,7 @@ class Marc21RecordService(RecordDraftService):
         return data
 
     def create(
-        self, identity, data=None, metadata=Metadata(), links_config=None, access=None
+        self, identity, data=None, metadata=Metadata(), access=None
     ) -> RecordItem:
         """Create a draft record.
 
@@ -92,7 +93,7 @@ class Marc21RecordService(RecordDraftService):
         :param dict access: provide access additional information
         """
         data = self._create_data(identity, data, metadata, access)
-        return super().create(identity, data, links_config)
+        return super().create(identity, data)
 
     def update_draft(
         self,
@@ -100,7 +101,6 @@ class Marc21RecordService(RecordDraftService):
         identity,
         data=None,
         metadata=Metadata(),
-        links_config=None,
         revision_id=None,
         access=None,
     ):
@@ -113,13 +113,13 @@ class Marc21RecordService(RecordDraftService):
         :param dict access: provide access additional information
         """
         data = self._create_data(identity, data, metadata, access)
-        return super().update_draft(id_, identity, data, links_config, revision_id)
+        return super().update_draft(id_, identity, data, revision_id)
 
 
 #
 # Record files
 #
-class Marc21RecordFilesService(RecordFileService):
+class Marc21RecordFilesService(FileService):
     """Marc21 record files service."""
 
     config_name = "MARC21_RECORDS_FILES_SERVICE_CONFIG"
@@ -129,7 +129,7 @@ class Marc21RecordFilesService(RecordFileService):
 #
 # Draft files
 #
-class Marc21DraftFilesService(RecordFileService):
+class Marc21DraftFilesService(FileService):
     """Marc21 draft files service."""
 
     config_name = "MARC21_DRAFT_FILES_SERVICE_CONFIG"

@@ -5,12 +5,14 @@
 # Invenio-Records-Marc21 is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
+"""Marc21 parent record schemas."""
 
-"""Invenio vocabularies views."""
+from .embargo import EmbargoSchema
+from .parent import ParentAccessSchema
+from .record import AccessSchema
 
-
-def create_subjects_blueprint_from_app(app):
-    """Create app blueprint."""
-    return app.extensions["invenio-records-marc21"].subjects_resource.as_blueprint(
-        "vocabularies-subjects"
-    )
+__all__ = (
+    "ParentAccessSchema",
+    "AccessSchema",
+    "EmbargoSchema",
+)

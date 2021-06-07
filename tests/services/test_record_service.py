@@ -36,13 +36,11 @@ def test_create_draft(app, service, identity_simple, metadata):
     assert draft.id
 
     # files attribute in record causes at create change the revision_id twice
-    assert draft._record.revision_id == 2
+    assert draft._record.revision_id == 3
 
     # Check for pid and parent pid
     assert draft["id"]
-    assert draft["conceptid"]
     assert draft._record.pid.status == PIDStatus.NEW
-    assert draft._record.conceptpid.status == PIDStatus.NEW
 
 
 def test_create_empty_draft(app, service, identity_simple):
@@ -56,9 +54,7 @@ def test_create_empty_draft(app, service, identity_simple):
     draft_dict = draft.to_dict()
 
     assert draft["id"]
-    assert draft["conceptid"]
     assert draft._record.pid.status == PIDStatus.NEW
-    assert draft._record.conceptpid.status == PIDStatus.NEW
 
 
 def test_read_draft(app, service, identity_simple, metadata):
@@ -103,7 +99,6 @@ def test_publish_draft(app, service, identity_simple, metadata):
     """
     record = _create_and_publish(service, metadata, identity_simple)
     assert record._record.pid.status == PIDStatus.REGISTERED
-    assert record._record.conceptpid.status == PIDStatus.REGISTERED
 
     # Check draft deleted
     with pytest.raises(NoResultFound):
@@ -114,7 +109,6 @@ def test_publish_draft(app, service, identity_simple, metadata):
 
     assert record.id
     assert record._record.pid.status == PIDStatus.REGISTERED
-    assert record._record.conceptpid.status == PIDStatus.REGISTERED
 
 
 def _test_metadata(metadata, metadata2):
@@ -132,10 +126,6 @@ def test_update_draft(app, service, identity_simple, metadata, metadata2):
         draft.id, identity=identity_simple, metadata=metadata2
     )
 
-    assert draft.id == update_draft.id
-    _test_metadata(
-        to_marc21.do(update_draft["metadata"]["json"]), create_record(metadata.xml)
-    )
     # Check the updates where savedif "json" in data:
 
     read_draft = service.read_draft(id_=draft.id, identity=identity_simple)
@@ -160,13 +150,13 @@ def test_mutiple_edit(base_app, service, identity_simple, metadata):
     assert draft.id == marcid
     assert draft._record.fork_version_id == record._record.revision_id
     # files attribute in record causes at create change the revision_id twice
-    assert draft._record.revision_id == 5
+    assert draft._record.revision_id == 6
 
     draft = service.edit(marcid, identity_simple)
     assert draft.id == marcid
     assert draft._record.fork_version_id == record._record.revision_id
     # files attribute in record causes at create change the revision_id twice
-    assert draft._record.revision_id == 5
+    assert draft._record.revision_id == 6
 
     # Publish it to check the increment in version_id
     record = service.publish(marcid, identity_simple)
@@ -176,7 +166,7 @@ def test_mutiple_edit(base_app, service, identity_simple, metadata):
     assert draft._record.fork_version_id == record._record.revision_id
     # files attribute in record causes at create change the revision_id twice
     # create(2), soft-delete, undelete, update
-    assert draft._record.revision_id == 8
+    assert draft._record.revision_id == 9
 
 
 def test_create_publish_new_version(app, service, identity_simple, metadata):
@@ -191,19 +181,16 @@ def test_create_publish_new_version(app, service, identity_simple, metadata):
     draft = service.new_version(marcid, identity_simple)
 
     # files attribute in record causes at create change the revision_id twice
-    assert draft._record.revision_id == 2
-    assert draft["conceptid"] == record["conceptid"]
+    assert draft._record.revision_id == 3
     assert draft["id"] != record["id"]
     assert draft._record.pid.status == PIDStatus.NEW
-    assert draft._record.conceptpid.status == PIDStatus.REGISTERED
 
     # Publish it
     record_2 = service.publish(draft.id, identity_simple)
 
     assert record_2.id
     assert record_2._record.pid.status == PIDStatus.REGISTERED
-    assert record_2._record.conceptpid.status == PIDStatus.REGISTERED
+
     # files attribute in record causes at create change the revision_id twice
     assert record_2._record.revision_id == 1
-    assert record_2["conceptid"] == record["conceptid"]
     assert record_2["id"] != record["id"]

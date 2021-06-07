@@ -1,0 +1,81 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "id": "local://marc21/parent-v1.0.0.json",
+    "title": "Invenio Parent Record Marc21 v1.0.0",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "$schema": {
+            "description": "JSONSchema declaration.",
+            "type": "string"
+        },
+        "id": {
+            "description": "Persistent record identifier (alphanumeric).",
+            "type": "string"
+        },
+        "pid": {
+            "$ref": "local://marc21/definitions-v1.0.0.json#/internal-pid"
+        },
+        "access": {
+            "type": "object",
+            "description": "Record access control and ownership.",
+            "additionalProperties": false,
+            "properties": {
+                "metadata": {
+                    "description": "Metadata visibility (public or restricted)",
+                    "type": "string",
+                    "enum": [
+                        "public",
+                        "embargoed",
+                        "restricted"
+                    ]
+                },
+                "files": {
+                    "description": "Files visibility (public or restricted)",
+                    "type": "string",
+                    "enum": [
+                        "public",
+                        "embargoed",
+                        "restricted"
+                    ]
+                },
+                "owned_by": {
+                    "description": "List of user IDs that are owners of the record.",
+                    "type": "array",
+                    "minItems": 1,
+                    "uniqueItems": true,
+                    "items": {
+                        "$ref": "local://marc21/definitions-v1.0.0.json#/agent"
+                    }
+                },
+                "embargo": {
+                    "description": "Embargo date of record (ISO8601 formatted date time in UTC). At this time both metadata and files will be made public.",
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                        "active": {
+                            "type": [
+                                "boolean",
+                                "null"
+                            ]
+                        },
+                        "until": {
+                            "description": "Embargo date of record (ISO8601 formatted date time in UTC). At this time both metadata and files will be made public.",
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        },
+                        "reason": {
+                            "description": "The reason why the record is under embargo.",
+                            "type": [
+                                "string",
+                                "null"
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
