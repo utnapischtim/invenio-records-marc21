@@ -9,6 +9,7 @@
 """Marc21 Record Service config."""
 
 from flask import current_app
+from flask_babelex import gettext as _
 from invenio_drafts_resources.services.records.config import (
     RecordServiceConfig,
     SearchDraftsOptions,
@@ -21,57 +22,51 @@ from invenio_records_resources.services import (
     pagination_links,
 )
 from invenio_records_resources.services.files.config import FileServiceConfig
+from invenio_records_resources.services.records.facets import TermsFacet
 from invenio_records_resources.services.records.links import RecordLink
-from invenio_records_resources.services.records.search import terms_filter
 
 from ..records import Marc21Draft, Marc21Parent, Marc21Record
-from .components import AccessComponent, MetadataComponent, PIDComponent
+from .components import (
+    AccessComponent,
+    AccessStatusEnum,
+    MetadataComponent,
+    PIDComponent,
+)
 from .permissions import Marc21RecordPermissionPolicy
 from .schemas import Marc21ParentSchema, Marc21RecordSchema
+
+access_right_facet = TermsFacet(
+    field="access.metadata",
+    label=_("Access status"),
+    value_labels={
+        AccessStatusEnum.PUBLIC.value: _("Public"),
+        AccessStatusEnum.EMBARGOED.value: _("Embargoed"),
+        AccessStatusEnum.RESTRICTED.value: _("Restricted"),
+    },
+)
+
+is_published_facet = TermsFacet(
+    field="is_published",
+    label=_("State"),
+    value_labels={"true": _("Published"), "false": _("Unpublished")},
+)
 
 
 class Marc21SearchOptions(SearchOptions):
     """Search options for record search."""
 
-    facets_options = dict(
-        aggs={
-            "title": {
-                "terms": {"field": "metadata.json.title_statement.title"},
-            },
-            "access_right": {
-                "terms": {"field": "access.metadata"},
-            },
-        },
-        post_filters={
-            "title": terms_filter(
-                "metadata.json.title_statement.title",
-            ),
-            "access_right": terms_filter("access.metadata"),
-        },
-    )
+    facets = {
+        "access_right": access_right_facet,
+    }
 
 
 class Marc21SearchDraftsOptions(SearchDraftsOptions):
     """Search options for drafts search."""
 
-    facets_options = dict(
-        aggs={
-            "resource_type": {
-                "terms": {"field": "metadata"},
-                "aggs": {},
-            },
-            "access_right": {
-                "terms": {"field": "access.metadata"},
-            },
-            "is_published": {
-                "terms": {"field": "is_published"},
-            },
-        },
-        post_filters={
-            "access_right": terms_filter("access.metadata"),
-            "is_published": terms_filter("is_published"),
-        },
-    )
+    facets = {
+        "access_right": access_right_facet,
+        "is_published": is_published_facet,
+    }
 
 
 class Marc21RecordServiceConfig(RecordServiceConfig):
@@ -91,24 +86,11 @@ class Marc21RecordServiceConfig(RecordServiceConfig):
     # TODO: ussing from invenio-permissions
     permission_policy_cls = Marc21RecordPermissionPolicy
 
-    search_facets_options = dict(
-        aggs={
-            "is_published": {
-                "terms": {"field": "is_published"},
-            },
-        },
-        post_filters={
-            "access_right": terms_filter("access.status"),
-            "is_published": terms_filter("is_published"),
-        },
-    )
-
     links_search = pagination_links("{+api}/marc21{?args*}")
 
     links_search_drafts = pagination_links("{+api}/marc21/draft{?args*}")
 
-    links_search_versions = pagination_links(
-        "{+api}/marc21/{id}/versions{?args*}")
+    links_search_versions = pagination_links("{+api}/marc21/{id}/versions{?args*}")
 
     components = [
         MetadataComponent,
