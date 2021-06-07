@@ -22,8 +22,8 @@ from invenio_records_marc21.records import Marc21Draft
 from invenio_records_marc21.services import (
     Marc21RecordService,
     Marc21RecordServiceConfig,
-    Metadata,
 )
+from invenio_records_marc21.services.record import Marc21Metadata
 
 
 @pytest.fixture(scope="module")
@@ -57,19 +57,14 @@ def example_record(app, db):
 @pytest.fixture()
 def metadata():
     """Input data (as coming from the view layer)."""
-    metadata = Metadata()
-    metadata.xml = "<record><datafield tag='245' ind1='1' ind2='0'>\
-            <subfield code='a'>laborum sunt ut nulla</subfield>\
-    </datafield></record>"
+    metadata = Marc21Metadata()
+    metadata.add_value(tag="245", ind1="1", ind2="0", value="laborum sunt ut nulla")
     return metadata
 
 
 @pytest.fixture()
 def metadata2():
     """Input data (as coming from the view layer)."""
-    metadata = Metadata()
-    metadata.xml = "<record>\
-    <datafield tag='245' ind1='1' ind2='0'>\
-        <subfield code='a'>nulla sunt laborum</subfield>\
-    </datafield></record>"
+    metadata = Marc21Metadata()
+    metadata.add_value(tag="245", ind1="1", ind2="0", value="nulla sunt laborum")
     return metadata
