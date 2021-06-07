@@ -18,12 +18,10 @@ from .services import (
     Marc21DraftFilesService,
     Marc21RecordFilesService,
     Marc21RecordService,
-    Metadata,
     RecordItem,
 )
 
 __all__ = (
-    "Metadata",
     "Marc21RecordService",
     "Marc21DraftFilesService",
     "Marc21RecordFilesService",

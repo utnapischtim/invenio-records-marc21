@@ -18,8 +18,8 @@ from flask_principal import Identity
 from invenio_access import any_user
 
 from .proxies import current_records_marc21
-from .services import Metadata
 from .services.components import AccessStatusEnum
+from .services.record import Marc21Metadata
 
 
 def system_identity():
@@ -56,7 +56,7 @@ def _load_json(filename):
 
 def create_fake_metadata(filename):
     """Create records for demo purposes."""
-    metadata = Metadata()
+    metadata = Marc21Metadata()
     metadata.xml = _load_file(filename)
     metadata_access = fake_access_right()
     data_acces = {
