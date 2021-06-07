@@ -54,8 +54,8 @@ install_requires = [
     "invenio-i18n>=1.3.0",
     "dojson>=1.4.0",
     "invenio-records-rest>=1.5.0,<2.0.0",
-    "invenio-drafts-resources>=0.11.0,<0.12.0",
-    "invenio-vocabularies>=0.5.0,<0.7.0",
+    "invenio-drafts-resources>=0.12.0,<0.13.0",
+    "invenio-vocabularies>=0.6.0,<0.7.0",
 ]
 
 packages = find_packages()
