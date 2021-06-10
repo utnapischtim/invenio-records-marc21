@@ -36,7 +36,7 @@ def test_controlfield_to_xml():
     controlfield = ControlField(tag="123", value="laborum sunt ut nulla")
     xml = controlfield.to_xml_tag()
     assert '<controlfield tag="123">laborum sunt ut nulla' in xml
-    assert '</controlfield>' in xml
+    assert "</controlfield>" in xml
     assert xml.startswith("    ")
     assert xml.endswith("\n")
 

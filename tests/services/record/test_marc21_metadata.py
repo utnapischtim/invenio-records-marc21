@@ -44,7 +44,7 @@ def test_create_metadata():
     )
     assert 'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' in metadata.xml
 
-    metadata.add_value(
+    metadata.emplace_field(
         tag="245", ind1="1", ind2="0", code="a", value="laborum sunt ut nulla"
     )
 
@@ -54,12 +54,12 @@ def test_create_metadata():
 
 def test_validate_metadata():
     metadata = Marc21Metadata()
-    metadata.add_value(
+    metadata.emplace_field(
         tag="245", ind1="1", ind2="0", code="a", value="laborum sunt ut nulla"
     )
     assert metadata.is_valid_marc21_xml_string()
 
-    metadata.add_value(
+    metadata.emplace_field(
         tag="245", ind1="1", ind2="0", code="", value="laborum sunt ut nulla"
     )
 
@@ -68,11 +68,11 @@ def test_validate_metadata():
 
 def test_subfield_metadata():
     metadata = Marc21Metadata()
-    metadata.add_value(
+    metadata.emplace_field(
         tag="245", ind1="1", ind2="0", code="a", value="laborum sunt ut nulla"
     )
 
-    metadata.add_value(
+    metadata.emplace_field(
         tag="245", ind1="1", ind2="0", code="b", value="laborum sunt ut nulla"
     )
 
@@ -94,11 +94,11 @@ def test_controlfields_metadata():
 
 def test_uniqueness_metadata():
     metadata = Marc21Metadata()
-    metadata.add_unique_value(
+    metadata.emplace_unique_field(
         tag="245", ind1="1", ind2="0", code="a", value="laborum sunt ut nulla"
     )
 
-    metadata.add_unique_value(
+    metadata.emplace_unique_field(
         tag="245", ind1="1", ind2="0", code="a", value="laborum sunt ut nulla"
     )
 

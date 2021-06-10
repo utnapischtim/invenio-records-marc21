@@ -89,7 +89,7 @@ class Marc21Metadata(object):
                         return True
         return False
 
-    def add_value(
+    def emplace_field(
         self,
         tag: str = "",
         ind1: str = " ",
@@ -103,7 +103,7 @@ class Marc21Metadata(object):
         datafield.subfields.append(subfield)
         self.datafields.append(datafield)
 
-    def add_unique_value(
+    def emplace_unique_field(
         self,
         tag: str = "",
         ind1: str = " ",

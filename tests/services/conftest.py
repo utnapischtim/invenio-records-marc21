@@ -58,7 +58,7 @@ def example_record(app, db):
 def metadata():
     """Input data (as coming from the view layer)."""
     metadata = Marc21Metadata()
-    metadata.add_value(tag="245", ind1="1", ind2="0", value="laborum sunt ut nulla")
+    metadata.emplace_field(tag="245", ind1="1", ind2="0", value="laborum sunt ut nulla")
     return metadata
 
 
@@ -66,5 +66,5 @@ def metadata():
 def metadata2():
     """Input data (as coming from the view layer)."""
     metadata = Marc21Metadata()
-    metadata.add_value(tag="245", ind1="1", ind2="0", value="nulla sunt laborum")
+    metadata.emplace_field(tag="245", ind1="1", ind2="0", value="nulla sunt laborum")
     return metadata
