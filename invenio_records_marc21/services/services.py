@@ -19,37 +19,7 @@ from .config import (
     Marc21RecordFilesServiceConfig,
     Marc21RecordServiceConfig,
 )
-
-
-class Metadata:
-    """Marc21 Metadata object."""
-
-    _json = {}
-    _xml = ""
-
-    @property
-    def json(self):
-        """Metadata json getter method."""
-        return self._json
-
-    @json.setter
-    def json(self, json: dict):
-        """Metadata json setter method."""
-        if not isinstance(json, dict):
-            raise TypeError("json must be from type dict")
-        self._json = json
-
-    @property
-    def xml(self):
-        """Metadata xml getter method."""
-        return self._xml
-
-    @xml.setter
-    def xml(self, xml: str):
-        """Metadata xml setter method."""
-        if not isinstance(xml, str):
-            raise TypeError("xml must be from type str")
-        self._xml = xml
+from .record import Marc21Metadata
 
 
 class Marc21RecordService(RecordService):
@@ -82,7 +52,7 @@ class Marc21RecordService(RecordService):
         return data
 
     def create(
-        self, identity, data=None, metadata=Metadata(), access=None
+        self, identity, data=None, metadata=Marc21Metadata(), access=None
     ) -> RecordItem:
         """Create a draft record.
 
@@ -100,7 +70,7 @@ class Marc21RecordService(RecordService):
         id_,
         identity,
         data=None,
-        metadata=Metadata(),
+        metadata=Marc21Metadata(),
         revision_id=None,
         access=None,
     ):
