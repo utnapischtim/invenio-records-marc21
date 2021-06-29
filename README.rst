@@ -88,6 +88,9 @@ are already implemented:
   - [ ] add records to a community
   - [ ] validate records
   - [ ] add a DOI
+
+    - [ ] with a special DOI schema (e.g. PREFIX/oer-NUMBER)
+
   - [ ] provide the records to the OAI-PMH server
 
 
