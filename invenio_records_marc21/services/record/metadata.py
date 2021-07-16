@@ -58,9 +58,9 @@ class Marc21Metadata(object):
         """Xml to internal representation method."""
         test = etree.parse(StringIO(xml))
         for element in test.iter():
-            if element.tag == "datafield":
+            if "datafield" in element.tag:
                 self.datafields.append(DataField(**element.attrib))
-            elif element.tag == "subfield":
+            elif "subfield" in element.tag:
                 self.datafields[-1].subfields.append(
                     SubField(**element.attrib, value=element.text)
                 )
