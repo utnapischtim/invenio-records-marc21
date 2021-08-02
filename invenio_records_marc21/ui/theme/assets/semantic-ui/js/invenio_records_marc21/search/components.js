@@ -9,19 +9,21 @@ import {
   Button,
   Card,
   Checkbox,
-  Grid,
   Icon,
   Input,
   Item,
   Label,
   List,
 } from "semantic-ui-react";
-import { BucketAggregation, Toggle } from "react-searchkit";
-import _find from "lodash/find";
+import { BucketAggregation } from "react-searchkit";
 import _get from "lodash/get";
 import _truncate from "lodash/truncate";
 import Overridable from "react-overridable";
-import { SearchBar } from "@js/invenio_search_ui/components";
+import { SearchBar, SearchApp } from "@js/invenio_search_ui/components";
+
+import _camelCase from "lodash/camelCase";
+import { loadComponents } from "@js/invenio_theme/templates";
+import ReactDOM from "react-dom";
 
 export const Marc21RecordResultsListItem = ({ result, index }) => {
 
