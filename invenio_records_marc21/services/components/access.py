@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 #
+# This file is part of Invenio.
+#
 # Copyright (C) 2021 Graz University of Technology.
 #
 # Invenio-Records-Marc21 is free software; you can redistribute it and/or modify it
@@ -26,11 +28,15 @@ class AccessComponent(ServiceComponent):
                 "files": AccessStatusEnum.PUBLIC.value,
             },
         }
+
         if record is not None and "access" in data:
+            record.update({"access": data.get("access")})
+            record.access.refresh_from_dict(record.get("access"))
             record.parent.update({"access": data.get("access")})
             record.parent.commit()
         elif "access" not in data:
             data.update(default_access)
+            record.access.refresh_from_dict(record.get("access"))
             record.parent.update({"access": data.get("access")})
             record.parent.commit()
 
@@ -53,3 +59,15 @@ class AccessComponent(ServiceComponent):
     def update(self, identity, data=None, record=None, **kwargs):
         """Update handler."""
         self._init_owned_by(identity, record, **kwargs)
+
+    def publish(self, identity, draft=None, record=None, **kwargs):
+        """Update draft metadata."""
+        record.access = draft.access
+
+    def edit(self, identity, draft=None, record=None, **kwargs):
+        """Update draft metadata."""
+        draft.access = record.access
+
+    def new_version(self, identity, draft=None, record=None, **kwargs):
+        """Update draft metadata."""
+        draft.access = record.access

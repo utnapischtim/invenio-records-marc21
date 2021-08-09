@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 #
+# This file is part of Invenio.
+#
 # Copyright (C) 2021 Graz University of Technology.
 #
 # Invenio-Records-Marc21 is free software; you can redistribute it and/or modify it
@@ -43,9 +45,17 @@ class AccessSchema(Schema):
                 "record",
             )
 
+    def get_attribute(self, obj, key, default):
+        """Override from where we get attributes when serializing."""
+        if key in ["metadata", "files"]:
+            return getattr(obj.protection, key, default)
+        elif key == "status":
+            return obj.status.value
+        return getattr(obj, key, default)
+
     @validates("metadata")
-    def validate_record_protection(self, value):
-        """Validate the record protection value."""
+    def validate_metadata_protection(self, value):
+        """Validate the metadata protection value."""
         self.validate_protection_value(value, "metadata")
 
     @validates_schema
