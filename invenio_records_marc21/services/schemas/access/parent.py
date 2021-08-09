@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 #
+# This file is part of Invenio.
+#
 # Copyright (C) 2021 Graz University of Technology.
 #
 # Invenio-Records-Marc21 is free software; you can redistribute it and/or modify it
@@ -25,10 +27,6 @@ class Agent(Schema):
 class ParentAccessSchema(Schema):
     """Access schema."""
 
-    metadata = SanitizedUnicode(required=True)
-    files = SanitizedUnicode(required=True)
-    status = SanitizedUnicode(dump_only=False)
-    embargo = NestedAttribute(EmbargoSchema)
     owned_by = List(fields.Nested(Agent))
 
     @validates_schema
