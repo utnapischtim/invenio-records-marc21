@@ -11,22 +11,7 @@ from enum import Enum
 
 from invenio_records_resources.services.records.components import ServiceComponent
 
-
-class AccessStatusEnum(Enum):
-    """Enum defining access statuses."""
-
-    PUBLIC = "public"
-
-    EMBARGOED = "embargoed"
-
-    RESTRICTED = "restricted"
-
-    # METADATA_ONLY = "metadata-only"
-
-    @staticmethod
-    def list():
-        """List all access statuses."""
-        return list(map(lambda c: c.value, AccessStatusEnum))
+from ...records.systemfields.access import AccessStatusEnum
 
 
 class AccessComponent(ServiceComponent):
