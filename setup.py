@@ -56,7 +56,7 @@ install_requires = [
     "lxml>=4.6.2",
     "invenio-records-rest>=1.5.0,<2.0.0",
     "invenio-drafts-resources>=0.13.0,<0.14.0",
-    "invenio-vocabularies>=0.7.0,<0.8.0",
+    "invenio-vocabularies>=0.8.0,<0.9.0",
 ]
 
 packages = find_packages()
