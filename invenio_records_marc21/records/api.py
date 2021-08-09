@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 #
+# This file is part of Invenio.
+#
 # Copyright (C) 2021 Graz University of Technology.
 #
 # invenio-records-marc21 is free software; you can redistribute it and/or modify it
@@ -22,13 +24,13 @@ from invenio_records_resources.records.systemfields import (
 from werkzeug.local import LocalProxy
 
 from . import models
-
 from .systemfields import (
     MarcDraftProvider,
     MarcPIDFieldContext,
     MarcRecordProvider,
     MarcResolver,
 )
+from .systemfields.access import ParentRecordAccessField, RecordAccessField
 
 
 #
@@ -49,6 +51,8 @@ class Marc21Parent(BaseParentRecord):
         resolver_cls=MarcResolver,
         delete=False,
     )
+    access = ParentRecordAccessField()
+
 
 class DraftFile(BaseFileRecord):
     """Marc21 file associated with a marc21 draft model."""
@@ -83,6 +87,7 @@ class Marc21Draft(Draft):
         file_cls=DraftFile,
         delete=False,
     )
+    access = RecordAccessField()
 
     bucket_id = ModelField(dump=False)
 
@@ -123,6 +128,8 @@ class Marc21Record(Record):
         create=False,
         delete=False,
     )
+
+    access = RecordAccessField()
 
     bucket_id = ModelField(dump=False)
 
