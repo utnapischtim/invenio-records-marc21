@@ -21,14 +21,8 @@ from invenio_records_resources.records.systemfields import (
 )
 from werkzeug.local import LocalProxy
 
-from .models import (
-    DraftFile,
-    DraftMetadata,
-    ParentMetadata,
-    RecordFile,
-    RecordMetadata,
-    VersionsState,
-)
+from . import models
+
 from .systemfields import (
     MarcDraftProvider,
     MarcPIDFieldContext,
@@ -43,8 +37,8 @@ from .systemfields import (
 class Marc21Parent(BaseParentRecord):
     """Parent record."""
 
-    versions_model_cls = VersionsState
-    model_cls = ParentMetadata
+    versions_model_cls = models.VersionsState
+    model_cls = models.ParentMetadata
 
     schema = ConstantField("$schema", "local://marc21/parent-v1.0.0.json")
 
@@ -56,12 +50,18 @@ class Marc21Parent(BaseParentRecord):
         delete=False,
     )
 
+class DraftFile(BaseFileRecord):
+    """Marc21 file associated with a marc21 draft model."""
+
+    model_cls = models.DraftFile
+    record_cls = LocalProxy(lambda: Marc21Draft)
+
 
 class Marc21Draft(Draft):
     """Marc21 draft API."""
 
-    model_cls = DraftMetadata
-    versions_model_cls = VersionsState
+    model_cls = models.DraftMetadata
+    versions_model_cls = models.VersionsState
     parent_record_cls = Marc21Parent
 
     index = IndexField(
@@ -89,18 +89,18 @@ class Marc21Draft(Draft):
     bucket = ModelField(dump=False)
 
 
-class DraftFile(BaseFileRecord):
-    """Marc21 file associated with a marc21 draft model."""
+class RecordFile(BaseFileRecord):
+    """Marc21 record file API."""
 
-    model_cls = DraftFile
-    record_cls = LocalProxy(lambda: Marc21Draft)
+    model_cls = models.RecordFile
+    record_cls = LocalProxy(lambda: Marc21Record)
 
 
 class Marc21Record(Record):
     """Define API for Marc21 create and manipulate."""
 
-    model_cls = RecordMetadata
-    versions_model_cls = VersionsState
+    model_cls = models.RecordMetadata
+    versions_model_cls = models.VersionsState
     parent_record_cls = Marc21Parent
 
     index = IndexField(
@@ -127,10 +127,3 @@ class Marc21Record(Record):
     bucket_id = ModelField(dump=False)
 
     bucket = ModelField(dump=False)
-
-
-class RecordFile(BaseFileRecord):
-    """Marc21 record file API."""
-
-    model_cls = RecordFile
-    record_cls = LocalProxy(lambda: Marc21Record)
