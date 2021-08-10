@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 #
+# This file is part of Invenio.
+#
 # Copyright (C) 2021 Graz University of Technology.
 #
 # Invenio-Records-Marc21 is free software; you can redistribute it and/or modify it
@@ -10,6 +12,7 @@
 
 from datetime import date, timedelta
 
+import arrow
 import pytest
 
 from invenio_records_marc21.services import (
@@ -80,8 +83,12 @@ def empty_data():
             "expect": {
                 "access": {
                     "metadata": "public",
-                    "owned_by": [{"user": 1}],
                     "files": "public",
+                    "embargo": {
+                        "active": False,
+                        "reason": None,
+                    },
+                    "status": "public",
                 },
             },
         },
@@ -91,9 +98,13 @@ def empty_data():
             },
             "expect": {
                 "access": {
-                    "files": "public",
-                    "owned_by": [{"user": 1}],
+                    "files": "restricted",
                     "metadata": "restricted",
+                    "embargo": {
+                        "active": False,
+                        "reason": None,
+                    },
+                    "status": "restricted",
                 },
             },
         },
@@ -101,7 +112,7 @@ def empty_data():
             "input": {
                 "metadata": "embargoed",
                 "embargo": {
-                    "until": (date.today() + timedelta(days=2)).strftime("%Y-%m-%d"),
+                    "until": (arrow.utcnow().datetime + timedelta(days=2)).strftime("%Y-%m-%d"),
                     "active": True,
                     "reason": "Because I can!",
                 },
@@ -109,8 +120,15 @@ def empty_data():
             "expect": {
                 "access": {
                     "files": "public",
-                    "owned_by": [{"user": 1}],
                     "metadata": "embargoed",
+                    "embargo": {
+                        "until": (arrow.utcnow().datetime + timedelta(days=2)).strftime(
+                            "%Y-%m-%d"
+                        ),
+                        "active": True,
+                        "reason": "Because I can!",
+                    },
+                    "status": "embargoed",
                 },
             },
         },
@@ -125,6 +143,15 @@ def test_create_with_access(app, empty_data, identity_simple, access):
     record = service.publish(id_=draft.id, identity=identity_simple)
     _assert_fields(
         ["access"],
-        record.data["parent"],
+        record.data,
         access["expect"],
+    )
+    _assert_fields(
+        ["access"],
+        record.data["parent"],
+        {
+            "access": {
+                "owned_by": [{"user": 1}],
+            }
+        },
     )

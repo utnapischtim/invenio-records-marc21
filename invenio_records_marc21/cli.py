@@ -9,16 +9,17 @@
 """Command-line tools for demo module."""
 import json
 import random
-from datetime import date, timedelta
+from datetime import timedelta
 from os.path import dirname, join
 
+import arrow
 import click
 from flask.cli import with_appcontext
 from flask_principal import Identity
 from invenio_access import any_user
 
 from .proxies import current_records_marc21
-from .services.components import AccessStatusEnum
+from .records.systemfields.access import AccessStatusEnum
 from .services.record import Marc21Metadata
 
 
@@ -37,8 +38,8 @@ def fake_access_right():
 
 def fake_feature_date(days=365):
     """Generates a fake feature_date."""
-    start_date = date.today()
-    random_number_of_days = random.randrange(days)
+    start_date = arrow.utcnow().datetime
+    random_number_of_days = random.randrange(1, days)
     _date = start_date + timedelta(days=random_number_of_days)
     return _date.strftime("%Y-%m-%d")
 

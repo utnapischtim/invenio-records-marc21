@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 #
+# This file is part of Invenio.
+#
 # Copyright (C) 2021 Graz University of Technology.
 #
 # Invenio-Records-Marc21 is free software; you can redistribute it and/or
@@ -13,14 +15,62 @@ fixtures are available.
 """
 
 import tempfile
+from datetime import timedelta
 
+import arrow
 import pytest
 from flask import Flask
 from flask_babelex import Babel
 from invenio_files_rest.models import Location
 
 from invenio_records_marc21 import InvenioRecordsMARC21
+from invenio_records_marc21.proxies import current_records_marc21
+from invenio_records_marc21.records import Marc21Draft
 from invenio_records_marc21.views import create_record_bp
+
+
+@pytest.fixture()
+def embargoed_record():
+    """Embargoed record."""
+    embargoed_record = {
+        "metadata": {"json": "test"},
+        "access": {
+            "files": "restricted",
+            "status": "embargoed",
+            "embargo": {
+                "active": True,
+                "until": (arrow.utcnow().datetime + timedelta(days=2)).strftime("%Y-%m-%d"),
+                "reason": None,
+            },
+        },
+    }
+    return embargoed_record
+
+
+@pytest.fixture()
+def marc21_record():
+    """Normal record."""
+    marc21_record = {
+        "metadata": {"json": "test"},
+        "access": {
+            "files": "public",
+            "status": "public",
+            "metadata": "public",
+            "embargo": {
+                "active": False,
+                "reason": None,
+            },
+        },
+    }
+    return marc21_record
+
+
+@pytest.fixture()
+def example_record(app, db):
+    """Example record."""
+    record = Marc21Draft.create({}, metadata={"title": "Test"})
+    db.session.commit()
+    return record
 
 
 @pytest.fixture(scope="module")

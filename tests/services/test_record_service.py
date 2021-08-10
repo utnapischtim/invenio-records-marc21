@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 #
+# This file is part of Invenio.
+#
 # Copyright (C) 2021 Graz University of Technology.
 #
 # Invenio-Records-Marc21 is free software; you can redistribute it and/or modify it
@@ -14,6 +16,7 @@ Test to add:
 """
 
 import time
+from collections import namedtuple
 
 import pytest
 from dojson.contrib.marc21.utils import create_record
@@ -22,15 +25,28 @@ from invenio_pidstore.errors import PIDDoesNotExistError
 from invenio_pidstore.models import PIDStatus
 from sqlalchemy.orm.exc import NoResultFound
 
+RunningApp = namedtuple("RunningApp", ["app", "service", "identity_simple"])
+
+
+@pytest.fixture()
+def running_app(app, service, identity_simple):
+    """This fixture provides an app with the typically needed db data loaded.
+
+    All of these fixtures are often needed together, so collecting them
+    under a semantic umbrella makes sense.
+    """
+    return RunningApp(app, service, identity_simple)
+
+
 #
 # Operations tests
 #
 
-
-def test_create_draft(app, service, identity_simple, metadata):
+def test_create_draft(running_app, metadata):
     """Test draft creation of a non-existing record."""
-    # Needs `app` context because of invenio_access/permissions.py#166
-    draft = service.create(identity_simple, metadata=metadata)
+
+    service = running_app.service
+    draft = service.create(running_app.identity_simple, metadata=metadata)
     draft_dict = draft.to_dict()
 
     assert draft.id
@@ -43,12 +59,14 @@ def test_create_draft(app, service, identity_simple, metadata):
     assert draft._record.pid.status == PIDStatus.NEW
 
 
-def test_create_empty_draft(app, service, identity_simple):
+def test_create_empty_draft(running_app):
     """Test an empty draft can be created.
 
     Errors (missing required fields) are reported, but don't prevent creation.
     """
     input_data = {"metadata": {}}
+    service = running_app.service
+    identity_simple = running_app.identity_simple
 
     draft = service.create(identity_simple, input_data)
     draft_dict = draft.to_dict()
@@ -57,7 +75,11 @@ def test_create_empty_draft(app, service, identity_simple):
     assert draft._record.pid.status == PIDStatus.NEW
 
 
-def test_read_draft(app, service, identity_simple, metadata):
+def test_read_draft(running_app, metadata):
+    """Test read a draft can be created."""
+
+    service = running_app.service
+    identity_simple = running_app.identity_simple
     draft = service.create(identity_simple, metadata=metadata)
     assert draft.id
 
@@ -65,7 +87,11 @@ def test_read_draft(app, service, identity_simple, metadata):
     assert draft.id == draft_2.id
 
 
-def test_delete_draft(app, service, identity_simple, metadata):
+def test_delete_draft(running_app, metadata):
+    """Test a created  draft can be deleted."""
+    identity_simple = running_app.identity_simple
+    service = running_app.service
+
     draft = service.create(identity=identity_simple, metadata=metadata)
     assert draft.id
 
@@ -92,11 +118,13 @@ def _create_and_publish(service, metadata, identity_simple):
     return record
 
 
-def test_publish_draft(app, service, identity_simple, metadata):
+def test_publish_draft(running_app, metadata):
     """Test draft publishing of a non-existing record.
 
     Note that the publish action requires a draft to be created first.
     """
+    service = running_app.service
+    identity_simple = running_app.identity_simple
     record = _create_and_publish(service, metadata, identity_simple)
     assert record._record.pid.status == PIDStatus.REGISTERED
 
@@ -117,7 +145,9 @@ def _test_metadata(metadata, metadata2):
         assert metadata[key] == metadata2[key]
 
 
-def test_update_draft(app, service, identity_simple, metadata, metadata2):
+def test_update_draft(running_app, metadata, metadata2):
+    service = running_app.service
+    identity_simple = running_app.identity_simple
     draft = service.create(identity=identity_simple, metadata=metadata)
     assert draft.id
 
@@ -137,43 +167,13 @@ def test_update_draft(app, service, identity_simple, metadata, metadata2):
     )
 
 
-def test_mutiple_edit(base_app, service, identity_simple, metadata):
-    """Test the revision_id when editing record multiple times..
-
-    This tests the `edit` service method.
-    """
-    record = _create_and_publish(service, metadata, identity_simple)
-    marcid = record.id
-
-    # Create new draft of said record
-    draft = service.edit(marcid, identity_simple)
-    assert draft.id == marcid
-    assert draft._record.fork_version_id == record._record.revision_id
-    # files attribute in record causes at create change the revision_id twice
-    assert draft._record.revision_id == 6
-
-    draft = service.edit(marcid, identity_simple)
-    assert draft.id == marcid
-    assert draft._record.fork_version_id == record._record.revision_id
-    # files attribute in record causes at create change the revision_id twice
-    assert draft._record.revision_id == 6
-
-    # Publish it to check the increment in version_id
-    record = service.publish(marcid, identity_simple)
-
-    draft = service.edit(marcid, identity_simple)
-    assert draft.id == marcid
-    assert draft._record.fork_version_id == record._record.revision_id
-    # files attribute in record causes at create change the revision_id twice
-    # create(2), soft-delete, undelete, update
-    assert draft._record.revision_id == 9
-
-
-def test_create_publish_new_version(app, service, identity_simple, metadata):
+def test_create_publish_new_version(running_app, metadata):
     """Test creating a new revision of a record.
 
     This tests the `new_version` service method.
     """
+    service = running_app.service
+    identity_simple = running_app.identity_simple
     record = _create_and_publish(service, metadata, identity_simple)
     marcid = record.id
 

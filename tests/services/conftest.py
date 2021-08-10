@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 #
+# This file is part of Invenio.
+#
 # Copyright (C) 2021 Graz University of Technology.
 #
 # Invenio-Records-Marc21 is free software; you can redistribute it and/or
@@ -18,7 +20,7 @@ from flask_principal import Identity
 from invenio_access import any_user
 from invenio_app.factory import create_api
 
-from invenio_records_marc21.records import Marc21Draft
+from invenio_records_marc21.proxies import current_records_marc21
 from invenio_records_marc21.services import (
     Marc21RecordService,
     Marc21RecordServiceConfig,
@@ -47,14 +49,6 @@ def service(appctx):
 
 
 @pytest.fixture()
-def example_record(app, db):
-    """Example record."""
-    record = Marc21Draft.create({}, metadata={"title": "Test"})
-    db.session.commit()
-    return record
-
-
-@pytest.fixture()
 def metadata():
     """Input data (as coming from the view layer)."""
     metadata = Marc21Metadata()
@@ -68,3 +62,13 @@ def metadata2():
     metadata = Marc21Metadata()
     metadata.emplace_field(tag="245", ind1="1", ind2="0", value="nulla sunt laborum")
     return metadata
+
+
+@pytest.fixture()
+def embargoedrecord(embargoed_record):
+    """Embargoed record."""
+    service = current_records_marc21.records_service
+
+    draft = service.create(identity_simple, embargoed_record)
+    record = service.publish(id_=draft.id, identity=identity_simple)
+    return record
