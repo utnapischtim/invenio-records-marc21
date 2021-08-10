@@ -15,7 +15,7 @@ from marshmallow import Schema, ValidationError, validates, validates_schema
 from marshmallow.fields import Integer, List, Nested
 from marshmallow_utils.fields import NestedAttribute, SanitizedUnicode
 
-from ...components import AccessStatusEnum
+from ....records.systemfields.access import AccessStatusEnum
 from .embargo import EmbargoSchema
 
 

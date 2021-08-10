@@ -11,11 +11,9 @@
 
 from flask_babelex import lazy_gettext as _
 from marshmallow import Schema, ValidationError, fields, validates_schema
-from marshmallow.fields import Integer, List, Nested
-from marshmallow_utils.fields import NestedAttribute, SanitizedUnicode
+from marshmallow.fields import Integer, List
 
-from ...components import AccessStatusEnum
-from .embargo import EmbargoSchema
+from ....records.systemfields.access import AccessStatusEnum
 
 
 class Agent(Schema):

@@ -13,7 +13,7 @@ from invenio_drafts_resources.services.records import RecordService
 from invenio_records_resources.services.files.service import FileService
 from invenio_records_resources.services.records.results import RecordItem
 
-from .components import AccessStatusEnum
+from ..records.systemfields.access import AccessStatusEnum
 from .config import (
     Marc21DraftFilesServiceConfig,
     Marc21RecordFilesServiceConfig,

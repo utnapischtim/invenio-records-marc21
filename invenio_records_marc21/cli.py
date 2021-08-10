@@ -19,7 +19,7 @@ from flask_principal import Identity
 from invenio_access import any_user
 
 from .proxies import current_records_marc21
-from .services.components import AccessStatusEnum
+from .records.systemfields.access import AccessStatusEnum
 from .services.record import Marc21Metadata
 
 

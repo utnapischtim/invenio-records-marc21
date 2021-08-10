@@ -8,7 +8,7 @@
 
 """Marc21 Record Service config."""
 
-from flask import current_app
+
 from flask_babelex import gettext as _
 from invenio_drafts_resources.services.records.config import (
     RecordServiceConfig,
@@ -26,12 +26,8 @@ from invenio_records_resources.services.records.facets import TermsFacet
 from invenio_records_resources.services.records.links import RecordLink
 
 from ..records import Marc21Draft, Marc21Parent, Marc21Record
-from .components import (
-    AccessComponent,
-    AccessStatusEnum,
-    MetadataComponent,
-    PIDComponent,
-)
+from ..records.systemfields.access import AccessStatusEnum
+from .components import AccessComponent, MetadataComponent, PIDComponent
 from .permissions import Marc21RecordPermissionPolicy
 from .schemas import Marc21ParentSchema, Marc21RecordSchema
 
