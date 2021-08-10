@@ -121,14 +121,17 @@ def test_access_field_update_embargo(appaccess, marc21_record, parent):
         "reason": "Because I can",
     }
     rec = Marc21Record.create(marc21_record.copy(), parent=parent)
+
     assert rec.access.embargo
+    assert rec.access.embargo.active
+    assert rec.access.embargo.reason == "Because I can"
 
     rec.access.embargo.active = False
     rec.access.embargo.reason = "can't remember"
     rec.commit()
 
-    marc21_record["access"]["embargo"]["active"] = False
-    marc21_record["access"]["embargo"]["reason"] = "can't remember"
+    assert not rec["access"]["embargo"]["active"]
+    assert rec["access"]["embargo"]["reason"] == "can't remember"
 
 
 def test_access_field_clear_embargo(appaccess, marc21_record, parent):
