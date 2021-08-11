@@ -8,7 +8,9 @@
 # under the terms of the MIT License; see LICENSE file for more details.
 
 
-"""Test metadata access schema."""
+"""Test record AccessSchema."""
+
+
 from datetime import timedelta
 
 import arrow
