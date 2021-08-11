@@ -18,8 +18,6 @@ import tempfile
 
 import pytest
 from flask import Flask
-from flask_security.utils import hash_password
-from invenio_accounts import InvenioAccounts
 from invenio_db import InvenioDB
 from invenio_files_rest import InvenioFilesREST
 from invenio_files_rest.models import Location
@@ -27,7 +25,6 @@ from invenio_jsonschemas import InvenioJSONSchemas
 from invenio_records import InvenioRecords
 
 from invenio_records_marc21 import InvenioRecordsMARC21
-from invenio_records_marc21.records import Marc21Parent
 
 
 @pytest.fixture(scope="module")
@@ -71,9 +68,3 @@ def appaccess(base_app, database):
     InvenioRecords(base_app)
     InvenioJSONSchemas(base_app)
     yield base_app
-
-
-@pytest.fixture()
-def parent(app, db):
-    """A parent record."""
-    return Marc21Parent.create({})
