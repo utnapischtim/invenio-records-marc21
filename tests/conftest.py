@@ -24,8 +24,7 @@ from flask_babelex import Babel
 from invenio_files_rest.models import Location
 
 from invenio_records_marc21 import InvenioRecordsMARC21
-from invenio_records_marc21.proxies import current_records_marc21
-from invenio_records_marc21.records import Marc21Draft
+from invenio_records_marc21.records import Marc21Draft, Marc21Parent
 from invenio_records_marc21.views import create_record_bp
 
 
@@ -63,6 +62,12 @@ def marc21_record():
         },
     }
     return marc21_record
+
+
+@pytest.fixture()
+def parent(app, db):
+    """A parent record."""
+    return Marc21Parent.create({})
 
 
 @pytest.fixture()
