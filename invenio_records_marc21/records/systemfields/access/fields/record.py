@@ -120,7 +120,7 @@ class RecordAccess:
 
     def __repr__(self):
         """Return repr(self)."""
-        protection_str = "{}/{}".format(self.protection.record, self.protection.files)
+        protection_str = "{}/{}".format(self.protection.metadata, self.protection.files)
 
         return ("<{} (protection: {}, {})>").format(
             type(self).__name__,
