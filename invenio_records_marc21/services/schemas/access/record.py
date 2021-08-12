@@ -7,7 +7,7 @@
 # Invenio-Records-Marc21 is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
-"""Marc21 record schemas."""
+"""Marc21 services record AccessSchema."""
 
 import arrow
 from flask_babelex import lazy_gettext as _
@@ -42,7 +42,7 @@ class AccessSchema(Schema):
                     field_name,
                     *AccessStatusEnum.list(),
                 ),
-                "record",
+                field_name,
             )
 
     def get_attribute(self, obj, key, default):
@@ -57,17 +57,6 @@ class AccessSchema(Schema):
     def validate_metadata_protection(self, value):
         """Validate the metadata protection value."""
         self.validate_protection_value(value, "metadata")
-
-    @validates_schema
-    def validate_embargo(self, data, **kwargs):
-        """Validate that the properties are consistent with each other."""
-        metadata = data.get("metadata", "")
-        embargo = data.get("embargo", "")
-        if AccessStatusEnum.EMBARGOED.value == metadata and not embargo:
-            raise ValidationError(
-                _("Embargo must be set if metadata is Embargoed"),
-                field_name="embargo",
-            )
 
     @validates("files")
     def validate_files_protection(self, value):
