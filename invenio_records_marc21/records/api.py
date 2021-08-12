@@ -25,6 +25,7 @@ from werkzeug.local import LocalProxy
 
 from . import models
 from .systemfields import (
+    HasDraftField,
     MarcDraftProvider,
     MarcPIDFieldContext,
     MarcRecordProvider,
@@ -88,6 +89,7 @@ class Marc21Draft(Draft):
         delete=False,
     )
     access = RecordAccessField()
+    has_draft = HasDraftField()
 
     bucket_id = ModelField(dump=False)
 
@@ -130,6 +132,7 @@ class Marc21Record(Record):
     )
 
     access = RecordAccessField()
+    has_draft = HasDraftField(Marc21Draft)
 
     bucket_id = ModelField(dump=False)
 

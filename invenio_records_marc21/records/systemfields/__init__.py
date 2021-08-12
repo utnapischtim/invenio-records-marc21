@@ -9,10 +9,12 @@
 """System fields module."""
 
 from .context import MarcPIDFieldContext
+from .has_draft import HasDraftField
 from .providers import MarcDraftProvider, MarcRecordProvider
 from .resolver import MarcResolver
 
 __all__ = (
+    "HasDraftField",
     "MarcPIDFieldContext",
     "MarcDraftProvider",
     "MarcRecordProvider",
