@@ -37,8 +37,8 @@ def marc21():
     return {"metadata": {"xml": "<record></record>"}}
 
 
-def test_create_with_service(app, marc21, identity_simple):
-
+def test_create_with_service(running_app, marc21):
+    identity_simple = running_app.identity_simple
     service = Marc21RecordService(config=Marc21RecordServiceConfig)
 
     draft = service.create(data=marc21, identity=identity_simple, access=None)
@@ -134,8 +134,8 @@ def empty_data():
         },
     ],
 )
-def test_create_with_access(app, empty_data, identity_simple, access):
-
+def test_create_with_access(running_app, empty_data, access):
+    identity_simple = running_app.identity_simple
     service = Marc21RecordService(config=Marc21RecordServiceConfig)
     draft = service.create(
         data=empty_data, identity=identity_simple, access=access["input"]

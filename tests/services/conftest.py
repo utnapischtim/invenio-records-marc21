@@ -14,6 +14,7 @@
 See https://pytest-invenio.readthedocs.io/ for documentation on which test
 fixtures are available.
 """
+from collections import namedtuple
 
 import pytest
 from flask_principal import Identity
@@ -32,6 +33,19 @@ from invenio_records_marc21.services.record import Marc21Metadata
 def create_app(instance_path):
     """Application factory fixture."""
     return create_api
+
+
+RunningApp = namedtuple("RunningApp", ["app", "service", "identity_simple"])
+
+
+@pytest.fixture()
+def running_app(app, service, identity_simple):
+    """This fixture provides an app with the typically needed db data loaded.
+
+    All of these fixtures are often needed together, so collecting them
+    under a semantic umbrella makes sense.
+    """
+    return RunningApp(app, service, identity_simple)
 
 
 @pytest.fixture()
