@@ -1,14 +1,18 @@
 # -*- coding: utf-8 -*-
 #
+# This file is part of Invenio.
+#
 # Copyright (C) 2021 Graz University of Technology.
 #
-# Invenio-Records-Marc21 is free software; you can redistribute it and/or modify it
-# under the terms of the MIT License; see LICENSE file for more details.
+# Invenio-Records-Marc21 is free software; you can redistribute it and/or
+# modify it under the terms of the MIT License; see LICENSE file for more
+# details.
 
 
 """Marc21 Record Service."""
 
-
+import arrow
+from invenio_db import db
 from invenio_drafts_resources.services.records import RecordService
 from invenio_records_resources.services.files.service import FileService
 from invenio_records_resources.services.records.results import RecordItem
@@ -19,6 +23,7 @@ from .config import (
     Marc21RecordFilesServiceConfig,
     Marc21RecordServiceConfig,
 )
+from .errors import EmbargoNotLiftedError
 from .record import Marc21Metadata
 
 
@@ -84,6 +89,47 @@ class Marc21RecordService(RecordService):
         """
         data = self._create_data(identity, data, metadata, access)
         return super().update_draft(id_, identity, data, revision_id)
+
+    def _lift_embargo_from(self, record):
+        """Lifts embargo from record or draft."""
+        if not record.access.embargo.lift():
+            raise EmbargoNotLiftedError(record["id"])
+        record.access.protection.metadata = "public"
+        record.access.protection.files = "public"
+
+    def _draft_access_field_was_modified(self, draft, record):
+        """Returns True if draft's access field was modified."""
+        return draft.get('access') == record.get('access')
+
+    def lift_embargo(self, _id, identity):
+        """Lifts embargo from the record and updates draft."""
+        # Get the record
+        record = self.record_cls.pid.resolve(_id)
+
+        # Check permissions
+        self.require_permission(identity, "lift_embargo", record=record)
+
+        lifted_embargo_from_draft = False
+        # Check if record has already a draft
+        if record.has_draft:
+            draft = self.draft_cls.pid.resolve(_id, registered_only=False)
+            # If the draft has no modifications in the access field the
+            # embargo is lifted
+            if self._draft_access_field_was_modified(draft, record):
+                # Lifts embargo from draft
+                self._lift_embargo_from(draft)
+                lifted_embargo_from_draft = True
+
+        # Lifts embargo from record
+        self._lift_embargo_from(record)
+        # Commit and index
+        record.commit()
+        if record.has_draft and lifted_embargo_from_draft:
+            draft.commit()
+        db.session.commit()
+        self.indexer.index(record)
+        if record.has_draft and lifted_embargo_from_draft:
+            self.indexer.index(draft)
 
 
 #
