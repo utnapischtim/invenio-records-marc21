@@ -9,6 +9,8 @@
 
 from __future__ import absolute_import, print_function
 
+from celery.schedules import crontab
+
 INVENIO_MARC21_BASE_TEMPLATE = "invenio_records_marc21/base.html"
 
 INVENIO_MARC21_REST_ENDPOINTS = {}
@@ -40,3 +42,14 @@ SEARCH_UI_JSTEMPLATE_RESULTS = "templates/invenio_records_marc21/results.html"
 
 INVENIO_MARC21_ENDPOINTS_ENABLED = True
 """Enable/disable automatic endpoint registration."""
+
+CELERY_BEAT_SCHEDULE = {
+    "marc21_service_embargo_lift": {
+        "task": "invenio_records_marc21.services.tasks.update_expired_embargos",
+        "schedule": crontab(
+            minute="5",
+            hour="0",
+        ),
+    },
+}
+"""Celery tasks for the module."""
