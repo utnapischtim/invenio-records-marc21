@@ -106,15 +106,13 @@ class Marc21RecordService(RecordService):
         # Get the record
         record = self.record_cls.pid.resolve(_id)
 
-        # Check permissions
         self.require_permission(identity, "lift_embargo", record=record)
 
         lifted_embargo_from_draft = False
         # Check if record has already a draft
         if record.has_draft:
             draft = self.draft_cls.pid.resolve(_id, registered_only=False)
-            # If the draft has no modifications in the access field the
-            # embargo is lifted
+
             if self._is_draft_access_field_modified(draft, record):
                 # Lifts embargo from draft
                 self._lift_embargo_from(draft)
