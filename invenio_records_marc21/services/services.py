@@ -97,9 +97,9 @@ class Marc21RecordService(RecordService):
         record.access.protection.metadata = "public"
         record.access.protection.files = "public"
 
-    def _draft_access_field_was_modified(self, draft, record):
+    def _is_draft_access_field_modified(self, draft, record):
         """Returns True if draft's access field was modified."""
-        return draft.get('access') == record.get('access')
+        return draft.get("access") == record.get("access")
 
     def lift_embargo(self, _id, identity):
         """Lifts embargo from the record and updates draft."""
@@ -115,7 +115,7 @@ class Marc21RecordService(RecordService):
             draft = self.draft_cls.pid.resolve(_id, registered_only=False)
             # If the draft has no modifications in the access field the
             # embargo is lifted
-            if self._draft_access_field_was_modified(draft, record):
+            if self._is_draft_access_field_modified(draft, record):
                 # Lifts embargo from draft
                 self._lift_embargo_from(draft)
                 lifted_embargo_from_draft = True
