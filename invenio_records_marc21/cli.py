@@ -18,6 +18,7 @@ from flask.cli import with_appcontext
 from flask_principal import Identity
 from invenio_access import any_user
 
+from .errors import error_messages
 from .proxies import current_records_marc21
 from .records.systemfields.access import AccessStatusEnum
 from .services.record import Marc21Metadata
@@ -145,11 +146,28 @@ def marc21():
 def demo(number, file, metadata_only):
     """Create number of fake records for demo purposes."""
     click.secho("Creating demo records...", fg="blue")
+    try:
+        for _ in range(number):
+            if metadata_only:
+                create_fake_metadata(file)
+            else:
+                create_fake_record(file)
 
-    for _ in range(number):
-        if metadata_only:
-            create_fake_metadata(file)
-        else:
-            create_fake_record(file)
+        click.secho("Created records!", fg="green")
+    except Exception as e:
+        _create_errormessage(e)
 
-    click.secho("Created records!", fg="green")
+
+def _create_errormessage(e: Exception):
+    """Create an error message for CLI."""
+    message = ""
+
+    errors = error_messages.get(type(e).__name__)
+    for error in errors:
+        if error.get("args") in e.args[0]:
+            message = error.get("message")
+            break
+    if message:
+        click.secho(message, fg="red")
+    else:
+        click.secho("Error:\n" + str(e), fg="red")
