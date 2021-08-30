@@ -19,13 +19,10 @@ from datetime import timedelta
 
 import arrow
 import pytest
-from flask import Flask
-from flask_babelex import Babel
+from invenio_app.factory import create_api
 from invenio_files_rest.models import Location
 
-from invenio_records_marc21 import InvenioRecordsMARC21
 from invenio_records_marc21.records import Marc21Draft, Marc21Parent
-from invenio_records_marc21.views import create_record_bp
 
 
 @pytest.fixture()
@@ -38,7 +35,9 @@ def embargoed_record():
             "status": "embargoed",
             "embargo": {
                 "active": True,
-                "until": (arrow.utcnow().datetime + timedelta(days=2)).strftime("%Y-%m-%d"),
+                "until": (arrow.utcnow().datetime + timedelta(days=2)).strftime(
+                    "%Y-%m-%d"
+                ),
                 "reason": None,
             },
         },
@@ -121,13 +120,4 @@ def app(base_app, database):
 @pytest.fixture(scope="module")
 def create_app(instance_path):
     """Application factory fixture."""
-
-    def factory(**config):
-        app = Flask("testapp", instance_path=instance_path)
-        app.config.update(**config)
-        Babel(app)
-        InvenioRecordsMARC21(app)
-        create_record_bp(app)
-        return app
-
-    return factory
+    return create_api
