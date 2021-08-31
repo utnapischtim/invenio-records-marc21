@@ -7,6 +7,7 @@
 
 
 """Command-line tools for demo module."""
+
 import json
 import random
 from datetime import timedelta
@@ -18,6 +19,7 @@ from flask.cli import with_appcontext
 from flask_principal import Identity
 from invenio_access import any_user
 
+from .errors import log_exceptions
 from .proxies import current_records_marc21
 from .records.systemfields.access import AccessStatusEnum
 from .services.record import Marc21Metadata
@@ -142,10 +144,10 @@ def marc21():
     help="Provided metadata only in file",
 )
 @with_appcontext
+@log_exceptions
 def demo(number, file, metadata_only):
     """Create number of fake records for demo purposes."""
     click.secho("Creating demo records...", fg="blue")
-
     for _ in range(number):
         if metadata_only:
             create_fake_metadata(file)
