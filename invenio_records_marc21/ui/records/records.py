@@ -11,7 +11,7 @@
 from flask import abort, current_app, render_template
 from invenio_base.utils import obj_or_import_string
 
-from ...resources.serializers.ui import UIJSONSerializer
+from ...resources.serializers.ui import Marc21UIJSONSerializer
 from .decorators import pass_record, user_permissions
 
 
@@ -25,7 +25,7 @@ def record_detail(record=None, files=None, pid_value=None, permissions=None):
     files_dict = None if files is None else files.to_dict()
     return render_template(
         "invenio_records_marc21/record.html",
-        record=UIJSONSerializer().serialize_object_to_dict(record.to_dict()),
+        record=Marc21UIJSONSerializer().dump_one(record.to_dict()),
         pid=pid_value,
         files=files_dict,
         permissions=permissions,
@@ -41,18 +41,21 @@ def record_export(record=None, export_format=None, pid_value=None, permissions=N
     if exporter is None:
         abort(404)
 
-    serializer = obj_or_import_string(exporter["serializer"])(
-        options={
+    options = current_app.config.get(
+        "INVENIO_MARC21_RECORD_EXPORTER_OPTIONS",
+        {
             "indent": 2,
             "sort_keys": True,
-        }
+        },
     )
+
+    serializer = obj_or_import_string(exporter["serializer"])(options=options)
     exported_record = serializer.serialize_object(record.to_dict())
 
     return render_template(
         "invenio_records_marc21/records/export.html",
         export_format=exporter.get("name", export_format),
         exported_record=exported_record,
-        record=UIJSONSerializer().serialize_object_to_dict(record.to_dict()),
+        record=Marc21UIJSONSerializer().dump_one(record.to_dict()),
         permissions=permissions,
     )
