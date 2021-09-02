@@ -63,7 +63,7 @@ class UIAccessSchema:
     def message_class(self):
         """UI message class name."""
         return {
-            AccessStatusEnum.PUBLIC: "",
+            AccessStatusEnum.PUBLIC: "teal",
             AccessStatusEnum.EMBARGOED: "warning",
             AccessStatusEnum.RESTRICTED: "negative",
         }.get(self.access_status)
