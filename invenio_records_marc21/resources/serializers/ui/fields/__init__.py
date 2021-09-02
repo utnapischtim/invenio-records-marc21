@@ -9,13 +9,12 @@
 # details.
 
 
-"""Record response serializers."""
+"""Record UI response fields."""
 
-from .schema import Marc21UISchema
-from .serializers import Marc21UIJSONSerializer, Marc21UIXMLSerializer
+
+from .access import AccessField, UIAccessSchema
 
 __all__ = (
-    "Marc21UISchema",
-    "Marc21UIJSONSerializer",
-    "Marc21UIXMLSerializer",
+    "AccessField",
+    "UIAccessSchema",
 )
