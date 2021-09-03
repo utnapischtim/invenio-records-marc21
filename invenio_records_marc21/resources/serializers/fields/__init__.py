@@ -9,13 +9,8 @@
 # details.
 
 
-"""Record response serializers."""
+"""Record response fields."""
 
-from .schema import Marc21UISchema
-from .serializers import Marc21UIJSONSerializer, Marc21UIXMLSerializer
+from .metadata import MetadataSchema
 
-__all__ = (
-    "Marc21UISchema",
-    "Marc21UIJSONSerializer",
-    "Marc21UIXMLSerializer",
-)
+__all__ = ("MetadataSchema",)

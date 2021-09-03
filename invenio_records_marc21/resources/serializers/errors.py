@@ -9,13 +9,12 @@
 # details.
 
 
-"""Record response serializers."""
+"""Errors for serializers."""
 
-from .schema import Marc21UISchema
-from .serializers import Marc21UIJSONSerializer, Marc21UIXMLSerializer
 
-__all__ = (
-    "Marc21UISchema",
-    "Marc21UIJSONSerializer",
-    "Marc21UIXMLSerializer",
-)
+class SerializerError(Exception):
+    """Base class for serializer errors."""
+
+
+class Marc21XMLConvertError(SerializerError):
+    """Error thrown when a marc21 xml could not be converted."""

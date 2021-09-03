@@ -13,7 +13,7 @@
 
 {%- set metadata = record.metadata %}
 
-{%- set marcrecord = record.metadata.json %}
+{%- set marcrecord = record.ui.metadata.json %}
 
 {%- block page_body %}
 
@@ -34,11 +34,18 @@
               <span class="label text-muted"> | Version {{ record.revision_id }}</span>
               {% endif %}
               </div>
-            </div>
-            <div class="right floated right aligned column">
-              <div class="twelve wide column">
-                <span class="ui label small grey">Access Rights
-              </span>
+            </div><div class="panel-spacing">
+              <div class="right floated right aligned column">
+                <div class="ui accordion panel {{ record.ui.access.message_class }} message">
+                  <div class="title">
+                    <i class="ui {{ record.ui.access.icon }} icon"></i>{{ record.ui.access.title }}
+                  </div>
+                  <div class="content">{{ record.ui.access.description }}</p>
+                    {% if record.access.embargo.reason %}
+                      <p>{{_("Reason")}}: {{record.access.embargo.reason}}</p>
+                    {% endif%}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -46,7 +53,7 @@
         {%- endblock record_header -%}
 
         {%- block record_title -%}
-          <h1>{{ record.metadata.json.title_statement.title | sanitize_title() }}</h1>
+          <h1>{{ marcrecord.title_statement.title | safe() | sanitize_title() }}</h1>
         {%- endblock record_title -%}
         {%- block record_content -%}
           <div class="top-padded"></div>

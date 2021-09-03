@@ -1,9 +1,13 @@
 # -*- coding: utf-8 -*-
 #
+# This file is part of Invenio.
+#
 # Copyright (C) 2021 Graz University of Technology.
 #
-# Invenio-Records-Marc21 is free software; you can redistribute it and/or modify it
-# under the terms of the MIT License; see LICENSE file for more details.
+# Invenio-Records-Marc21 is free software; you can redistribute it and/or
+# modify it under the terms of the MIT License; see LICENSE file for more
+# details.
+
 
 """Default configuration."""
 
@@ -18,21 +22,34 @@ INVENIO_MARC21_RECORD_EXPORTERS = {
     "json": {
         "name": "JSON",
         "serializer": (
-            "invenio_records_marc21.resources.serializers.ui:" "UIJSONSerializer"
+            "invenio_records_marc21.resources.serializers:" "Marc21JSONSerializer"
         ),
-    }
+    },
+    "marcxml": {
+        "name": "MARCXML",
+        "serializer": (
+            "invenio_records_marc21.resources.serializers:" "Marc21XMLSerializer"
+        ),
+    },
 }
+"""Marc21 Record export serializers."""
+
+INVENIO_MARC21_RECORD_EXPORTER_OPTIONS = {
+    "indent": 4,
+    "sort_keys": True,
+}
+"""Marc21 Record export options."""
 
 INVENIO_MARC21_UI_ENDPOINTS = {
     "record-detail": "/<pid_value>",
     "record-export": "/<pid_value>/export/<export_format>",
 }
+"""Marc21 Record ui endpoints."""
 
 INVENIO_MARC21_UI_THEME_ENDPOINTS = {
     "index": "/",
     "record-search": "/search",
 }
-
 """Records UI for invenio-records-marc21."""
 
 SEARCH_UI_JSTEMPLATE_RESULTS = "templates/invenio_records_marc21/results.html"

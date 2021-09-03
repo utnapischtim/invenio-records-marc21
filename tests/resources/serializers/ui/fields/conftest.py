@@ -9,13 +9,8 @@
 # details.
 
 
-"""Record response serializers."""
+"""Pytest configuration.
 
-from .schema import Marc21UISchema
-from .serializers import Marc21UIJSONSerializer, Marc21UIXMLSerializer
-
-__all__ = (
-    "Marc21UISchema",
-    "Marc21UIJSONSerializer",
-    "Marc21UIXMLSerializer",
-)
+See https://pytest-invenio.readthedocs.io/ for documentation on which test
+fixtures are available.
+"""

@@ -105,6 +105,12 @@ class Marc21RecordServiceConfig(RecordServiceConfig):
             if_=RecordLink("{+ui}/marc21/{id}"),
             else_=RecordLink("{+ui}/uploads/{id}"),
         ),
+        "files": ConditionalLink(
+            cond=is_record,
+            if_=RecordLink("{+api}/marc21/{id}/files"),
+            else_=RecordLink("{+api}/marc21/{id}/draft/files"),
+        ),
+        "access_links": RecordLink("{+api}/marc21/{id}/access/links"),
     }
 
 

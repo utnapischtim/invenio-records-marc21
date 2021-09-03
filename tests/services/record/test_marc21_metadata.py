@@ -7,18 +7,9 @@
 # details.
 
 
-"""Pytest configuration.
-
-See https://pytest-invenio.readthedocs.io/ for documentation on which test
-fixtures are available.
-"""
-
-from io import StringIO
-from os import linesep
-from os.path import dirname, join
+"""Tests for record MetadataSchema."""
 
 import pytest
-from lxml import etree
 
 from invenio_records_marc21.services.record import Marc21Metadata
 from invenio_records_marc21.services.record.fields import (

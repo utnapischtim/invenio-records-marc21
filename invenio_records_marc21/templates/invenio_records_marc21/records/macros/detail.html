@@ -56,8 +56,7 @@
 
 
 {% macro show_publisher(publishers) %}
-  {% for publisher in publishers %}
-  {% for key, value in publisher.items() %}
+  {% for key, value in publishers.items() %}
     {% if key == "sequence_of_statements" %}
       {% set key = "Sequence" %}
     {% elif key == "name_of_producer_publisher_distributor_manufacturer"%}
@@ -69,13 +68,11 @@
     {% endif %}
     {{ show_detail(key, value) }}
   {% endfor %}
-  {% endfor %}
 {%- endmacro %}
 
 
 {% macro show_pages(pages) %}
-  {% for publisher in publishers %}
-  {% for key, value in publisher.items() %}
+  {% for key, value in publishers.items() %}
     {% if key == "sequence_of_statements" %}
       {% set key = "Sequence" %}
     {% elif key == "name_of_producer_publisher_distributor_manufacturer"%}
@@ -84,6 +81,5 @@
       {% set key = "Place of publication" %}
     {% endif %}
     {{ show_detail(key, value) }}
-  {% endfor %}
   {% endfor %}
 {%- endmacro %}

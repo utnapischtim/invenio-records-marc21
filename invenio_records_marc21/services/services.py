@@ -58,7 +58,7 @@ class Marc21RecordService(RecordService):
 
         :param identity: Identity of user creating the record.
         :param dict data: Input data according to the data schema.
-        :param Metadata metadata: Input data according to the metadata schema.
+        :param Marc21Metadata metadata: Input data according to the metadata schema.
         :param links_config: Links configuration.
         :param dict access: provide access additional information
         """
@@ -78,7 +78,7 @@ class Marc21RecordService(RecordService):
 
         :param identity: Identity of user creating the record.
         :param dict data: Input data according to the data schema.
-        :param Metadata metadata: Input data according to the metadata schema.
+        :param Marc21Metadata metadata: Input data according to the metadata schema.
         :param links_config: Links configuration.
         :param dict access: provide access additional information
         """

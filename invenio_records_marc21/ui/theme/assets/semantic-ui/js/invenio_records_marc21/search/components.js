@@ -38,11 +38,16 @@ export const Marc21RecordResultsListItem = ({ result, index }) => {
     "ui.updated",
     "No update date found."
   );
+  const access = _get(result, ["ui", "access"], []);
+  const access_id = _get(access, "id", "public");
+  const access_status = _get(access, "title", "Public");
+  const access_icon = _get(access, "icon", "unlock");
+
   const metadata = _get(result, ["ui", "metadata", "json"], []);
-  const description = _get(metadata, ["summary", "0", "summary"], "No description");
+  const description = _get(metadata, ["summary","summary"], "No description");
   const subjects = _get(metadata, "subject_added_entry_topical_term", []);
   
-  const publication = _get(metadata, ["production_publication_distribution_manufacture_and_copyright_notice", "0"], []);
+  const publication = _get(metadata, ["production_publication_distribution_manufacture_and_copyright_notice"], []);
   const creators = _get(publication, "name_of_producer_publisher_distributor_manufacturer", []);
 
   const title = _get(metadata, ["title_statement", "title"], "No title");
@@ -57,6 +62,12 @@ export const Marc21RecordResultsListItem = ({ result, index }) => {
           <div>
             <Label size="tiny" color="blue">
               {publicationDate} {version ? `(${version})` : null}
+            </Label>
+            <Label size="tiny" className={`access-status ${access_id}`}>
+            {access_icon && (
+              <i className={`icon ${access_icon}`}></i>
+            )}
+            {access_status}
             </Label>
             <Button basic floated="right">
               <Icon name="eye" />

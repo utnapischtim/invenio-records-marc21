@@ -8,29 +8,28 @@
 
 """Resources configuration."""
 import marshmallow as ma
-from flask_resources import (
-    JSONDeserializer,
-    JSONSerializer,
-    RequestBodyParser,
-    ResponseHandler,
-)
-from flask_resources.serializers import JSONSerializer
+from flask_resources import JSONDeserializer, RequestBodyParser, ResponseHandler
 from invenio_drafts_resources.resources import RecordResourceConfig
 from invenio_records_resources.resources.files import FileResourceConfig
 from invenio_records_resources.resources.records.args import SearchRequestArgsSchema
 
-from .serializers.ui import UIJSONSerializer
+from .serializers import Marc21JSONSerializer, Marc21XMLSerializer
+from .serializers.ui import Marc21UIJSONSerializer, Marc21UIXMLSerializer
 
 record_serializer = {
-    "application/json": ResponseHandler(UIJSONSerializer()),
-    "application/vnd.inveniomarc21.v1+json": ResponseHandler(UIJSONSerializer()),
+    "application/json": ResponseHandler(Marc21JSONSerializer()),
+    "application/marcxml": ResponseHandler(Marc21XMLSerializer()),
+    "application/vnd.inveniomarc21.v1+json": ResponseHandler(Marc21UIJSONSerializer()),
+    "application/vnd.inveniomarc21.v1+marcxml": ResponseHandler(
+        Marc21UIXMLSerializer()
+    ),
 }
 
 url_prefix = "/marc21"
 
 record_ui_routes = {
-    "search": f"{url_prefix}",
-    "list": f"{url_prefix}/list",
+    "search": f"{url_prefix}/search",
+    "list": f"{url_prefix}",
     "item": f"{url_prefix}/<pid_value>",
     "item-versions": f"{url_prefix}/<pid_value>/versions",
     "item-latest": f"{url_prefix}/<pid_value>/versions/latest",
@@ -107,4 +106,4 @@ class Marc21ParentRecordLinksResourceConfig(RecordResourceConfig):
 
     request_view_args = {"pid_value": ma.fields.Str(), "link_id": ma.fields.Str()}
 
-    response_handlers = {"application/json": ResponseHandler(JSONSerializer())}
+    response_handlers = {"application/json": ResponseHandler(Marc21JSONSerializer())}

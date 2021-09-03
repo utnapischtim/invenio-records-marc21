@@ -1,100 +1,33 @@
 # -*- coding: utf-8 -*-
 #
+# This file is part of Invenio.
+#
 # Copyright (C) 2021 Graz University of Technology.
 #
-# Invenio-Records-Marc21 is free software; you can redistribute it and/or modify it
-# under the terms of the MIT License; see LICENSE file for more details.
+# Invenio-Records-Marc21 is free software; you can redistribute it and/or
+# modify it under the terms of the MIT License; see LICENSE file for more
+# details.
 
-"""Schema ui."""
-from copy import deepcopy
+"""Schema for marc21 ui records."""
+
 from functools import partial
 
-from dojson.contrib.to_marc21 import to_marc21
-from dojson.contrib.to_marc21.utils import dumps
 from flask_babelex import get_locale
-from marshmallow import INCLUDE, Schema, missing, pre_dump
-from marshmallow.fields import Dict, Method, Nested, Str
 from marshmallow_utils.fields import FormatDate as BaseFormatDatetime
+from marshmallow_utils.fields import SanitizedUnicode
+
+from ..schema import Marc21Schema
+from .fields import AccessField
 
 FormatDatetime = partial(BaseFormatDatetime, locale=get_locale)
 
 
-#
-# Object schema
-#
-class AccessRightSchema(Schema):
-    """Access right vocabulary."""
-
-
-#
-# Object schema
-#
-class MetadataSchema(Schema):
-    """Access right vocabulary."""
-
-    xml = Str(required=False)
-    json = Dict(required=True)
-
-    @pre_dump
-    def convert_xml(self, data, **kwargs):
-        """Convert json into marc21 xml."""
-        if "json" in data:
-            data["xml"] = dumps(to_marc21.do(data["json"]))
-        return data
-
-
-class UIObjectSchema(Schema):
+class Marc21UISchema(Marc21Schema):
     """Schema for dumping extra information for the UI."""
 
-    metadata = Nested(MetadataSchema, attribute="metadata")
-
-    access_right = Nested(AccessRightSchema, attribute="access")
+    id = SanitizedUnicode(data_key="id", attribute="id")
+    access = AccessField(attribute="access")
 
     created = FormatDatetime(attribute="created", format="long")
 
     updated = FormatDatetime(attribute="updated", format="long")
-
-
-#
-# List schema
-class UIListSchema(Schema):
-    """Schema for dumping extra information in the UI."""
-
-    class Meta:
-        """."""
-
-        unknown = INCLUDE
-
-    hits = Method("get_hits")
-    aggregations = Method("get_aggs")
-
-    def get_hits(self, obj_list):
-        """Apply hits transformation."""
-        for obj in obj_list["hits"]["hits"]:
-            obj[self.context["object_key"]] = self.context["object_schema_cls"]().dump(
-                obj
-            )
-        return obj_list["hits"]
-
-    def get_aggs(self, obj_list):
-        """Apply aggregations transformation."""
-        aggs = obj_list.get("aggregations")
-        if not aggs:
-            return missing
-
-        return aggs
-
-
-def apply_labels(vocab, buckets):
-    """Inject labels in the aggregation buckets.
-
-    :params agg: Current aggregation object.
-    :params vocab: The vocabulary
-    """
-    for bucket in buckets:
-        bucket["label"] = vocab.get_title_by_dict(bucket["key"])
-
-        # Recursively apply to subbuckets
-        for data in bucket.values():
-            if isinstance(data, dict) and "buckets" in data:
-                apply_labels(vocab, data["buckets"])

@@ -8,7 +8,7 @@
 
 {%- from "invenio_records_marc21/records/macros/detail.html" import show_subtitles, show_detail, show_publisher %}
 
-{% set details = metadata.json %}
+{% set details = marcrecord %}
 <h4 class="ui header">{{ _('Details')}}</h4>
 <hr class="thin-line">
 <div class="top-bottom-padded">  
