@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 #
+# This file is part of Invenio.
+#
 # Copyright (C) 2021 Graz University of Technology.
 #
-# Invenio-Records-Marc21 is free software; you can redistribute it and/or modify it
-# under the terms of the MIT License; see LICENSE file for more details.
+# Invenio-Records-Marc21 is free software; you can redistribute it and/or
+# modify it under the terms of the MIT License; see LICENSE file for more
+# details.
 
 
 """Permissions for Invenio Marc21 Records."""
@@ -33,6 +36,7 @@ class Marc21RecordPermissionPolicy(RecordPermissionPolicy):
     can_update = [AnyUser()]
     can_new_version = [AnyUser()]
     can_edit = [AnyUser()]
+    can_lift_embargo = [AnyUser()]
 
     # Draft permissions
     can_read_draft = [AnyUser()]

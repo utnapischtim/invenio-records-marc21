@@ -7,40 +7,27 @@
 # Invenio-Records-Marc21 is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
-"""Service tests.
+"""Tests for marc21 Service."""
 
-Test to add:
-- Read a tombstone page
-- Read with missing permissions
-- Read with missing pid
-"""
 
-import time
-from collections import namedtuple
+from datetime import datetime
+from unittest import mock
 
+import arrow
 import pytest
-from dojson.contrib.marc21.utils import create_record
+from dateutil import tz
 from dojson.contrib.to_marc21 import to_marc21
 from invenio_pidstore.errors import PIDDoesNotExistError
 from invenio_pidstore.models import PIDStatus
 from sqlalchemy.orm.exc import NoResultFound
 
-RunningApp = namedtuple("RunningApp", ["app", "service", "identity_simple"])
-
-
-@pytest.fixture()
-def running_app(app, service, identity_simple):
-    """This fixture provides an app with the typically needed db data loaded.
-
-    All of these fixtures are often needed together, so collecting them
-    under a semantic umbrella makes sense.
-    """
-    return RunningApp(app, service, identity_simple)
-
+from invenio_records_marc21.proxies import current_records_marc21
+from invenio_records_marc21.services.errors import EmbargoNotLiftedError
 
 #
 # Operations tests
 #
+
 
 def test_create_draft(running_app, metadata):
     """Test draft creation of a non-existing record."""
@@ -157,7 +144,6 @@ def test_update_draft(running_app, metadata, metadata2):
     )
 
     # Check the updates where savedif "json" in data:
-
     read_draft = service.read_draft(id_=draft.id, identity=identity_simple)
 
     assert draft.id == update_draft.id
@@ -194,3 +180,125 @@ def test_create_publish_new_version(running_app, metadata):
     # files attribute in record causes at create change the revision_id twice
     assert record_2._record.revision_id == 1
     assert record_2["id"] != record["id"]
+
+
+# Embargo lift
+#
+@mock.patch('arrow.utcnow')
+def test_embargo_lift_without_draft(
+        mock_arrow, running_app, marc21_record):
+    identity_simple = running_app.identity_simple
+    service = current_records_marc21.records_service
+    # Add embargo to record
+    marc21_record["access"]["files"] = 'restricted'
+    marc21_record["access"]["status"] = 'embargoed'
+    marc21_record["access"]["embargo"] = dict(
+        active=True, until='2020-06-01', reason=None
+    )
+    # We need to set the current date in the past to pass the validations
+    mock_arrow.return_value = arrow.get(datetime(1954, 9, 29), tz.gettz('UTC'))
+    draft = service.create(identity_simple, marc21_record)
+    record = service.publish(id_=draft.id, identity=identity_simple)
+    # Recover current date
+    mock_arrow.return_value = arrow.get(datetime.utcnow())
+
+    service.lift_embargo(_id=record['id'], identity=identity_simple)
+    record_lifted = service.record_cls.pid.resolve(record['id'])
+
+    assert not record_lifted.access.embargo.active
+    assert record_lifted.access.protection.files == 'public'
+    assert record_lifted.access.protection.metadata == 'public'
+    assert record_lifted.access.status.value == 'public'
+
+
+@mock.patch('arrow.utcnow')
+def test_embargo_lift_with_draft(
+        mock_arrow, running_app, marc21_record):
+    identity_simple = running_app.identity_simple
+    service = current_records_marc21.records_service
+    # Add embargo to record
+    marc21_record["access"]["files"] = 'restricted'
+    marc21_record["access"]["status"] = 'embargoed'
+    marc21_record["access"]["embargo"] = dict(
+        active=True, until='2020-06-01', reason=None
+    )
+
+    mock_arrow.return_value = arrow.get(datetime(1954, 9, 29), tz.gettz('UTC'))
+    draft = service.create(identity_simple, marc21_record)
+    record = service.publish(id_=draft.id, identity=identity_simple)
+    # This draft simulates an existing one while lifting the record
+    ongoing_draft = service.edit(id_=draft.id, identity=identity_simple)
+
+    mock_arrow.return_value = arrow.get(datetime.utcnow())
+
+    service.lift_embargo(_id=record['id'], identity=identity_simple)
+    record_lifted = service.record_cls.pid.resolve(record['id'])
+    draft_lifted = service.draft_cls.pid.resolve(ongoing_draft['id'])
+
+    assert record_lifted.access.embargo.active is False
+    assert record_lifted.access.protection.files == 'public'
+    assert record_lifted.access.protection.metadata == 'public'
+
+    assert draft_lifted.access.embargo.active is False
+    assert draft_lifted.access.protection.files == 'public'
+    assert draft_lifted.access.protection.metadata == 'public'
+
+
+@mock.patch('arrow.utcnow')
+def test_embargo_lift_with_updated_draft(
+        mock_arrow, running_app, marc21_record):
+    identity_simple = running_app.identity_simple
+    service = current_records_marc21.records_service
+    # Add embargo to record
+    marc21_record["access"]["files"] = 'restricted'
+    marc21_record["access"]["status"] = 'embargoed'
+    marc21_record["access"]["embargo"] = dict(
+        active=True, until='2020-06-01', reason=None
+    )
+    # We need to set the current date in the past to pass the validations
+    mock_arrow.return_value = arrow.get(datetime(1954, 9, 29), tz.gettz('UTC'))
+    draft = service.create(identity_simple, marc21_record)
+    record = service.publish(id_=draft.id, identity=identity_simple)
+    # This draft simulates an existing one while lifting the record
+    service.edit(id_=draft.id, identity=identity_simple)
+    # Recover current date
+    mock_arrow.return_value = arrow.get(datetime.utcnow())
+
+    # Change record's title and access field to be restricted
+    marc21_record["metadata"]["title"] = 'Record modified by the user'
+    marc21_record["access"]["status"] = 'restricted'
+    marc21_record["access"]["embargo"] = dict(
+        active=False, until=None, reason=None
+    )
+    # Update the ongoing draft with the new data simulating the user's input
+    ongoing_draft = service.update_draft(
+        id_=draft.id, identity=identity_simple, data=marc21_record)
+
+    service.lift_embargo(_id=record['id'], identity=identity_simple)
+    record_lifted = service.record_cls.pid.resolve(record['id'])
+    draft_lifted = service.draft_cls.pid.resolve(ongoing_draft['id'])
+
+    assert record_lifted.access.embargo.active is False
+    assert record_lifted.access.protection.files == 'public'
+    assert record_lifted.access.protection.metadata == 'public'
+
+    assert draft_lifted.access.embargo.active is False
+    assert draft_lifted.access.protection.files == 'restricted'
+    assert draft_lifted.access.protection.metadata == 'public'
+
+
+def test_embargo_lift_with_error(running_app, marc21_record):
+    identity_simple = running_app.identity_simple
+    service = current_records_marc21.records_service
+    # Add embargo to record
+    marc21_record["access"]["files"] = 'restricted'
+    marc21_record["access"]["status"] = 'embargoed'
+    marc21_record["access"]["embargo"] = dict(
+        active=True, until='3220-06-01', reason=None
+    )
+    draft = service.create(identity_simple, marc21_record)
+    record = service.publish(id_=draft.id, identity=identity_simple)
+
+    # Record should not be lifted since it didn't expire (until 3220)
+    with pytest.raises(EmbargoNotLiftedError):
+        service.lift_embargo(_id=record['id'], identity=identity_simple)

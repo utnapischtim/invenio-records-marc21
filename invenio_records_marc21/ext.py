@@ -72,6 +72,11 @@ class InvenioRecordsMARC21(object):
                 app.config.setdefault(k, getattr(config, k))
             elif k == "SEARCH_UI_JSTEMPLATE_RESULTS":
                 app.config["SEARCH_UI_JSTEMPLATE_RESULTS"] = getattr(config, k)
+            elif k == "CELERY_BEAT_SCHEDULE":
+                if "CELERY_BEAT_SCHEDULE" in app.config:
+                    app.config["CELERY_BEAT_SCHEDULE"].update(getattr(config, k))
+                else:
+                    app.config.setdefault(k, getattr(config, k))
             else:
                 for n in [
                     "INVENIO_MARC21_REST_ENDPOINTS",
