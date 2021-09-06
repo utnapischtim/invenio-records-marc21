@@ -33,13 +33,25 @@ def service():
     return current_records_marc21.records_service
 
 
-def pass_record(f):
-    """Decorate a view to pass a record using the record service."""
+def pass_record_or_draft(f):
+    """Decorate to retrieve the record or draft using the record service."""
 
     @wraps(f)
     def view(**kwargs):
         pid_value = kwargs.get("pid_value")
-        record = service().read(id_=pid_value, identity=g.identity)
+        is_preview = kwargs.get("is_preview")
+
+        def get_record():
+            """Retrieve record."""
+            return service().read(id_=pid_value, identity=g.identity)
+
+        if is_preview:
+            try:
+                record = service().read_draft(id_=pid_value, identity=g.identity)
+            except NoResultFound:
+                record = get_record()
+        else:
+            record = get_record()
         kwargs["record"] = record
         return f(**kwargs)
 

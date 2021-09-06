@@ -12,14 +12,13 @@ from flask import abort, current_app, render_template
 from invenio_base.utils import obj_or_import_string
 
 from ...resources.serializers.ui import Marc21UIJSONSerializer
-from .decorators import pass_record, user_permissions
+from .decorators import pass_record_or_draft, user_permissions
 
 
 #
 # Views
 #
-@pass_record
-@user_permissions(actions=["update_draft"])
+@pass_record_or_draft
 def record_detail(record=None, files=None, pid_value=None, permissions=None):
     """Record detail page (aka landing page)."""
     files_dict = None if files is None else files.to_dict()
@@ -32,7 +31,7 @@ def record_detail(record=None, files=None, pid_value=None, permissions=None):
     )
 
 
-@pass_record
+@pass_record_or_draft
 def record_export(record=None, export_format=None, pid_value=None, permissions=None):
     """Export marc21 record page view."""
     exporter = current_app.config.get("INVENIO_MARC21_RECORD_EXPORTERS", {}).get(
