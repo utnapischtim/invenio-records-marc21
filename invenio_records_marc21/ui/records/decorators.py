@@ -14,6 +14,7 @@ from functools import wraps
 
 from flask import g
 from invenio_records_resources.services.errors import PermissionDeniedError
+from sqlalchemy.orm.exc import NoResultFound
 
 from ...proxies import current_records_marc21
 
@@ -26,6 +27,16 @@ def links_config():
 def draft_links_config():
     """Get the drafts links config."""
     return current_records_marc21.record_resource.config.draft_links_config
+
+
+def files_service():
+    """Get the record files service."""
+    return current_records_marc21.records_service.files
+
+
+def draft_files_service():
+    """Get the record files service."""
+    return current_records_marc21.records_service.draft_files
 
 
 def service():
@@ -58,15 +69,33 @@ def pass_record_or_draft(f):
     return view
 
 
-def pass_draft(f):
-    """Decorator to retrieve the draft using the record service."""
+def pass_record_files(f):
+    """Decorate a view to pass a record's files using the files service."""
 
     @wraps(f)
     def view(**kwargs):
-        pid_value = kwargs.get("pid_value")
-        draft = service().read_draft(id_=pid_value, identity=g.identity)
-        draft._record.relations.dereference()
-        kwargs["draft"] = draft
+        is_preview = kwargs.get("is_preview")
+
+        def list_record_files():
+            """List record files."""
+            return files_service().list_files(id_=pid_value, identity=g.identity)
+
+        try:
+            pid_value = kwargs.get("pid_value")
+            if is_preview:
+                try:
+                    files = draft_files_service().list_files(
+                        id_=pid_value, identity=g.identity
+                    )
+                except NoResultFound:
+                    files = list_record_files()
+            else:
+                files = list_record_files()
+            kwargs["files"] = files
+
+        except PermissionDeniedError:
+            kwargs["files"] = None
+
         return f(**kwargs)
 
     return view

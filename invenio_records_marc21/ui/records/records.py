@@ -12,13 +12,14 @@ from flask import abort, current_app, render_template
 from invenio_base.utils import obj_or_import_string
 
 from ...resources.serializers.ui import Marc21UIJSONSerializer
-from .decorators import pass_record_or_draft, user_permissions
+from .decorators import pass_record_files, pass_record_or_draft, user_permissions
 
 
 #
 # Views
 #
 @pass_record_or_draft
+@pass_record_files
 def record_detail(record=None, files=None, pid_value=None, permissions=None):
     """Record detail page (aka landing page)."""
     files_dict = None if files is None else files.to_dict()
