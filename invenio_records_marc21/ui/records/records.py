@@ -54,6 +54,7 @@ def record_export(record=None, export_format=None, pid_value=None, permissions=N
 
     return render_template(
         "invenio_records_marc21/records/export.html",
+        pid_value=pid_value,
         export_format=exporter.get("name", export_format),
         exported_record=exported_record,
         record=Marc21UIJSONSerializer().dump_one(record.to_dict()),
