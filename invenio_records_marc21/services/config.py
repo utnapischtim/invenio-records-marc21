@@ -22,6 +22,7 @@ from invenio_records_resources.services import (
     pagination_links,
 )
 from invenio_records_resources.services.files.config import FileServiceConfig
+from invenio_records_resources.services.files.links import FileLink
 from invenio_records_resources.services.records.facets import TermsFacet
 from invenio_records_resources.services.records.links import RecordLink
 
@@ -117,14 +118,39 @@ class Marc21RecordServiceConfig(RecordServiceConfig):
 #
 # Record files
 #
-class Marc21RecordFilesServiceConfig(Marc21RecordServiceConfig, FileServiceConfig):
+class Marc21RecordFilesServiceConfig(FileServiceConfig):
     """Marc21 record files service configuration."""
+
+    record_cls = Marc21Record
+    permission_policy_cls = Marc21RecordPermissionPolicy
+    permission_action_prefix = ""
+
+    file_links_list = {
+        "self": RecordLink("{+api}/marc21/{id}/files"),
+    }
+
+    file_links_item = {
+        "self": FileLink("{+api}/marc21/{id}/files/{key}"),
+        "content": FileLink("{+api}/marc21/{id}/files/{key}/content"),
+    }
 
 
 #
 # Draft files
 #
-class Marc21DraftFilesServiceConfig(Marc21RecordServiceConfig, FileServiceConfig):
+class Marc21DraftFilesServiceConfig(FileServiceConfig):
     """Marc21 draft files service configuration."""
 
     record_cls = Marc21Draft
+    permission_policy_cls = Marc21RecordPermissionPolicy
+    permission_action_prefix = "draft_"
+
+    file_links_list = {
+        "self": RecordLink("{+api}/marc21/draft/{id}/files"),
+    }
+
+    file_links_item = {
+        "self": FileLink("{+api}/marc21/{id}/draft/files/{key}"),
+        "content": FileLink("{+api}/marc21/{id}/draft/files/{key}/content"),
+        "commit": FileLink("{+api}/marc21/{id}/draft/files/{key}/commit"),
+    }

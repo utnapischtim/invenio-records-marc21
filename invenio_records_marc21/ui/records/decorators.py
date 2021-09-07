@@ -14,6 +14,7 @@ from functools import wraps
 
 from flask import g
 from invenio_records_resources.services.errors import PermissionDeniedError
+from sqlalchemy.orm.exc import NoResultFound
 
 from ...proxies import current_records_marc21
 
@@ -28,33 +29,73 @@ def draft_links_config():
     return current_records_marc21.record_resource.config.draft_links_config
 
 
+def files_service():
+    """Get the record files service."""
+    return current_records_marc21.records_service.files
+
+
+def draft_files_service():
+    """Get the record files service."""
+    return current_records_marc21.records_service.draft_files
+
+
 def service():
     """Get the record service."""
     return current_records_marc21.records_service
 
 
-def pass_record(f):
-    """Decorate a view to pass a record using the record service."""
+def pass_record_or_draft(f):
+    """Decorate to retrieve the record or draft using the record service."""
 
     @wraps(f)
     def view(**kwargs):
         pid_value = kwargs.get("pid_value")
-        record = service().read(id_=pid_value, identity=g.identity)
+        is_preview = kwargs.get("is_preview")
+
+        def get_record():
+            """Retrieve record."""
+            return service().read(id_=pid_value, identity=g.identity)
+
+        if is_preview:
+            try:
+                record = service().read_draft(id_=pid_value, identity=g.identity)
+            except NoResultFound:
+                record = get_record()
+        else:
+            record = get_record()
         kwargs["record"] = record
         return f(**kwargs)
 
     return view
 
 
-def pass_draft(f):
-    """Decorator to retrieve the draft using the record service."""
+def pass_record_files(f):
+    """Decorate a view to pass a record's files using the files service."""
 
     @wraps(f)
     def view(**kwargs):
-        pid_value = kwargs.get("pid_value")
-        draft = service().read_draft(id_=pid_value, identity=g.identity)
-        draft._record.relations.dereference()
-        kwargs["draft"] = draft
+        is_preview = kwargs.get("is_preview")
+
+        def list_record_files():
+            """List record files."""
+            return files_service().list_files(id_=pid_value, identity=g.identity)
+
+        try:
+            pid_value = kwargs.get("pid_value")
+            if is_preview:
+                try:
+                    files = draft_files_service().list_files(
+                        id_=pid_value, identity=g.identity
+                    )
+                except NoResultFound:
+                    files = list_record_files()
+            else:
+                files = list_record_files()
+            kwargs["files"] = files
+
+        except PermissionDeniedError:
+            kwargs["files"] = None
+
         return f(**kwargs)
 
     return view
