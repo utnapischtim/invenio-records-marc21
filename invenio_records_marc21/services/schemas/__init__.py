@@ -14,7 +14,7 @@ from marshmallow_utils.fields import NestedAttribute
 
 from .access import AccessSchema, ParentAccessSchema
 from .files import FilesSchema
-from .metadata import MetadataSchema
+from .metadata import MetadataField
 from .pids import PIDSchema
 from .versions import VersionsSchema
 
@@ -34,7 +34,7 @@ class Marc21RecordSchema(BaseRecordSchema):
 
     parent = NestedAttribute(Marc21ParentSchema, dump_only=True)
 
-    metadata = NestedAttribute(MetadataSchema)
+    metadata = MetadataField(attribute="metadata")
     access = NestedAttribute(AccessSchema)
     files = NestedAttribute(FilesSchema, dump_only=True)
 
