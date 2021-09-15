@@ -13,17 +13,16 @@
 from functools import partial
 
 from marshmallow import Schema
-from marshmallow.fields import Nested
 from marshmallow_utils.fields import SanitizedUnicode
 
-from .fields import MetadataSchema
+from .fields import MetadataField
 
 
 class Marc21Schema(Schema):
     """Schema for dumping extra information for the marc21 record."""
 
     id = SanitizedUnicode(data_key="id", attribute="id")
-    metadata = Nested(MetadataSchema, attribute="metadata")
+    metadata = MetadataField(attribute="metadata")
 
     class Meta:
         """Meta class to accept unknwon fields."""
