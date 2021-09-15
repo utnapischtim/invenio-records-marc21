@@ -27,15 +27,13 @@ def test_ui_marcxml_serializer_init():
 def test_ui_marcxml_serializer_dump_one(full_record):
     marc = Marc21UIXMLSerializer()
     obj = marc.dump_one(full_record)
-    assert "json" in obj["metadata"]
-    assert full_record["metadata"]["json"] == obj["metadata"]["json"]
-    assert len(obj["metadata"]) == 1
+    assert isinstance(obj["metadata"], dict)
+    assert full_record["metadata"] == obj["metadata"]
 
     assert marc._object_key in obj
     obj_ui = obj[marc._object_key]
     assert "metadata" in obj_ui
-    assert len(obj_ui["metadata"]) == 1
-    assert "xml" in obj_ui["metadata"]
+    assert isinstance(obj_ui["metadata"], bytes)
 
 
 def test_ui_marcxml_serializer_dump_many(list_records):
@@ -45,14 +43,11 @@ def test_ui_marcxml_serializer_dump_many(list_records):
         assert marc._object_key in obj
 
         assert "metadata" in obj
-        assert record["metadata"]["json"] == obj["metadata"]["json"]
-        assert len(obj["metadata"]) == 1
+        assert record["metadata"] == obj["metadata"]
 
         obj_ui = obj[marc._object_key]
         assert "metadata" in obj_ui
-        assert len(obj_ui["metadata"]) == 1
-        assert "xml" in obj_ui["metadata"]
-        assert "json" not in obj_ui["metadata"]
+        assert isinstance(obj_ui["metadata"], bytes)
 
 
 def test_ui_json_serializer_init():
@@ -65,16 +60,13 @@ def test_ui_json_serializer_dump_one(full_record):
     marc = Marc21UIJSONSerializer()
     obj = marc.dump_one(full_record)
 
-    assert "json" in obj["metadata"]
-    assert full_record["metadata"]["json"] == obj["metadata"]["json"]
-    assert len(obj["metadata"]) == 1
+    assert isinstance(obj["metadata"], dict)
+    assert full_record["metadata"] == obj["metadata"]
 
     assert marc._object_key in obj
     obj_ui = obj[marc._object_key]
     assert "metadata" in obj_ui
-    assert len(obj_ui["metadata"]) == 1
-    assert "xml" not in obj_ui["metadata"]
-    assert "json" in obj_ui["metadata"]
+    assert isinstance(obj_ui["metadata"], dict)
 
 
 def test_ui_json_serializer_dump_many(list_records):
@@ -84,11 +76,8 @@ def test_ui_json_serializer_dump_many(list_records):
         assert marc._object_key in obj
 
         assert "metadata" in obj
-        assert record["metadata"]["json"] == obj["metadata"]["json"]
-        assert len(obj["metadata"]) == 1
+        assert record["metadata"] == obj["metadata"]
 
         obj_ui = obj[marc._object_key]
         assert "metadata" in obj_ui
-        assert len(obj_ui["metadata"]) == 1
-        assert "xml" not in obj_ui["metadata"]
-        assert "json" in obj_ui["metadata"]
+        assert isinstance(obj_ui["metadata"], dict)
