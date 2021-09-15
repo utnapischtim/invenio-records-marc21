@@ -9,7 +9,8 @@
 
 from invenio_drafts_resources.services.records.schema import ParentSchema
 from invenio_records_resources.services.records.schema import BaseRecordSchema
-from marshmallow import EXCLUDE, INCLUDE, Schema, fields, missing, post_dump
+from marshmallow.decorators import post_dump
+from marshmallow.fields import Boolean, Integer, List, Nested, Str
 from marshmallow_utils.fields import NestedAttribute
 
 from .access import AccessSchema, ParentAccessSchema
@@ -22,15 +23,15 @@ from .versions import VersionsSchema
 class Marc21ParentSchema(ParentSchema):
     """Record schema."""
 
-    access = fields.Nested(ParentAccessSchema)
+    access = Nested(ParentAccessSchema)
 
 
 class Marc21RecordSchema(BaseRecordSchema):
     """Record schema."""
 
-    id = fields.Str()
+    id = Str()
     # pid
-    pids = fields.List(NestedAttribute(PIDSchema))
+    pids = List(NestedAttribute(PIDSchema))
 
     parent = NestedAttribute(Marc21ParentSchema, dump_only=True)
 
@@ -38,13 +39,13 @@ class Marc21RecordSchema(BaseRecordSchema):
     access = NestedAttribute(AccessSchema)
     files = NestedAttribute(FilesSchema, dump_only=True)
 
-    created = fields.Str(dump_only=True)
-    updated = fields.Str(dump_only=True)
-    revision = fields.Integer(dump_only=True)
+    created = Str(dump_only=True)
+    updated = Str(dump_only=True)
+    revision = Integer(dump_only=True)
 
     versions = NestedAttribute(VersionsSchema, dump_only=True)
 
-    is_published = fields.Boolean(dump_only=True)
+    is_published = Boolean(dump_only=True)
 
     # Add version to record schema
     # versions = NestedAttribute(VersionsSchema, dump_only=True)
