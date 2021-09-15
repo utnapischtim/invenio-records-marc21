@@ -13,7 +13,7 @@
 
 {%- set metadata = record.metadata %}
 
-{%- set marcrecord = record.ui.metadata.json %}
+{%- set marcrecord = record.ui.metadata %}
 
 {%- block page_body %}
 
@@ -53,7 +53,7 @@
         {%- endblock record_header -%}
 
         {%- block record_title -%}
-          <h1>{{ marcrecord.title_statement.title | safe() | sanitize_title() }}</h1>
+          <h1>{{ marcrecord.get('title_statement').get('title') | sanitize_title() }}</h1>
         {%- endblock record_title -%}
         {%- block record_content -%}
           <div class="top-padded"></div>
