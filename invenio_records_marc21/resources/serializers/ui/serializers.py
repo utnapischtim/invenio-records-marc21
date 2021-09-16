@@ -8,7 +8,6 @@
 # modify it under the terms of the MIT License; see LICENSE file for more
 # details.
 
-
 """Marc21 UI record response serializers."""
 
 
