@@ -8,7 +8,6 @@
 # modify it under the terms of the MIT License; see LICENSE file for more
 # details.
 
-
 """Test record AccessSchema."""
 
 
@@ -45,7 +44,8 @@ def test_valid_metadata_protection(value):
 def test_invalid_metadata_protection():
     with pytest.raises(ValidationError) as e:
         AccessSchema().validate_metadata_protection("invalid")
-    assert e.value.messages[0] == _("'metadata' must be either 'public', 'embargoed' or 'restricted'")
+    assert e.value.messages[0] == _(
+        "'metadata' must be either 'public', 'embargoed' or 'restricted'")
     assert e.value.field_name == "metadata"
 
 
@@ -57,5 +57,6 @@ def test_valid_files_protection(value):
 def test_invalid_files_protection():
     with pytest.raises(ValidationError) as e:
         AccessSchema().validate_files_protection("invalid")
-    assert e.value.messages[0] == _("'files' must be either 'public', 'embargoed' or 'restricted'")
+    assert e.value.messages[0] == _(
+        "'files' must be either 'public', 'embargoed' or 'restricted'")
     assert e.value.field_name == "files"

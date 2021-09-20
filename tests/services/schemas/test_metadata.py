@@ -8,8 +8,8 @@
 # modify it under the terms of the MIT License; see LICENSE file for more
 # details.
 
-
 """Test for record MetadataField."""
+
 
 from dojson.contrib.marc21 import marc21
 from dojson.contrib.marc21.utils import create_record
