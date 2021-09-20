@@ -8,7 +8,6 @@
 # modify it under the terms of the MIT License; see LICENSE file for more
 # details.
 
-
 """Pytest configuration.
 
 See https://pytest-invenio.readthedocs.io/ for documentation on which test
@@ -38,7 +37,7 @@ def create_app(instance_path):
 RunningApp = namedtuple("RunningApp", ["app", "service", "identity_simple"])
 
 
-@pytest.fixture()
+@pytest.fixture(scope="module")
 def running_app(app, service, identity_simple):
     """This fixture provides an app with the typically needed db data loaded.
 
@@ -48,7 +47,7 @@ def running_app(app, service, identity_simple):
     return RunningApp(app, service, identity_simple)
 
 
-@pytest.fixture()
+@pytest.fixture(scope="module")
 def identity_simple():
     """Simple identity fixture."""
     i = Identity(1)
@@ -56,13 +55,13 @@ def identity_simple():
     return i
 
 
-@pytest.fixture()
+@pytest.fixture(scope="module")
 def service(appctx):
     """Service instance."""
     return Marc21RecordService(config=Marc21RecordServiceConfig())
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def metadata():
     """Input data (as coming from the view layer)."""
     metadata = Marc21Metadata()
@@ -70,7 +69,7 @@ def metadata():
     return metadata
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def metadata2():
     """Input data (as coming from the view layer)."""
     metadata = Marc21Metadata()

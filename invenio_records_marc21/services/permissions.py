@@ -8,7 +8,6 @@
 # modify it under the terms of the MIT License; see LICENSE file for more
 # details.
 
-
 """Permissions for Invenio Marc21 Records."""
 
 from invenio_records_permissions.generators import AnyUser

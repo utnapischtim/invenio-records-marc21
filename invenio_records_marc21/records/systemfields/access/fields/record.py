@@ -5,8 +5,9 @@
 # Copyright (C) 2021 TU Wien.
 # Copyright (C) 2021 Graz University of Technology.
 #
-# Invenio-Records-Marc21 is free software; you can redistribute it and/or modify it
-# under the terms of the MIT License; see LICENSE file for more details.
+# Invenio-Records-Marc21 is free software; you can redistribute it and/or
+# modify it under the terms of the MIT License; see LICENSE file for more
+# details.
 
 """Access system field."""
 
@@ -145,7 +146,8 @@ class RecordAccessField(SystemField):
 
         data = self.get_dictkey(instance)
         if data:
-            obj = self._access_obj_class.from_dict(data, has_files=len(instance.files or []))
+            obj = self._access_obj_class.from_dict(
+                data, has_files=len(instance.files or []))
         else:
             obj = self._access_obj_class()
 
