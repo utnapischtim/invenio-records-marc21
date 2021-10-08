@@ -45,8 +45,8 @@ export const Marc21RecordResultsListItem = ({ result, index }) => {
   const access_status = _get(access, "title", "Public");
   const access_icon = _get(access, "icon", "unlock");
 
-  const metadata = _get(result, ["ui", "metadata", "json"], []);
-  const description = _get(metadata, ["summary","summary"], "No description");
+  const metadata = _get(result, ["ui", "metadata"], []);
+  const description = _get(metadata, ["summary", "summary"], "No description");
   const subjects = _get(metadata, "subject_added_entry_topical_term", []);
   
   const publication = _get(metadata, ["production_publication_distribution_manufacture_and_copyright_notice"], []);
@@ -110,7 +110,7 @@ export const Marc21RecordResultsListItem = ({ result, index }) => {
 
 export const Marc21RecordResultsGridItem = ({ result, index }) => {
   const metadata = _get(result, ["ui", "metadata", "json"], []);
-  const description = _get(metadata, ["summary", "0", "summary"], "No description");
+  const description = _get(metadata, ["summary", "summary"], "No description");
   return (
     <Card fluid key={index} href={`/marc21/${result.pid}`}>
       <Card.Content>

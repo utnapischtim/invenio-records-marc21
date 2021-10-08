@@ -8,36 +8,50 @@
 # modify it under the terms of the MIT License; see LICENSE file for more
 # details.
 
-"""Marc21 record schemas."""
+"""Marc21 record metadata field."""
+
+
+import typing
 
 from dojson.contrib.marc21 import marc21
 from dojson.contrib.marc21.utils import create_record
-from marshmallow import INCLUDE, Schema, fields, post_load
+from marshmallow.fields import Field
 
 
-class MetadataSchema(Schema):
+class MetadataField(Field):
     """Schema for the record metadata."""
 
-    field_load_permissions = {
-        # TODO: define "can_admin" action
-    }
+    def _deserialize(
+        self,
+        value: typing.Any,
+        attr: typing.Optional[str],
+        data: typing.Optional[typing.Mapping[str, typing.Any]],
+        **kwargs
+    ):
+        """Deserialize value. Concrete :class:`Field` classes should implement this method.
 
-    field_dump_permissions = {
-        # TODO: define "can_admin" action
-    }
+        :param value: The value to be deserialized.
+        :param attr: The attribute/key in `data` to be deserialized.
+        :param data: The raw input data passed to the `Schema.load`.
+        :param kwargs: Field-specific keyword arguments.
+        :raise ValidationError: In case of formatting or validation failure.
+        :return: The deserialized value.
 
-    xml = fields.Str(required=False)
-    json = fields.Dict(required=False)
+        .. versionchanged:: 2.0.0
+            Added ``attr`` and ``data`` parameters.
 
-    class Meta:
-        """Meta class to accept unknwon fields."""
+        .. versionchanged:: 3.0.0
+            Added ``**kwargs`` to signature.
+        """
+        if "xml" in value:
+            value = marc21.do(create_record(value["xml"]))
+        return value
 
-        unknown = INCLUDE
+    def _validate(self, value):
+        """Perform validation on ``value``.
 
-    @post_load
-    def convert_xml(self, data, **kwargs):
-        """Convert marc21 xml into json."""
-        if "xml" in data:
-            data["json"] = marc21.do(create_record(data["xml"]))
-            del data["xml"]
-        return data
+        Raise a :exc:`ValidationError` if validation
+        does not succeed.
+        """
+        # TODO: validate the marc21 xml during loading the Schema
+        self._validate_all(value)

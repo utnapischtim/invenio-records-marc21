@@ -10,22 +10,20 @@
 
 """Metadata field for marc21 records."""
 
+import json
 
 from dojson.contrib.to_marc21 import to_marc21
 from dojson.contrib.to_marc21.utils import dumps
 from dojson.utils import GroupableOrderedDict
 from marshmallow import Schema
 from marshmallow.decorators import pre_dump
-from marshmallow.fields import Dict, Str
+from marshmallow.fields import Dict, Field, Nested, Str
 
 from ..errors import Marc21XMLConvertError
 
 
-class MetadataSchema(Schema):
-    """Metadata schema."""
-
-    xml = Str(required=False)
-    json = Dict(required=True)
+class MetadataField(Field):
+    """Schema for the record metadata."""
 
     def _remove_order(self, data):
         """Removing order key in marc21 dict."""
@@ -41,23 +39,31 @@ class MetadataSchema(Schema):
             return [self._remove_order(item) for item in data]
         return data
 
-    @pre_dump
     def remove_order_key(self, data, **kwargs):
         """Remove order key in metadata dict ."""
         remove_order = self.context.get("remove_order", False)
-        if "json" in data and remove_order:
-            data["json"] = self._remove_order(GroupableOrderedDict(data["json"]))
+        if data and remove_order:
+            data = self._remove_order(GroupableOrderedDict(data))
         return data
 
-    @pre_dump
     def convert_xml(self, data, **kwargs):
         """Convert json into marc21 xml."""
         marcxml = self.context.get("marcxml", False)
-        if "json" in data and marcxml:
+        if data and marcxml:
             try:
-                data["xml"] = dumps(to_marc21.do(data["json"]))
+                data = dumps(to_marc21.do(data))  # .decode("UTF-8")
             except Exception as e:
                 raise Marc21XMLConvertError(e)
 
-            del data["json"]
         return data
+
+    def _serialize(self, value, attr, obj, **kwargs):
+        """Serialise access status."""
+        if value:
+            record_metadata = value
+
+            record_metadata = self.remove_order_key(record_metadata)
+            record_metadata = self.convert_xml(record_metadata)
+
+            return record_metadata
+        return {}

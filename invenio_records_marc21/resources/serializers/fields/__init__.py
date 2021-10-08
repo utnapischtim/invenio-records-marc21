@@ -10,6 +10,6 @@
 
 """Record response fields."""
 
-from .metadata import MetadataSchema
+from .metadata import MetadataField
 
-__all__ = ("MetadataSchema",)
+__all__ = ("MetadataField",)

@@ -104,7 +104,7 @@ class Marc21XMLSerializer(Marc21BASESerializer):
         record = E.record()
         for key, value in data.items():
             if "metadata" in key:
-                record.append(self.convert_metadata(to_marc21.do(value["json"])))
+                record.append(self.convert_metadata(to_marc21.do(value)))
                 continue
             record.append(self._convert(key, value))
         return etree.tostring(
