@@ -16,7 +16,7 @@ from os.path import dirname, join
 
 from lxml import etree
 
-from .fields import DataField, LeaderField, SubField
+from .fields import ControlField, DataField, LeaderField, SubField
 
 
 class Marc21Metadata(object):
@@ -54,19 +54,29 @@ class Marc21Metadata(object):
         if not isinstance(xml, str):
             raise TypeError("xml must be from type str")
 
-        self._to_xml_tree(xml)
+        self._to_xml_tree_from_string(xml)
         self._xml = xml
 
-    def _to_xml_tree(self, xml: str):
-        """Xml to internal representation method."""
+    def load(self, xml: etree):
+        """Load metadata from etree."""
+        self._to_xml_tree(xml)
+
+    def _to_xml_tree_from_string(self, xml: str):
+        """Xml string to internal representation method."""
         test = etree.parse(StringIO(xml))
-        for element in test.iter():
-            if "datafield" in element.tag:
-                self.datafields.append(DataField(**element.attrib))
-            elif "subfield" in element.tag:
-                self.datafields[-1].subfields.append(
-                    SubField(**element.attrib, value=element.text)
+        self._to_xml_tree(test)
+
+    def _to_xml_tree(self, xml: etree):
+        """Xml to internal representation method."""
+        for element in xml.iter():
+            if "leader" in element.tag:
+                self.leader = LeaderField(data=element.text)
+            elif "datafield" in element.tag:
+                self.datafields.append(
+                    DataField(**element.attrib, subfields=element.getchildren())
                 )
+            elif "controlfield" in element.tag:
+                self.controlfields.append(ControlField(**element.attrib))
 
     def _to_string(self, tagsep: str = linesep, indent: int = 4) -> str:
         """Get a pretty-printed XML string of the record."""

@@ -17,8 +17,35 @@ from os import linesep
 class LeaderField(object):
     """LeaderField class representing the leaderfield HTML tag in MARC21 XML."""
 
-    def __init__(self, **kwargs):
+    def __init__(self, data=None, **kwargs):
         """Default constructor of the class."""
+        if data is not None:
+            self._load_from_str(data)
+        else:
+            self._load_from_dict(**kwargs)
+
+    def _load_from_str(self, data: str):
+        if len(data) != 24:
+            raise ValueError("Leader must have 24 characters!!")
+        self.length = data[0:5]
+        self.status = data[5]
+        self.type = data[6]
+        self.level = data[7]
+        self.control = data[8]
+        self.charset = data[9]
+
+        self.ind_count = data[10]
+        self.sub_count = data[11]
+        self.address = data[12:17]
+        self.encoding = data[17]
+        self.description = data[18]
+        self.multipart_resource_record_level = data[19]
+        self.length_field_position = data[20]
+        self.length_starting_character_position_portion = data[21]
+        self.length_implementation_defined_portion = data[22]
+        self.undefined = data[23]
+
+    def _load_from_dict(self, **kwargs):
         self.length = kwargs.get("length", "00000")  # 00-04
         self.status = kwargs.get("status", "n")  # 05
         self.type = kwargs.get("type", "a")  # 06

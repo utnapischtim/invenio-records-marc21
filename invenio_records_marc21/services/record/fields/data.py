@@ -13,16 +13,25 @@
 
 from os import linesep
 
+from .sub import SubField
+
 
 class DataField(object):
     """DataField class representing the datafield HTML tag in MARC21 XML."""
 
-    def __init__(self, tag: str = "", ind1: str = " ", ind2: str = " "):
+    def __init__(self, tag: str = "", ind1: str = " ", ind2: str = " ", subfields=None):
         """Default constructor of the class."""
         self.tag = tag
         self.ind1 = ind1
         self.ind2 = ind2
         self.subfields = list()
+        if subfields:
+            self.init_subfields(subfields)
+
+    def init_subfields(self, subfields):
+        """Init containing subfields."""
+        for subfield in subfields:
+            self.subfields.append(SubField(**subfield.attrib, value=subfield.text))
 
     def to_xml_tag(self, tagsep: str = linesep, indent: int = 4) -> str:
         """Get the Marc21 Datafield XML tag as string."""
