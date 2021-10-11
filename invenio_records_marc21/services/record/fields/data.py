@@ -12,6 +12,7 @@
 
 
 from os import linesep
+
 from .sub import SubField
 
 

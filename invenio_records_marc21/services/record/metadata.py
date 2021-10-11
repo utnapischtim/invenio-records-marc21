@@ -16,7 +16,7 @@ from os.path import dirname, join
 
 from lxml import etree
 
-from .fields import DataField, LeaderField, SubField
+from .fields import ControlField, DataField, LeaderField, SubField
 
 
 class Marc21Metadata(object):
@@ -69,12 +69,14 @@ class Marc21Metadata(object):
     def _to_xml_tree(self, xml: etree):
         """Xml to internal representation method."""
         for element in xml.iter():
-            if "datafield" in element.tag:
-                self.datafields.append(DataField(**element.attrib))
-            elif "subfield" in element.tag:
-                self.datafields[-1].subfields.append(
-                    SubField(**element.attrib, value=element.text)
+            if "leader" in element.tag:
+                self.leader = LeaderField(data=element.text)
+            elif "datafield" in element.tag:
+                self.datafields.append(
+                    DataField(**element.attrib, subfields=element.getchildren())
                 )
+            elif "controlfield" in element.tag:
+                self.controlfields.append(ControlField(**element.attrib))
 
     def _to_string(self, tagsep: str = linesep, indent: int = 4) -> str:
         """Get a pretty-printed XML string of the record."""
