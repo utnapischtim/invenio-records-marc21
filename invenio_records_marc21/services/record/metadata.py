@@ -54,13 +54,21 @@ class Marc21Metadata(object):
         if not isinstance(xml, str):
             raise TypeError("xml must be from type str")
 
-        self._to_xml_tree(xml)
+        self._to_xml_tree_from_string(xml)
         self._xml = xml
 
-    def _to_xml_tree(self, xml: str):
-        """Xml to internal representation method."""
+    def load(self, xml: etree):
+        """Load metadata from etree."""
+        self._to_xml_tree(xml)
+
+    def _to_xml_tree_from_string(self, xml: str):
+        """Xml string to internal representation method."""
         test = etree.parse(StringIO(xml))
-        for element in test.iter():
+        self._to_xml_tree(test)
+
+    def _to_xml_tree(self, xml: etree):
+        """Xml to internal representation method."""
+        for element in xml.iter():
             if "datafield" in element.tag:
                 self.datafields.append(DataField(**element.attrib))
             elif "subfield" in element.tag:
