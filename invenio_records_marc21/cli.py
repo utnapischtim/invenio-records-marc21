@@ -157,3 +157,82 @@ def demo(number, file, metadata_only):
             create_fake_record(file)
 
     click.secho("Created records!", fg="green")
+
+
+def create_templates(filename):
+    """Create templates with the service."""
+    data_to_use = _load_json(filename)
+
+    service = current_records_marc21.templates_service
+    templates = []
+    for data in data_to_use:
+        template = service.create(data=data["values"], name=data["name"])
+        templates.append(template.to_dict())
+    return templates
+
+
+def delete_templates(all, force, name):
+    """Delete templates with the service."""
+    service = current_records_marc21.templates_service
+    result = service.delete(all=all, force=force, name=name)
+    return result
+
+
+@marc21.group()
+def templates():
+    """InvenioMarc21 templates commands."""
+    pass
+
+
+@templates.command("create")
+@click.option(
+    "--file",
+    "-f",
+    default="data/fake-metadata.xml",
+    show_default=True,
+    type=str,
+    help="Relative path to file",
+)
+@with_appcontext
+@log_exceptions
+def create(file):
+    """Create Templates for Marc21 Deposit app."""
+    click.secho("Creating template/s..", fg="blue")
+
+    create_templates(file)
+
+    click.secho("Successfully created Template/s!", fg="green")
+
+
+@templates.command("delete")
+@click.option(
+    "--all",
+    default=False,
+    show_default=True,
+    is_flag=True,
+    help="Delete all Templates",
+)
+@click.option(
+    "--force",
+    "-f",
+    default=False,
+    show_default=True,
+    is_flag=True,
+    help="Hard/Soft delete of templates.",
+)
+@click.option(
+    "--name",
+    "-n",
+    required=False,
+    type=str,
+    help="Template name.",
+)
+@with_appcontext
+@log_exceptions
+def delete(all, force, name):
+    """Delete Templates for Marc21 Deposit app."""
+    click.secho("Deleting template/s...", fg="blue")
+
+    delete_templates(all, force, name)
+
+    click.secho("Successfully deleted Template!", fg="green")

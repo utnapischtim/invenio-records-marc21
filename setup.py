@@ -107,6 +107,7 @@ setup(
         ],
         "invenio_db.models": [
             "invenio_records_marc21_model = invenio_records_marc21.records.models",
+            "invenio_records_marc21_template_model = invenio_records_marc21.system.models",
         ],
         "invenio_i18n.translations": [
             "messages = invenio_records_marc21",

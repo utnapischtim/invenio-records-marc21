@@ -33,6 +33,7 @@ from .services import (
     Marc21RecordService,
     Marc21RecordServiceConfig,
 )
+from .system import Marc21TemplateConfig, Marc21TemplateService
 
 
 def obj_or_import_string(value, default=None):
@@ -100,6 +101,9 @@ class InvenioRecordsMARC21(object):
             config=service_config,
             files_service=FileService(Marc21RecordFilesServiceConfig),
             draft_files_service=FileService(Marc21DraftFilesServiceConfig),
+        )
+        self.templates_service = Marc21TemplateService(
+            config=Marc21TemplateConfig,
         )
 
     def init_resources(self, app):
