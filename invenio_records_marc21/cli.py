@@ -171,10 +171,10 @@ def create_templates(filename):
     return templates
 
 
-def delete_templates(all, force, name):
+def delete_templates(name, all, force):
     """Delete templates with the service."""
     service = current_records_marc21.templates_service
-    result = service.delete(all=all, force=force, name=name)
+    result = service.delete(name=name, all=all, force=force)
     return result
 
 
@@ -188,7 +188,7 @@ def templates():
 @click.option(
     "--file",
     "-f",
-    default="data/fake-metadata.xml",
+    required=True,
     show_default=True,
     type=str,
     help="Relative path to file",
@@ -229,10 +229,10 @@ def create(file):
 )
 @with_appcontext
 @log_exceptions
-def delete(all, force, name):
+def delete(name, all, force):
     """Delete Templates for Marc21 Deposit app."""
     click.secho("Deleting template/s...", fg="blue")
 
-    delete_templates(all, force, name)
+    delete_templates(name, all, force)
 
     click.secho("Successfully deleted Template!", fg="green")

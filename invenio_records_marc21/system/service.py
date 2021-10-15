@@ -31,11 +31,7 @@ class Marc21TemplateService:
 
     def create(self, name, data):
         """Create a template for a new record."""
-        return self._create(self.template_cls, name, data)
-
-    def _create(self, template_cls, name, data):
-        template = template_cls.create(name=name, data=data)
-        return template
+        return self.template_cls.create(name=name, data=data)
 
     def get_templates(self, names=None, with_deleted=False):
         """Get templates for a new record."""
@@ -46,15 +42,7 @@ class Marc21TemplateService:
         return self.template_cls.get_template(name=name)
 
     def delete(self, all, force, name):
-        """Create a template for a new record."""
+        """Delete a/all marc21 template/s."""
         if all:
-            return self._deleteall(self.template_cls, force=force)
-        return self._delete(self.template_cls, name=name, force=force)
-
-    def _delete(self, template_cls, name, force):
-        """Create a template for a new record."""
-        return template_cls.delete(name=name, force=force)
-
-    def _deleteall(self, template_cls, force):
-        """Create a template for a new record."""
-        return template_cls.deleteall(force=force)
+            return self.template_cls.deleteall(force=force)
+        return self.template_cls.delete(name=name, force=force)
