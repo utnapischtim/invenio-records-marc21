@@ -7,6 +7,9 @@
 // details.
 
 import React, { useState } from "react";
+import ReactDOM from "react-dom";
+import _camelCase from "lodash/camelCase";
+import _truncate from "lodash/truncate";
 import {
   Button,
   Card,
@@ -19,13 +22,9 @@ import {
 } from "semantic-ui-react";
 import { BucketAggregation } from "react-searchkit";
 import _get from "lodash/get";
-import _truncate from "lodash/truncate";
+import { loadComponents } from "@js/invenio_theme/templates";
 import Overridable from "react-overridable";
 import { SearchBar, SearchApp } from "@js/invenio_search_ui/components";
-
-import _camelCase from "lodash/camelCase";
-import { loadComponents } from "@js/invenio_theme/templates";
-import ReactDOM from "react-dom";
 
 export const Marc21RecordResultsListItem = ({ result, index }) => {
 
@@ -46,7 +45,7 @@ export const Marc21RecordResultsListItem = ({ result, index }) => {
   const access_icon = _get(access, "icon", "unlock");
 
   const metadata = _get(result, ["ui", "metadata"], []);
-  const description = _get(metadata, ["summary", "summary"], "No description");
+  const description = _get(metadata, ["summary","summary"], "No description");
   const subjects = _get(metadata, "subject_added_entry_topical_term", []);
   
   const publication = _get(metadata, ["production_publication_distribution_manufacture_and_copyright_notice"], []);
@@ -110,7 +109,7 @@ export const Marc21RecordResultsListItem = ({ result, index }) => {
 
 export const Marc21RecordResultsGridItem = ({ result, index }) => {
   const metadata = _get(result, ["ui", "metadata", "json"], []);
-  const description = _get(metadata, ["summary", "summary"], "No description");
+  const description = _get(metadata, ["summary", "0", "summary"], "No description");
   return (
     <Card fluid key={index} href={`/marc21/${result.pid}`}>
       <Card.Content>
@@ -271,10 +270,10 @@ export const Marc21CountComponent = ({ totalResults }) => {
 };
 
 
-export function createMarc21SearchAppInit(
+export function createSearchAppInit(
   defaultComponents,
   autoInit = true,
-  autoInitDataAttr = "invenio-records-marc21-search-config"
+  autoInitDataAttr = "invenio-search-config"
 ) {
   const initSearchApp = (rootElement) => {
     const config = JSON.parse(
