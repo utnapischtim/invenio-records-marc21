@@ -5,6 +5,8 @@
 # Invenio-Records-Marc21 is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
 
+"""Marc21 records deposit backend."""
+
 from os.path import dirname, join
 
 from flask import current_app
@@ -37,7 +39,6 @@ def dump_empty(schema_or_field):
 
 def empty_record():
     """Create an empty record."""
-
     record = dump_empty(Marc21RecordSchema)
 
     record["metadata"] = ""
@@ -47,6 +48,7 @@ def empty_record():
 
 
 def deposit_templates():
+    """Retrieve from DB the tamplates for marc21 deposit form."""
     templates = current_records_marc21.templates_service.get_templates()
 
     if templates:
