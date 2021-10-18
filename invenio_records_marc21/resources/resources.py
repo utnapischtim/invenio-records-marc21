@@ -36,8 +36,38 @@ class Marc21RecordResource(RecordResource):
     def create_url_rules(self):
         """Create the URL rules for the record resource."""
         routes = self.config.routes
-        url_rules = super(RecordResource, self).create_url_rules()
-        return url_rules
+
+        def p(route):
+            """Prefix a route with the URL prefix."""
+            return f"{self.config.url_prefix}{route}"
+
+        rules = [
+            route("GET", p(routes["list"]), self.search),
+            route("POST", p(routes["list"]), self.create),
+            route("GET", p(routes["item"]), self.read),
+            route("PUT", p(routes["item"]), self.update),
+            route("DELETE", p(routes["item"]), self.delete),
+            route("GET", p(routes["item-versions"]), self.search_versions),
+            route("POST", p(routes["item-versions"]), self.new_version),
+            route("GET", p(routes["item-latest"]), self.read_latest),
+            route("GET", p(routes["item-draft"]), self.read_draft),
+            route("POST", p(routes["item-draft"]), self.edit),
+            route("PUT", p(routes["item-draft"]), self.update_draft),
+            route("DELETE", p(routes["item-draft"]), self.delete_draft),
+            route("POST", p(routes["item-publish"]), self.publish),
+        ]
+
+        if self.service.draft_files:
+            rules.append(
+                route(
+                    "POST",
+                    p(routes["item-files-import"]),
+                    self.import_files,
+                    apply_decorators=False,
+                )
+            )
+
+        return rules
 
 
 class Marc21ParentRecordLinksResource(RecordResource):

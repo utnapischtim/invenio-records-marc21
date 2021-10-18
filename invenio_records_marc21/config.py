@@ -50,6 +50,7 @@ INVENIO_MARC21_UI_ENDPOINTS = {
 INVENIO_MARC21_UI_THEME_ENDPOINTS = {
     "index": "/",
     "record-search": "/search",
+    "deposit-create": "/uploads",
 }
 """Records UI for invenio-records-marc21."""
 

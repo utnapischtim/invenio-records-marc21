@@ -31,14 +31,14 @@ record_serializer = {
 url_prefix = "/marc21"
 
 record_ui_routes = {
-    "search": f"{url_prefix}/search",
-    "list": f"{url_prefix}",
-    "item": f"{url_prefix}/<pid_value>",
-    "item-versions": f"{url_prefix}/<pid_value>/versions",
-    "item-latest": f"{url_prefix}/<pid_value>/versions/latest",
-    "item-draft": f"{url_prefix}/<pid_value>/draft",
-    "item-publish": f"{url_prefix}/<pid_value>/draft/actions/publish",
-    "item-files-import": f"{url_prefix}/<pid_value>/draft/actions/files-import",
+    "search": "/search",
+    "list": "",
+    "item": "/<pid_value>",
+    "item-versions": "/<pid_value>/versions",
+    "item-latest": "/<pid_value>/versions/latest",
+    "item-draft": "/<pid_value>/draft",
+    "item-publish": "/<pid_value>/draft/actions/publish",
+    "item-files-import": "/<pid_value>/draft/actions/files-import",
 }
 
 
@@ -64,7 +64,10 @@ class Marc21RecordResourceConfig(RecordResourceConfig):
     request_args = SearchRequestArgsSchema
     request_view_args = {"pid_value": ma.fields.Str()}
     request_headers = {"if_match": ma.fields.Int()}
-    request_body_parsers = {"application/json": RequestBodyParser(JSONDeserializer())}
+    request_body_parsers = {
+        "application/json": RequestBodyParser(JSONDeserializer()),
+        "application/marcxml": RequestBodyParser(JSONDeserializer()),
+    }
 
     request_view_args = {
         "pid_value": ma.fields.Str(),
@@ -80,6 +83,12 @@ class Marc21RecordFilesResourceConfig(FileResourceConfig):
     url_prefix = f"{url_prefix}/<pid_value>"
 
     links_config = {}
+    routes = {
+        "list": "/files",
+        "item": "/files/<key>",
+        "item-content": "/files/<key>/content",
+        "item-commit": "/files/<key>/commit",
+    }
 
 
 #

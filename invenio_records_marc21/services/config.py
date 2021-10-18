@@ -16,6 +16,7 @@ from invenio_drafts_resources.services.records.config import (
     RecordServiceConfig,
     SearchDraftsOptions,
     SearchOptions,
+    is_draft,
     is_record,
 )
 from invenio_records_resources.services import (
@@ -106,14 +107,15 @@ class Marc21RecordServiceConfig(RecordServiceConfig):
         "self_html": ConditionalLink(
             cond=is_record,
             if_=RecordLink("{+ui}/marc21/{id}"),
-            else_=RecordLink("{+ui}/uploads/{id}"),
+            else_=RecordLink("{+ui}/marc21/upload/{id}"),
         ),
-        "files": ConditionalLink(
-            cond=is_record,
-            if_=RecordLink("{+api}/marc21/{id}/files"),
-            else_=RecordLink("{+api}/marc21/{id}/draft/files"),
+        "latest": RecordLink("{+api}/marc21/{id}/versions/latest"),
+        "latest_html": RecordLink("{+ui}/marc21/{id}/latest"),
+        "draft": RecordLink("{+api}/marc21/{id}/draft", when=is_record),
+        "publish": RecordLink(
+            "{+api}/marc21/{id}/draft/actions/publish", when=is_draft
         ),
-        "access_links": RecordLink("{+api}/marc21/{id}/access/links"),
+        "versions": RecordLink("{+api}/marc21/{id}/versions"),
     }
 
 
