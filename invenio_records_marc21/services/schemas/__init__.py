@@ -9,6 +9,7 @@
 # details.
 
 """Marc21 record schemas."""
+
 from invenio_drafts_resources.services.records.schema import ParentSchema
 from invenio_rdm_records.services.schemas.access import AccessSchema
 from invenio_rdm_records.services.schemas.parent.access import ParentAccessSchema
@@ -36,6 +37,9 @@ class Marc21ParentSchema(ParentSchema):
 class Marc21RecordSchema(BaseRecordSchema):
     """Record schema."""
 
+    field_load_permissions = {
+        "files": "update_draft",
+    }
     id = Str()
     # pid
     pids = List(NestedAttribute(PIDSchema))
@@ -44,7 +48,7 @@ class Marc21RecordSchema(BaseRecordSchema):
 
     metadata = MetadataField(attribute="metadata")
     access = NestedAttribute(AccessSchema)
-    files = NestedAttribute(FilesSchema, dump_only=True)
+    files = NestedAttribute(FilesSchema)
 
     created = Str(dump_only=True)
     updated = Str(dump_only=True)

@@ -33,6 +33,27 @@ class FileSchema(Schema):
 class FilesSchema(Schema):
     """Files metadata schema."""
 
+    field_dump_permissions = {
+        "default_preview": "read_files",
+        "order": "read_files",
+    }
+
     enabled = fields.Bool()
-    default_preview = SanitizedUnicode()
+    default_preview = SanitizedUnicode(allow_none=True)
     order = fields.List(SanitizedUnicode())
+
+    def get_attribute(self, obj, attr, default):
+        """Override how attributes are retrieved when dumping.
+
+        NOTE: We have to access by attribute because although we are loading
+              from an external pure dict, but we are dumping from a data-layer
+              object whose fields should be accessed by attributes and not
+              keys. Access by key runs into FilesManager key access protection
+              and raises.
+        """
+        value = getattr(obj, attr, default)
+
+        if attr == "default_preview" and not value:
+            return default
+
+        return value
