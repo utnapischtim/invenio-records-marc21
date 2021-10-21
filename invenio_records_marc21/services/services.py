@@ -43,6 +43,7 @@ class Marc21RecordService(RecordService):
         """
         if data is None:
             data = {"metadata": {"xml": metadata.xml, "json": metadata.json}}
+        data.setdefault("files", {"enabled": False})
         if "access" not in data:
             default_access = {
                 "access": {
