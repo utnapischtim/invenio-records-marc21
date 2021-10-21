@@ -5,10 +5,10 @@
 // Invenio-Records-Marc21 is free software; you can redistribute it and/or
 // modify it under the terms of the MIT License; see LICENSE file for more
 // details.
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { Field, FastField } from 'formik';
-import { Container, Icon, Segment } from 'semantic-ui-react';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { Field, FastField } from "formik";
+import { Container, Icon, Segment } from "semantic-ui-react";
 
 export class AccordionField extends Component {
   constructor(props) {
@@ -17,11 +17,11 @@ export class AccordionField extends Component {
   }
 
   iconActive = (
-    <Icon name="angle down" size="large" style={{ float: 'right' }} />
+    <Icon name="angle down" size="large" style={{ float: "right" }} />
   );
 
   iconInactive = (
-    <Icon name="angle right" size="large" style={{ float: 'right' }} />
+    <Icon name="angle right" size="large" style={{ float: "right" }} />
   );
 
   handleClick = (showContent) => {
@@ -85,10 +85,10 @@ AccordionField.propTypes = {
 
 AccordionField.defaultProps = {
   active: false,
-  label: '',
+  label: "",
   required: false,
   ui: {
-    error: { inverted: true, color: 'red', secondary: true },
+    error: { inverted: true, color: "red", secondary: true },
   },
   optimized: false,
 };

@@ -6,9 +6,9 @@
 // modify it under the terms of the MIT License; see LICENSE file for more
 // details.
 
-import { combineReducers } from 'redux';
+import { combineReducers } from "redux";
 
-import depositReducer from './deposit';
+import depositReducer from "./deposit";
 export default combineReducers({
   deposit: depositReducer,
 });

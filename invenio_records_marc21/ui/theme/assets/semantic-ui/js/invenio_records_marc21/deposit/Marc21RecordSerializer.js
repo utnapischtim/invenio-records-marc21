@@ -6,50 +6,42 @@
 // modify it under the terms of the MIT License; see LICENSE file for more
 // details.
 
-import _cloneDeep from 'lodash/cloneDeep';
-import _defaults from 'lodash/defaults';
-import _pick from 'lodash/pick';
-import _set from 'lodash/set';
+import _cloneDeep from "lodash/cloneDeep";
+import _defaults from "lodash/defaults";
+import _pick from "lodash/pick";
+import _set from "lodash/set";
 
-import {
-    Field,
-    MetadataFields,
-  } from './fields';
-
+import { Field, MetadataFields } from "./fields";
 
 export class Marc21RecordSerializer {
-    constructor() {
-    }
+  constructor() {}
 
-    depositRecordSchema = {
-        files: new Field({
-            fieldpath: "files",
-          }),
-        links: new Field({
-            fieldpath: "links",
-          }),
-        pids: new Field({
-            fieldpath: "pids",
-            deserializedDefault: {},
-            serializedDefault: {},
-          }),
-        metadata: new MetadataFields({
-            fieldpath: "metadata",
-            deserializedDefault: {"leader" : "00000nam a2200000zca4500"},
-            serializedDefault : "",
-          }),
+  depositRecordSchema = {
+    files: new Field({
+      fieldpath: "files",
+    }),
+    links: new Field({
+      fieldpath: "links",
+    }),
+    pids: new Field({
+      fieldpath: "pids",
+      deserializedDefault: {},
+      serializedDefault: {},
+    }),
+    metadata: new MetadataFields({
+      fieldpath: "metadata",
+      deserializedDefault: { leader: "00000nam a2200000zca4500" },
+      serializedDefault: "",
+    }),
+  };
 
-    }
-
-
-  /** 
+  /**
    * Deserialize backend record into format compatible with frontend.
    * @method
    * @param {object} record - potentially empty object
    * @returns {object} frontend compatible record object
    */
   deserialize(record) {
-
     record = _cloneDeep(record);
 
     let deserializedRecord = record;
@@ -62,13 +54,11 @@ export class Marc21RecordSerializer {
       "pids",
     ]);
     for (let key in this.depositRecordSchema) {
-      deserializedRecord = this.depositRecordSchema[key].deserialize(
-        deserializedRecord
-      );
+      deserializedRecord =
+        this.depositRecordSchema[key].deserialize(deserializedRecord);
     }
     return deserializedRecord;
   }
-
 
   /**
    * Deserialize backend record errors into format compatible with frontend.
@@ -79,7 +69,7 @@ export class Marc21RecordSerializer {
   deserializeErrors(errors) {
     let deserializedErrors = {};
     for (let e of errors) {
-      _set(deserializedErrors, e.field, e.messages.join(' '));
+      _set(deserializedErrors, e.field, e.messages.join(" "));
     }
 
     return deserializedErrors;
@@ -104,10 +94,9 @@ export class Marc21RecordSerializer {
       "pids",
     ]);
     for (let key in this.depositRecordSchema) {
-      serializedRecord = this.depositRecordSchema[key].serialize(
-        serializedRecord
-      );
-      }
+      serializedRecord =
+        this.depositRecordSchema[key].serialize(serializedRecord);
+    }
 
     _defaults(serializedRecord, { metadata: {} });
 

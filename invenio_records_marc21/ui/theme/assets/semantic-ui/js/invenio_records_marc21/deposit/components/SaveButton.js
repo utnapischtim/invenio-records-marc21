@@ -6,16 +6,15 @@
 // modify it under the terms of the MIT License; see LICENSE file for more
 // details.
 
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Icon } from 'semantic-ui-react';
-import { ActionButton } from 'react-invenio-forms';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { Icon } from "semantic-ui-react";
+import { ActionButton } from "react-invenio-forms";
 
-import { submitAction } from '../state/actions';
-import { FORM_SAVING } from '../state/types';
+import { submitAction } from "../state/actions";
+import { FORM_SAVING } from "../state/types";
 
 export class SaveButtonComponent extends Component {
-
   isDisabled = (formik) => {
     return formik.isSubmitting;
   };
@@ -34,7 +33,7 @@ export class SaveButtonComponent extends Component {
       >
         {(formik) => (
           <div>
-            { ( formik.isSubmitting && formState === FORM_SAVING ) ? (
+            {formik.isSubmitting && formState === FORM_SAVING ? (
               <Icon size="large" loading name="spinner" />
             ) : (
               <Icon name="save" />

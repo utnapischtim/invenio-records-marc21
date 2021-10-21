@@ -6,26 +6,20 @@
 // modify it under the terms of the MIT License; see LICENSE file for more
 // details.
 
-import _cloneDeep from 'lodash/cloneDeep';
-import _get from 'lodash/get';
-import _has from 'lodash/has';
-import _pick from 'lodash/pick';
-import _set from 'lodash/set';
-import { Field } from './Field';
+import _cloneDeep from "lodash/cloneDeep";
+import _get from "lodash/get";
+import _has from "lodash/has";
+import _pick from "lodash/pick";
+import _set from "lodash/set";
+import { Field } from "./Field";
 
-const { Marc, Record } = require('marcjs');
+const { Marc, Record } = require("marcjs");
 export class MetadataFields extends Field {
+  constructor({ fieldpath, deserializedDefault = [], serializedDefault = [] }) {
+    super({ fieldpath, deserializedDefault, serializedDefault });
+  }
 
-  constructor({
-      fieldpath,
-      deserializedDefault = [],
-      serializedDefault = [],
-    }) {
-    super({fieldpath, deserializedDefault, serializedDefault})   
-  };
-  
-
-  /** 
+  /**
    * Compare Metadata field order for sorting in frontend.
    * @method
    * @param {object} field1 - first field to compare
@@ -40,9 +34,8 @@ export class MetadataFields extends Field {
     }
     return 0;
   }
-    
 
-  /** 
+  /**
    * Deserialize backend record into format compatible with frontend.
    * @method
    * @param {object} record - potentially empty object
@@ -51,11 +44,11 @@ export class MetadataFields extends Field {
   deserialize(record) {
     let deserializedRecord = record;
     deserializedRecord = _pick(deserializedRecord, [
-      'metadata',
-      'id',
-      'links',
-      'files',
-      'pids',
+      "metadata",
+      "id",
+      "links",
+      "files",
+      "pids",
     ]);
     for (let key in this.depositRecordSchema) {
       deserializedRecord = this.depositRecordSchema[key].deserialize(
@@ -66,23 +59,27 @@ export class MetadataFields extends Field {
     return deserializedRecord;
   }
 
-    
   static _deserialize_subfields(subfields) {
     let field = ""; // subfields.join(" ");
-    for( let i = 0; i < subfields.length; i++) {
+    for (let i = 0; i < subfields.length; i++) {
       for (const [key, value] of Object.entries(subfields[i])) {
-        field += " $$" + key + " " + value ;
+        field += " $$" + key + " " + value;
       }
     }
     return field;
   }
 
   _deserialize_fields(fields) {
-    let metadata = []
-    for (const  field  of Object.values(fields)) {
-      const key  = Object.keys(field)[0];
+    let metadata = [];
+    for (const field of Object.values(fields)) {
+      const key = Object.keys(field)[0];
       const value = Object.values(field)[0];
-      let internal = {id : key, ind1: value["ind1"], ind2: value["ind2"], subfield: MetadataFields._deserialize_subfields(value["subfields"])};
+      let internal = {
+        id: key,
+        ind1: value["ind1"],
+        ind2: value["ind2"],
+        subfield: MetadataFields._deserialize_subfields(value["subfields"]),
+      };
       metadata.push(internal);
     }
     return metadata;
@@ -90,49 +87,49 @@ export class MetadataFields extends Field {
 
   /**
    * Deserialize backend field into format compatible with frontend using
-   * the given schema. 
+   * the given schema.
    * @method
    * @param {object} element - potentially empty object
    * @returns {object} frontend compatible element object
    */
   deserialize(record) {
-    record = _cloneDeep(record)
+    record = _cloneDeep(record);
 
-    let marcxml = _get(record, this.fieldpath)
+    let marcxml = _get(record, this.fieldpath);
 
     let record_dict;
 
     if (marcxml != null) {
-      const marcjs = Marc.parse(marcxml, 'marcxml');
+      const marcjs = Marc.parse(marcxml, "marcxml");
       record_dict = marcjs.mij();
       record_dict.fields = this._deserialize_fields(record_dict.fields);
-      record_dict.fields .sort(this.compare);
+      record_dict.fields.sort(this.compare);
     } else {
-      record_dict = this.deserializedDefault
+      record_dict = this.deserializedDefault;
     }
 
-    
-    return _set(record, this.fieldpath, record_dict)
+    return _set(record, this.fieldpath, record_dict);
   }
 
-
   static _serialize_subfields(subfields) {
-    let fields = []; 
+    let fields = [];
     subfields = subfields.trim();
     const subfield_list = subfields.split("$$").filter(String);
-    
-    for( let i = 0; i < subfield_list.length; i++) {
+
+    for (let i = 0; i < subfield_list.length; i++) {
       const subfield = subfield_list[i].split(" ");
-      fields = fields.concat([subfield[0], subfield.slice(1).join(" ")])
+      fields = fields.concat([subfield[0], subfield.slice(1).join(" ")]);
     }
     return fields;
   }
 
   _serialize_fields(marc_record, fields) {
-    let metadata = []
-    for (const  field  of Object.values(fields)) {
-      const subfields = MetadataFields._serialize_subfields(field["subfield"])
-      let internal = [field["id"], field["ind1"] + field["ind2"]].concat(subfields);
+    let metadata = [];
+    for (const field of Object.values(fields)) {
+      const subfields = MetadataFields._serialize_subfields(field["subfield"]);
+      let internal = [field["id"], field["ind1"] + field["ind2"]].concat(
+        subfields
+      );
 
       marc_record.append(internal);
     }
@@ -147,18 +144,18 @@ export class MetadataFields extends Field {
    *
    */
   serialize(record) {
-    let record_dict = _get(record, this.fieldpath, this.serializedDefault)
+    let record_dict = _get(record, this.fieldpath, this.serializedDefault);
     let metadata = new Record();
-    if(_has(record_dict, ["leader"])){
+    if (_has(record_dict, ["leader"])) {
       metadata.leader = record_dict.leader;
     } else {
       metadata.leader = "";
     }
-    if(_has(record_dict, ["fields"])){
+    if (_has(record_dict, ["fields"])) {
       record_dict.fields = this._serialize_fields(metadata, record_dict.fields);
     }
-    const marcxml = {"xml": metadata.as('marcxml')};
-   
-    return _set(_cloneDeep(record),this.fieldpath, marcxml);
+    const marcxml = { xml: metadata.as("marcxml") };
+
+    return _set(_cloneDeep(record), this.fieldpath, marcxml);
   }
 }

@@ -7,21 +7,21 @@
 // details.
 
 import {
-    FORM_SAVING,
-    FORM_PUBLISHING,
-    FORM_ACTION_EVENT_EMITTED,
-  } from '../types';
-  
+  FORM_SAVING,
+  FORM_PUBLISHING,
+  FORM_ACTION_EVENT_EMITTED,
+} from "../types";
+
 export const save = (record, formik) => {
-    return async (dispatch, getState, config) => {
-      const controller = config.controller;
-      controller.saveDraft(record, {
-        formik,
-        store: { dispatch, getState, config },
-      });
-    };
+  return async (dispatch, getState, config) => {
+    const controller = config.controller;
+    controller.saveDraft(record, {
+      formik,
+      store: { dispatch, getState, config },
+    });
   };
-  
+};
+
 export const publish = (record, formik) => {
   return (dispatch, getState, config) => {
     const controller = config.controller;
@@ -32,15 +32,14 @@ export const publish = (record, formik) => {
   };
 };
 
-
 export const submitAction = (action, event, formik) => {
-    return async (dispatch, getState, config) => {
-      dispatch({
-        type: FORM_ACTION_EVENT_EMITTED,
-        payload: action,
-      });
-      formik.handleSubmit(event); // eventually calls submitFormData below
-    };
+  return async (dispatch, getState, config) => {
+    dispatch({
+      type: FORM_ACTION_EVENT_EMITTED,
+      payload: action,
+    });
+    formik.handleSubmit(event); // eventually calls submitFormData below
+  };
 };
 
 export const submitFormData = (record, formik) => {

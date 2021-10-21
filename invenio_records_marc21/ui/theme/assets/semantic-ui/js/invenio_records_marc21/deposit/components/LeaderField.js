@@ -6,30 +6,24 @@
 // modify it under the terms of the MIT License; see LICENSE file for more
 // details.
 
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
-import {
-  TextField,
-} from 'react-invenio-forms';
-
+import { TextField } from "react-invenio-forms";
 
 export class LeaderField extends Component {
   render() {
-    const { fieldPath} =
-      this.props;
+    const { fieldPath } = this.props;
     return (
       <>
-        <TextField 
-        value={"LDR"}
-        width={2} 
+        <TextField value={"LDR"} width={2} />
+        <TextField
+          fieldPath={`${fieldPath}`}
+          width={14}
+          required
+          maxLength={24}
         />
-        <TextField   
-        fieldPath={`${fieldPath}`}  
-        width={14} required
-        maxLength={24}/>
       </>
-
     );
   }
 }
@@ -40,5 +34,5 @@ LeaderField.propTypes = {
 };
 
 LeaderField.defaultProps = {
-  helpText: '',
+  helpText: "",
 };

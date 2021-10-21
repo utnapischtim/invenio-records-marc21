@@ -6,37 +6,34 @@
 // modify it under the terms of the MIT License; see LICENSE file for more
 // details.
 
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { ArrayField } from 'react-invenio-forms';
-import { Button, Form, Icon } from 'semantic-ui-react';
-import _get from 'lodash/get';
-import {
-  GroupField,
-} from 'react-invenio-forms';
-import { MetadataField, LeaderField } from '.';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { ArrayField } from "react-invenio-forms";
+import { Button, Form, Icon } from "semantic-ui-react";
+import _get from "lodash/get";
+import { GroupField } from "react-invenio-forms";
+import { MetadataField, LeaderField } from ".";
 export class MetadataFields extends Component {
   render() {
-    const { fieldPath} =
-      this.props;
+    const { fieldPath } = this.props;
     return (
       <>
-      <GroupField fieldPath={`${fieldPath}.leader`}>
-        <LeaderField  fieldPath={`${fieldPath}.leader`} />
-      </GroupField>
-         <ArrayField 
-          addButtonLabel={'Add'}
+        <GroupField fieldPath={`${fieldPath}.leader`}>
+          <LeaderField fieldPath={`${fieldPath}.leader`} />
+        </GroupField>
+        <ArrayField
+          addButtonLabel={"Add"}
           fieldPath={`${fieldPath}.fields`}
-          defaultNewValue={{id:"", ind1:"", ind2:"", subfield:""}}
+          defaultNewValue={{ id: "", ind1: "", ind2: "", subfield: "" }}
         >
           {({ array, arrayHelpers, indexPath, key }) => (
             <GroupField fieldPath={fieldPath}>
-            <MetadataField  fieldPath={key} />
-            <Form.Field width={1}>
-            <Button icon onClick={() => arrayHelpers.remove(indexPath)}>
-              <Icon name="close" />
-            </Button>
-            </Form.Field>
+              <MetadataField fieldPath={key} />
+              <Form.Field width={1}>
+                <Button icon onClick={() => arrayHelpers.remove(indexPath)}>
+                  <Icon name="close" />
+                </Button>
+              </Form.Field>
             </GroupField>
           )}
         </ArrayField>
@@ -45,12 +42,10 @@ export class MetadataFields extends Component {
   }
 }
 
-
 MetadataFields.propTypes = {
-    fieldPath: PropTypes.string,
-  };
-  
+  fieldPath: PropTypes.string,
+};
+
 MetadataFields.defaultProps = {
-    fieldPath: 'metadata',
-  };
-  
+  fieldPath: "metadata",
+};

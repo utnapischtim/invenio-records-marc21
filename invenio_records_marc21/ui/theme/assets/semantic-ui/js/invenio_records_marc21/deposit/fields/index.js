@@ -6,5 +6,5 @@
 // modify it under the terms of the MIT License; see LICENSE file for more
 // details.
 
-export { Field } from './Field';
-export { MetadataFields } from './MetadataFields';
+export { Field } from "./Field";
+export { MetadataFields } from "./MetadataFields";

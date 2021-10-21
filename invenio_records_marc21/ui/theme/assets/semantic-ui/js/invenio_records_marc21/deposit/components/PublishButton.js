@@ -5,17 +5,15 @@
 // Invenio-Records-Marc21 is free software; you can redistribute it and/or
 // modify it under the terms of the MIT License; see LICENSE file for more
 // details.
-import _get from 'lodash/get';
-import _isEmpty from 'lodash/isEmpty';
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Icon, Button, Modal } from 'semantic-ui-react';
-import { ActionButton } from 'react-invenio-forms';
+import _get from "lodash/get";
+import _isEmpty from "lodash/isEmpty";
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { Icon, Button, Modal } from "semantic-ui-react";
+import { ActionButton } from "react-invenio-forms";
 
-import { submitAction } from '../state/actions';
-import { FORM_PUBLISHING } from '../state/types';
-
-
+import { submitAction } from "../state/actions";
+import { FORM_PUBLISHING } from "../state/types";
 
 export class PublishButtonComponent extends Component {
   state = { confirmOpen: false };
@@ -32,14 +30,13 @@ export class PublishButtonComponent extends Component {
       publishClick(event, formik);
       this.handleClose();
     };
-    
 
     const isDisabled = (formik) => {
       return formik.isSubmitting;
     };
 
     const action = "publish";
-    const capitalizedAction ="Publish";
+    const capitalizedAction = "Publish";
     return (
       <>
         <ActionButton
@@ -69,9 +66,7 @@ export class PublishButtonComponent extends Component {
             size="small"
           >
             <Modal.Content>
-              <h3>
-                {(`Are you sure you want to publish this record?`)}
-              </h3>
+              <h3>{`Are you sure you want to publish this record?`}</h3>
             </Modal.Content>
             <Modal.Actions>
               <Button onClick={this.handleClose} floated="left">

@@ -8,69 +8,67 @@
 
 import _get from "lodash/get";
 import _has from "lodash/has";
-import axios from 'axios';
+import axios from "axios";
 
-export class RecordSchema {
-
+export class Marc21RecordSchema {
   /**
    *  Make sure RecordSchema called first time with props.link
    */
 
-	constructor(link, schema) {
-      this.schema = {}
-      this.link = link;
-      this.leader_field = "LDR";
-      if (schema !== {}){
-        this.setSchema(schema);
-        this.loaded = true;
-      } else {
-        this.loaded = false;
-      }
-	}
+  constructor(link, schema) {
+    this.schema = {};
+    this.link = link;
+    this.leader_field = "LDR";
+    if (schema !== {}) {
+      this.setSchema(schema);
+      this.loaded = true;
+    } else {
+      this.loaded = false;
+    }
+  }
 
-  isReady(){
+  isReady() {
     return this.loaded;
   }
 
-  setSchema(schema){
+  setSchema(schema) {
     this.schema = schema;
   }
 
   loadSchema() {
     axios.get(this.state.link).then(
-      result => {
-        this.loaded =  true;
+      (result) => {
+        this.loaded = true;
         this.schema = result.data;
       },
       // Note: it's important to handle errors here
       // instead of a catch() block so that we don't swallow
       // exceptions from actual bugs in components.
-      error => {
-        this.loaded =  false;
+      (error) => {
+        this.loaded = false;
         this.schema = {};
         this.error = error;
       }
     );
   }
 
-  isLeaderField(key){
+  isLeaderField(key) {
     let keys = this.getLeaderFieldKeys();
     return keys.includes(key);
   }
 
-  isDataField(key){
+  isDataField(key) {
     let keys = this.getDataFieldKeys();
     return keys.includes(key);
   }
 
   hasLeaderKey(key) {
-    return _has(this.schema, ["fields", this.leader_field, "positions", key])
+    return _has(this.schema, ["fields", this.leader_field, "positions", key]);
   }
 
   getLeaderFieldKeys() {
-
     let fields = this.getLeaderFields();
-    let keys = []
+    let keys = [];
     for (const [key, value] of Object.entries(fields)) {
       keys.push(key);
     }
@@ -86,7 +84,6 @@ export class RecordSchema {
     return leaderfields[key];
   }
 
-
   getLeaderFieldOptions(key) {
     const leaderfield = this.getLeaderField(key);
     const leaderfield_codes = _get(leaderfield, ["codes"], {});
@@ -98,10 +95,9 @@ export class RecordSchema {
     return _get(this.schema, ["fields"], {});
   }
 
-
   getDataFieldKeys() {
     let fields = this.getDataFields();
-    let keys = []
+    let keys = [];
     for (const [key, value] of Object.entries(fields)) {
       keys.push(key);
     }
@@ -113,10 +109,10 @@ export class RecordSchema {
     return datafield[key];
   }
 
-  generateDropdownOptions(fields){
-    let codes = []
+  generateDropdownOptions(fields) {
+    let codes = [];
     for (const [key, value] of Object.entries(fields)) {
-      let code = { key: key, label: key, value: key, text: value["label"]}
+      let code = { key: key, label: key, value: key, text: value["label"] };
       codes.push(code);
     }
     return codes;
@@ -129,16 +125,14 @@ export class RecordSchema {
    * @param {string} ind - indicator key name
    */
   getDataFieldOptions(key, ind) {
-    let codes = []
+    let codes = [];
     const datafield = this.getDataField(key);
     if (datafield[ind] === null) {
       return codes;
     }
     const datafield_codes = datafield[ind]["codes"];
     codes = this.generateDropdownOptions(datafield_codes);
-    
-   
+
     return codes;
   }
-
 }

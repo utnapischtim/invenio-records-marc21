@@ -6,35 +6,21 @@
 // modify it under the terms of the MIT License; see LICENSE file for more
 // details.
 
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
-import {
-  TextField,
-} from 'react-invenio-forms';
+import { TextField } from "react-invenio-forms";
 
 export class MetadataField extends Component {
   render() {
-    const { fieldPath} =
-      this.props;
+    const { fieldPath } = this.props;
     return (
       <>
-        <TextField   
-          fieldPath={`${fieldPath}.id`}  
-          width={3} 
-          required/>
-        <TextField   
-          fieldPath={`${fieldPath}.ind1`}  
-          width={2}/>
-        <TextField   
-          fieldPath={`${fieldPath}.ind2`}  
-          width={2}/>
-        <TextField   
-          fieldPath={`${fieldPath}.subfield`} 
-          width={15} 
-          required/>
+        <TextField fieldPath={`${fieldPath}.id`} width={3} required />
+        <TextField fieldPath={`${fieldPath}.ind1`} width={2} />
+        <TextField fieldPath={`${fieldPath}.ind2`} width={2} />
+        <TextField fieldPath={`${fieldPath}.subfield`} width={15} required />
       </>
-
     );
   }
 }
@@ -46,5 +32,5 @@ MetadataField.propTypes = {
 };
 
 MetadataField.defaultProps = {
-  helpText: '',
+  helpText: "",
 };

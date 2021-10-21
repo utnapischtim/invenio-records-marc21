@@ -6,13 +6,13 @@
 // modify it under the terms of the MIT License; see LICENSE file for more
 // details.
 
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import { FastField } from 'formik';
-import _set from 'lodash/set';
-import { FieldLabel } from 'react-invenio-forms';
-import { Card, Form, Button } from 'semantic-ui-react';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import { FastField } from "formik";
+import _set from "lodash/set";
+import { FieldLabel } from "react-invenio-forms";
+import { Card, Form, Button } from "semantic-ui-react";
 
 class TemplateFieldComponent extends Component {
   constructor(props) {
@@ -24,34 +24,35 @@ class TemplateFieldComponent extends Component {
     this.formik.form.setValues(template);
   }
 
-
   render() {
-    const {
-      fieldPath,
-      templates,
-      label,
-      labelIcon,
-    } = this.props;
+    const { fieldPath, templates, label, labelIcon } = this.props;
     return (
       <Card className="templates">
         <Card.Content>
           <Form.Field>
-            <FieldLabel htmlFor={`${fieldPath}.template`} icon={labelIcon} label={label} />
+            <FieldLabel
+              htmlFor={`${fieldPath}.template`}
+              icon={labelIcon}
+              label={label}
+            />
 
             {templates.map((value, index, array) => {
-                const arrayPath = fieldPath;
-                const indexPath = index;
-                const key = `${arrayPath}.${indexPath}`;
-                return (
-                    <>
-                    <Button key={key} onClick={() => this.setTemplate(value.values)} index={index} fluid>
-                      {value.name}
-                    </Button>
-                    </>
-                );
-                })}
-            
-
+              const arrayPath = fieldPath;
+              const indexPath = index;
+              const key = `${arrayPath}.${indexPath}`;
+              return (
+                <>
+                  <Button
+                    key={key}
+                    onClick={() => this.setTemplate(value.values)}
+                    index={index}
+                    fluid
+                  >
+                    {value.name}
+                  </Button>
+                </>
+              );
+            })}
           </Form.Field>
         </Card.Content>
       </Card>
@@ -61,7 +62,6 @@ class TemplateFieldComponent extends Component {
 
 class FormikTemplateField extends Component {
   render() {
-  
     return (
       <FastField
         name={this.props.fieldPath}
@@ -74,11 +74,11 @@ class FormikTemplateField extends Component {
 }
 
 var TemplateJson = PropTypes.shape({
-    active: PropTypes.string,
-    name: PropTypes.string.isRequired,
-    values: PropTypes.object.isRequired,
-    created_at: PropTypes.string,
-  })
+  active: PropTypes.string,
+  name: PropTypes.string.isRequired,
+  values: PropTypes.object.isRequired,
+  created_at: PropTypes.string,
+});
 
 FormikTemplateField.propTypes = {
   fieldPath: PropTypes.string.isRequired,
@@ -88,11 +88,10 @@ FormikTemplateField.propTypes = {
 };
 
 FormikTemplateField.defaultProps = {
-  fieldPath: 'template',
+  fieldPath: "template",
 };
 
-const mapStateToProps = (state) => ({
-});
+const mapStateToProps = (state) => ({});
 
 export const TemplateField = connect(
   mapStateToProps,

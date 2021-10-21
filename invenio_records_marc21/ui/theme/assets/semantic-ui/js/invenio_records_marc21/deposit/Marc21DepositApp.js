@@ -7,24 +7,23 @@
 // details.
 
 import React, { Component } from "react";
-import { Provider } from 'react-redux';
+import { Provider } from "react-redux";
 
 import { configureStore } from "./store";
-import {RecordSchema} from "./RecordSchema";
-import { Marc21Controller } from './Marc21Controller';
-import {Marc21ApiHandler} from './Marc21ApiHandler';
-import {Marc21FormHandler} from './Marc21FormHandler'
-import { Marc21RecordSerializer } from './Marc21RecordSerializer';
-
+import { Marc21RecordSchema } from "./Marc21RecordSchema";
+import { Marc21Controller } from "./Marc21Controller";
+import { Marc21ApiHandler } from "./Marc21ApiHandler";
+import { Marc21FormHandler } from "./Marc21FormHandler";
+import { Marc21RecordSerializer } from "./Marc21RecordSerializer";
 
 export class Marc21DepositApp extends Component {
   constructor(props) {
     super(props);
-    const fileUploader = props.fileUploader
+    const fileUploader = props.fileUploader;
 
     const schema = props.schema
       ? props.schema
-      : new RecordSchema(props.config.link, props.config.schema);
+      : new Marc21RecordSchema(props.config.link, props.config.schema);
 
     const apihandler = new Marc21ApiHandler(props.config.createUrl);
 
@@ -36,7 +35,7 @@ export class Marc21DepositApp extends Component {
       ? props.controller
       : new Marc21Controller(apihandler, schema);
 
-    this.record_init =  recordSerializer.deserialize(props.record)
+    this.record_init = recordSerializer.deserialize(props.record);
 
     const appConfig = {
       config: props.config,
@@ -51,9 +50,8 @@ export class Marc21DepositApp extends Component {
     };
 
     const submitFormData = props.submitFormData
-    ? props.submitFormData
-    : submitFormData;
-
+      ? props.submitFormData
+      : submitFormData;
 
     this.store = configureStore(appConfig);
   }

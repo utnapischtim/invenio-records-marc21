@@ -6,7 +6,6 @@
 // modify it under the terms of the MIT License; see LICENSE file for more
 // details.
 
-
 import { createSearchAppInit } from "@js/invenio_search_ui";
 import {
   Marc21BucketAggregationElement,
@@ -19,7 +18,6 @@ import {
   Marc21ToggleComponent,
   Marc21CountComponent,
 } from "./components";
-
 
 const initSearchApp = createSearchAppInit({
   "BucketAggregation.element": Marc21BucketAggregationElement,
