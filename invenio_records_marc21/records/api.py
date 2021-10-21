@@ -63,7 +63,7 @@ class DraftFile(BaseFileRecord):
     """Marc21 file associated with a marc21 draft model."""
 
     model_cls = models.DraftFile
-    record_cls = LocalProxy(lambda: Marc21Draft)
+    record_cls = None  # defined below
 
 
 class Marc21Draft(Draft):
@@ -100,11 +100,14 @@ class Marc21Draft(Draft):
     bucket = ModelField(dump=False)
 
 
+DraftFile.record_cls = Marc21Draft
+
+
 class RecordFile(BaseFileRecord):
     """Marc21 record file API."""
 
     model_cls = models.RecordFile
-    record_cls = LocalProxy(lambda: Marc21Record)
+    record_cls = None  # defined below
 
 
 class Marc21Record(Record):
@@ -141,3 +144,6 @@ class Marc21Record(Record):
     bucket_id = ModelField(dump=False)
 
     bucket = ModelField(dump=False)
+
+
+RecordFile.record_cls = Marc21Record
