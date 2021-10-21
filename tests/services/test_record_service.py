@@ -100,7 +100,7 @@ def _create_and_publish(service, metadata, identity_simple):
     assert record.id == draft.id
 
     # files attribute in record causes at create change the revision_id twice
-    assert record._record.revision_id == 1
+    assert record._record.revision_id == 2
 
     return record
 
@@ -178,7 +178,7 @@ def test_create_publish_new_version(running_app, metadata):
     assert record_2._record.pid.status == PIDStatus.REGISTERED
 
     # files attribute in record causes at create change the revision_id twice
-    assert record_2._record.revision_id == 1
+    assert record_2._record.revision_id == 2
     assert record_2["id"] != record["id"]
 
 
