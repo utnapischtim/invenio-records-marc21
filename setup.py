@@ -22,6 +22,7 @@ tests_require = [
     "invenio-indexer>=1.2.0",
     "pytest-invenio>=1.4.0,<2.0.0",
     "mock>=4.0.3",
+    "invenio-previewer>=1.3.4",
 ]
 
 # Should follow inveniosoftware/invenio versions
