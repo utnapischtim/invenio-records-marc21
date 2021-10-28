@@ -130,7 +130,6 @@ def record_file_preview(
     **kwargs
 ):
     """Render a preview of the specified file."""
-
     file_previewer = file_metadata.data.get("previewer")
 
     url = url_for(
