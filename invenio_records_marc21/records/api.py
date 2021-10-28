@@ -15,17 +15,19 @@ from __future__ import absolute_import, print_function
 from invenio_drafts_resources.records import Draft, Record
 from invenio_drafts_resources.records.api import ParentRecord as BaseParentRecord
 from invenio_drafts_resources.records.systemfields import ParentField
+from invenio_pidstore.models import PIDStatus
 from invenio_rdm_records.records.systemfields import (
     HasDraftCheckField,
     ParentRecordAccessField,
     RecordAccessField,
 )
-from invenio_records.systemfields import ConstantField, ModelField
+from invenio_records.systemfields import ConstantField, DictField, ModelField
 from invenio_records_resources.records.api import FileRecord as BaseFileRecord
 from invenio_records_resources.records.systemfields import (
     FilesField,
     IndexField,
     PIDField,
+    PIDStatusCheckField,
 )
 from werkzeug.local import LocalProxy
 
@@ -63,7 +65,7 @@ class DraftFile(BaseFileRecord):
     """Marc21 file associated with a marc21 draft model."""
 
     model_cls = models.DraftFile
-    record_cls = LocalProxy(lambda: Marc21Draft)
+    record_cls = None  # defined below
 
 
 class Marc21Draft(Draft):
@@ -100,11 +102,14 @@ class Marc21Draft(Draft):
     bucket = ModelField(dump=False)
 
 
+DraftFile.record_cls = Marc21Draft
+
+
 class RecordFile(BaseFileRecord):
     """Marc21 record file API."""
 
     model_cls = models.RecordFile
-    record_cls = LocalProxy(lambda: Marc21Record)
+    record_cls = None  # defined below
 
 
 class Marc21Record(Record):
@@ -141,3 +146,7 @@ class Marc21Record(Record):
     bucket_id = ModelField(dump=False)
 
     bucket = ModelField(dump=False)
+
+    is_published = PIDStatusCheckField(status=PIDStatus.REGISTERED, dump=True)
+
+    pids = DictField("pids")

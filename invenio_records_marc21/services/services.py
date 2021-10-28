@@ -33,16 +33,18 @@ class Marc21RecordService(RecordService):
     config_name = "MARC21_RECORDS_SERVICE_CONFIG"
     default_config = Marc21RecordServiceConfig
 
-    def _create_data(self, identity, data, metadata, access=None):
+    def _create_data(self, identity, data, metadata, files=False, access=None):
         """Create a data json.
 
         :param identity: Identity of user creating the record.
         :param Metadata metadata: Input data according to the metadata schema.
+        :param bool files: enabledisable file support.
         :param dict access: provide access additional information
         :return data: marc21 record data
         """
         if data is None:
             data = {"metadata": {"xml": metadata.xml, "json": metadata.json}}
+        data["files"] = {"enabled": files}
         if "access" not in data:
             default_access = {
                 "access": {
@@ -57,17 +59,17 @@ class Marc21RecordService(RecordService):
         return data
 
     def create(
-        self, identity, data=None, metadata=Marc21Metadata(), access=None
+        self, identity, data=None, metadata=Marc21Metadata(), files=False, access=None
     ) -> RecordItem:
         """Create a draft record.
 
         :param identity: Identity of user creating the record.
         :param dict data: Input data according to the data schema.
         :param Marc21Metadata metadata: Input data according to the metadata schema.
-        :param links_config: Links configuration.
+         :param bool files: enable/disable file support for the record.
         :param dict access: provide access additional information
         """
-        data = self._create_data(identity, data, metadata, access)
+        data = self._create_data(identity, data, metadata, files, access)
         return super().create(identity, data)
 
     def update_draft(

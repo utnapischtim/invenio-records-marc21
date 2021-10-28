@@ -12,6 +12,7 @@
 
 
 from flask_babelex import gettext as _
+from invenio_drafts_resources.services.records.components import DraftFilesComponent
 from invenio_drafts_resources.services.records.config import (
     RecordServiceConfig,
     SearchDraftsOptions,
@@ -26,7 +27,6 @@ from invenio_records_resources.services import (
     FileServiceConfig,
     pagination_links,
 )
-from invenio_records_resources.services.files.config import FileServiceConfig
 from invenio_records_resources.services.files.links import FileLink
 from invenio_records_resources.services.records.facets import TermsFacet
 from invenio_records_resources.services.records.links import RecordLink
@@ -96,6 +96,7 @@ class Marc21RecordServiceConfig(RecordServiceConfig):
     components = [
         MetadataComponent,
         AccessComponent,
+        DraftFilesComponent,
         PIDComponent,
     ]
 
