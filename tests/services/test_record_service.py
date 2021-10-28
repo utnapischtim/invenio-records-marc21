@@ -210,7 +210,6 @@ def test_embargo_lift_without_draft(mock_arrow, running_app, marc21_record):
     assert record_lifted.access.status.value == "metadata-only"
 
 
-@pytest.mark.skip("Cannot be tested yet!")
 @mock.patch("arrow.utcnow")
 def test_embargo_lift_with_draft(mock_arrow, running_app, marc21_record):
     identity_simple = running_app.identity_simple
@@ -236,14 +235,13 @@ def test_embargo_lift_with_draft(mock_arrow, running_app, marc21_record):
 
     assert record_lifted.access.embargo.active is False
     assert record_lifted.access.protection.files == "public"
-    assert record_lifted.access.protection.metadata == "public"
+    assert record_lifted.access.protection.record == "public"
 
     assert draft_lifted.access.embargo.active is False
     assert draft_lifted.access.protection.files == "public"
-    assert draft_lifted.access.protection.metadata == "public"
+    assert draft_lifted.access.protection.record == "public"
 
 
-@pytest.mark.skip("Cannot be tested yet!")
 @mock.patch("arrow.utcnow")
 def test_embargo_lift_with_updated_draft(mock_arrow, running_app, marc21_record):
     identity_simple = running_app.identity_simple
@@ -278,11 +276,11 @@ def test_embargo_lift_with_updated_draft(mock_arrow, running_app, marc21_record)
 
     assert record_lifted.access.embargo.active is False
     assert record_lifted.access.protection.files == "public"
-    assert record_lifted.access.protection.metadata == "public"
+    assert record_lifted.access.protection.record == "public"
 
     assert draft_lifted.access.embargo.active is False
     assert draft_lifted.access.protection.files == "restricted"
-    assert draft_lifted.access.protection.metadata == "public"
+    assert draft_lifted.access.protection.record == "public"
 
 
 def test_embargo_lift_with_error(running_app, marc21_record):
