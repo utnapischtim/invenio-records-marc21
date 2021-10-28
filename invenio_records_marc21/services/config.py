@@ -27,7 +27,6 @@ from invenio_records_resources.services import (
     FileServiceConfig,
     pagination_links,
 )
-from invenio_records_resources.services.files.config import FileServiceConfig
 from invenio_records_resources.services.files.links import FileLink
 from invenio_records_resources.services.records.facets import TermsFacet
 from invenio_records_resources.services.records.links import RecordLink
