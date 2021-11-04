@@ -31,21 +31,86 @@ This is the initial configuration needed to have things running:
 Service operations
 ------------------
 
+
+Initialization
+~~~~~~~~~~~~~~
+
+
+>>> import os
+>>> db_url = os.environ.get('SQLALCHEMY_DATABASE_URI', 'sqlite://')
+>>> from flask import Flask
+>>> app = Flask('myapp')
+>>> app.config.update({
+...     "JSONSCHEMAS_HOST": "not-used",
+...     "RECORDS_REFRESOLVER_CLS": "invenio_records.resolver.InvenioRefResolver",
+...     "RECORDS_REFRESOLVER_STORE": "invenio_jsonschemas.proxies.current_refresolver_store",
+...     "SQLALCHEMY_DATABASE_URI": db_url,
+...     "SQLALCHEMY_TRACK_MODIFICATIONS": False,
+... })
+
+Initialize Invenio-Records-Marc21 dependencies and Invenio-Records-Marc21 itself:
+
+>>> from invenio_db import InvenioDB
+>>> ext_db = InvenioDB(app)
+>>> from invenio_records import InvenioRecords
+>>> ext_records = InvenioRecords(app)
+>>> from invenio_access import InvenioAccess
+>>> ext_access = InvenioAccess(app)
+>>> from invenio_files_rest import InvenioFilesREST
+>>> ext_rdm = InvenioFilesREST(app)
+>>> from invenio_jsonschemas import InvenioJSONSchemas
+>>> ext_json = InvenioJSONSchemas(app)
+>>> from invenio_search import InvenioSearch
+>>> ext_search = InvenioSearch(app)
+>>> from invenio_rdm_records import InvenioRDMRecords
+>>> ext_rdm = InvenioRDMRecords(app)
+>>> from invenio_records_marc21 import InvenioRecordsMARC21
+>>> ext = InvenioRecordsMARC21(app)
+
+The following examples needs to run in a Flask application context, so
+let's push one:
+
+>>> app.app_context().push()
+
+
+Also, for the examples to work we need to create the database and tables (note,
+in this example we use an in-memory SQLite database by default):
+
+>>> from invenio_db import db
+>>> from sqlalchemy_utils.functions import create_database, database_exists, drop_database
+>>> if database_exists(str(db.engine.url)):
+...     drop_database(str(db.engine.url))
+>>> create_database(str(db.engine.url))
+>>> db.create_all()
+
+
+The Invenio-Records-Marc21 module needs also a location for Files upload, if the
+record contains Files.
+
+>>> import tempfile
+>>> from invenio_files_rest.models import Location
+>>> location_obj = Location(
+...     name="marc21-file-location", uri=tempfile.mkdtemp(), default=True
+... )
+
+>>> from invenio_db import db
+>>> db.session.add(location_obj)
+>>> db.session.commit()
+
 Creation
 ~~~~~~~~
 
 
 Let's **create** a very simple record:
 
->>> from flask import Flask, g
->>> app = Flask(__name__)
-
->>> from invenio_records_marc21 import InvenioRecordsMARC21
->>> ext = InvenioRecordsMARC21(app)
-
 >>> from invenio_records_marc21.proxies import current_records_marc21
->>> service = current_records_marc21.record_resource
->>> draft = service.create(identity=g.identity,data={"metadata": {"title": "The title of the record"}})
+>>> service = current_records_marc21.records_service
+
+>>> from flask_principal import Identity
+>>> from invenio_access import any_user
+>>> identity = Identity(1)
+>>> identity.provides.add(any_user)
+>>> draft = service.create(identity=identity, data={"metadata": {"title": "The title of the record"}})
 
 
 A new row has been added to the database, in the table ``marc21_drafts_metadata``:
@@ -58,8 +123,11 @@ Publish
 
 Let's **publish** our very simple record:
 
-
->>> record = service.publish(identity=g.identity,id_=draft.id)
+>>> from flask_principal import Identity
+>>> from invenio_access import any_user
+>>> identity = Identity(1)
+>>> identity.provides.add(any_user)
+>>> record = service.publish(identity=identity, id_=draft.id)
 
 A new row has been added to the database, in the table ``marc21_records_metadata``:
 this corresponds to the record metadata, second version (version 2). The created
@@ -71,12 +139,16 @@ Service Advanced
 
 The Invenio-Records-Marc21 service provides advanced Record creation functionality.
 
->>> def create(self, identity, data=None, metadata=Marc21Metadata(), files=False, access=None) -> RecordItem:
+.. code-block::
+
+    def create(self, identity, data=None, metadata=Marc21Metadata(), files=False, access=None):
+
+The Create Method of the Marc21 service  takes additional parameters:
 
     :data: Input data according to the data schema.
-    :metadata: Input data according to the metadata schema.
+    :metadata: Input data according to the metadata schema and provided in the module `invenio_records_marc21.services.record.Marc21Metadata`.
     :files: enable/disable file support for the record.
-    :access: provide access additional information
+    :access: provide additional access information.
 
 The api does not only takes  a json like object e.q. `data`. The Records can be created with only the metadata.
 
@@ -100,7 +172,7 @@ The access dict structure required for Invenio-Records-Marc21 records:
 ...     "record": "open/restricted",
 ...     "files": "open/restricted",
 ...     "embargo": {
-...         "active": True/False,
+...         "active": False/True,
 ...         "until": "YYYY-MM-DD",
 ...         "reason": "Reason",
 ...    }

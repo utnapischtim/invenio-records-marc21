@@ -13,6 +13,8 @@ The installation [options] supported for the Marc21 module:
 
   ``docs``
       for documentation building dependencies;
+  ``elasticsearch7``
+      to use elasticsearch version 7 backend;    
   ``postgresql``
       to use PostgreSQL database backend;
   ``tests``
