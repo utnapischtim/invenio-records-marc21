@@ -150,3 +150,6 @@ class Marc21Record(Record):
     is_published = PIDStatusCheckField(status=PIDStatus.REGISTERED, dump=True)
 
     pids = DictField("pids")
+
+
+RecordFile.record_cls = Marc21Record
