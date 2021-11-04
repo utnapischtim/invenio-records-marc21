@@ -18,29 +18,28 @@ from invenio_rdm_records.records.systemfields.access.field.record import (
 from invenio_records_resources.services.files.service import FileService
 from invenio_records_resources.services.records.results import RecordItem
 
-from .config import (
-    Marc21DraftFilesServiceConfig,
-    Marc21RecordFilesServiceConfig,
-    Marc21RecordServiceConfig,
-)
+from .config import Marc21DraftFilesServiceConfig, Marc21RecordFilesServiceConfig
 from .errors import EmbargoNotLiftedError
 from .record import Marc21Metadata
 
 
 class Marc21RecordService(RecordService):
-    """Marc21 record service."""
-
-    config_name = "MARC21_RECORDS_SERVICE_CONFIG"
-    default_config = Marc21RecordServiceConfig
+    """Marc21 record service class."""
 
     def _create_data(self, identity, data, metadata, files=False, access=None):
         """Create a data json.
 
         :param identity: Identity of user creating the record.
-        :param Metadata metadata: Input data according to the metadata schema.
-        :param bool files: enabledisable file support.
+        :type identity: `flask_principal.identity`
+        :param data: Input data according to the data schema.
+        :type data: dict
+        :param metadata: Input data according to the metadata schema.
+        :type metadata: `services.record.Marc21Metadata`
+        :param files: enable/disable file support for the record.
+        :type files: bool
         :param dict access: provide access additional information
-        :return data: marc21 record data
+        :return: marc21 record dict
+        :rtype: dict
         """
         if data is None:
             data = {"metadata": {"xml": metadata.xml, "json": metadata.json}}
@@ -64,10 +63,16 @@ class Marc21RecordService(RecordService):
         """Create a draft record.
 
         :param identity: Identity of user creating the record.
-        :param dict data: Input data according to the data schema.
-        :param Marc21Metadata metadata: Input data according to the metadata schema.
-         :param bool files: enable/disable file support for the record.
+        :type identity: `flask_principal.identity`
+        :param data: Input data according to the data schema.
+        :type data: dict
+        :param metadata: Input data according to the metadata schema.
+        :type metadata: `services.record.Marc21Metadata`
+        :param files: enable/disable file support for the record.
+        :type files: bool
         :param dict access: provide access additional information
+        :return: marc21 record item
+        :rtype: `invenio_records_resources.services.records.results.RecordItem`
         """
         data = self._create_data(identity, data, metadata, files, access)
         return super().create(identity, data)
@@ -84,10 +89,16 @@ class Marc21RecordService(RecordService):
         """Update a draft record.
 
         :param identity: Identity of user creating the record.
-        :param dict data: Input data according to the data schema.
-        :param Marc21Metadata metadata: Input data according to the metadata schema.
-        :param links_config: Links configuration.
+        :type identity: `flask_principal.identity`
+        :param data: Input data according to the data schema.
+        :type data: dict
+        :param metadata: Input data according to the metadata schema.
+        :type metadata: `services.record.Marc21Metadata`
+        :param files: enable/disable file support for the record.
+        :type files: bool
         :param dict access: provide access additional information
+        :return: marc21 record item
+        :rtype: `invenio_records_resources.services.records.results.RecordItem`
         """
         data = self._create_data(identity, data, metadata, access)
         return super().update_draft(id_, identity, data, revision_id)

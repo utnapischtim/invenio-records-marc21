@@ -332,8 +332,19 @@ texinfo_documents = [
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {
     "python": ("https://docs.python.org/", None),
-    # TODO: Configure external documentation references, eg:
-    # 'Flask-Admin': ('https://flask-admin.readthedocs.io/en/latest/', None),
+    # "invenio-celery": ("invenio-celery.readthedocs.io/en/latest/", None),
+    "flask_principal": (
+        "https://flask-principal.readthedocs.io/en/latest/",
+        None,
+    ),
+    "invenio_records_resources": (
+        "https://invenio-records-resources.readthedocs.io/en/latest/",
+        None,
+    ),
+    "invenio_rdm_records": (
+        "https://invenio-rdm-records.readthedocs.io/en/latest/",
+        None,
+    ),
 }
 
 # Autodoc configuraton.

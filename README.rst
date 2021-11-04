@@ -25,3 +25,30 @@ Marc21 datamodel
 Further documentation is available on
 https://invenio-records-marc21.readthedocs.io/
 
+
+Development
+===========
+
+Install
+-------
+
+Choose a version of elasticsearch and a DB, then run:
+
+.. code-block:: console
+    
+    pipenv run pip install -e .[all]
+    pipenv run pip install invenio-search[elasticsearch7]
+    pipenv run pip install invenio-db[postgresql,versioning]
+
+
+Service
+=========
+
+** Create Marc21 Record**
+
+Tests
+=========
+
+.. code-block:: console
+
+    pipenv run ./run-tests.sh
