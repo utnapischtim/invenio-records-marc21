@@ -19,7 +19,7 @@ It will then explain key topics and concepts of this module.
 Getting started
 ---------------
 
-You will learn how to create a new Marc21 records, upload a File and accosiate with the record
+You will learn how to create a new Marc21 records, upload a file and accosiate with the record
 using the programmatic APIs of Invenio-Records-Marc21.
 
 
@@ -110,7 +110,7 @@ Let's **create** a very simple record:
 >>> from invenio_access import any_user
 >>> identity = Identity(1)
 >>> identity.provides.add(any_user)
->>> draft = service.create(identity=identity, data={"metadata": {"title": "The title of the record"}})
+>>> draft = service.create(identity=identity, data={"metadata": {"title_statement": {"title": "The title of the record"}}})
 
 
 A new row has been added to the database, in the table ``marc21_drafts_metadata``:
@@ -177,6 +177,8 @@ The access dict structure required for Invenio-Records-Marc21 records:
 ...         "reason": "Reason",
 ...    }
 ... }
+
+
 
 See :doc:`api` for extensive API documentation.
 
