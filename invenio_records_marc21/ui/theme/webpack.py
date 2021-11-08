@@ -19,25 +19,29 @@ theme = WebpackThemeBundle(
     themes={
         "semantic-ui": dict(
             entry={
+                "invenio-records-marc21-theme": "./less/invenio_records_marc21/theme.less",
+                "invenio-records-marc21-deposit": "./js/invenio_records_marc21/deposit/index.js",
                 "invenio-records-marc21-search": "./js/invenio_records_marc21/search/index.js",
             },
             dependencies={
                 "@babel/runtime": "^7.9.0",
+                "clean-webpack-plugin": "4.0.0",
+                "react-dropzone": "^11.0.3",
+                "react-dnd-html5-backend": "^11.1.3",
+                "prismjs": "1.25.0",
+                "react-redux": "^7.1.0",
                 "formik": "^2.1.4",
-                "luxon": "^1.23.0",
                 "path": "^0.12.7",
+                "axios": "^0.21.1",  # load from website data
+                "luxon": "^1.23.0",
                 "prop-types": "^15.7.2",
                 "react-dnd": "^11.1.3",
-                "react-dnd-html5-backend": "^11.1.3",
-                "react-invenio-forms": "^0.6.3",
-                "react-dropzone": "^11.0.3",
-                "yup": "^0.27.0",
-                "@ckeditor/ckeditor5-build-classic": "^16.0.0",
-                "@ckeditor/ckeditor5-react": "^2.1.0",
+                "marcjs": "^2.0.1",
+                "react-invenio-deposit": "^0.16.1",
+                "react-invenio-forms": "^0.8.7",
             },
             aliases={
-                "themes/marc21": "less/invenio_records_marc21/theme",
-                "@less/invenio_records_marc21": "less/invenio_records_marc21",
+                "@less/invenio_records_marc21": "./less/invenio_records_marc21",
             },
         ),
     },

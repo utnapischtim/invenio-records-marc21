@@ -10,7 +10,11 @@
 
 """Marc21 Theme Package."""
 
-from .views import index, search
+
+from flask_babelex import lazy_gettext as _
+from flask_menu import current_menu
+
+from .views import deposit_create, index, search
 
 
 #
@@ -22,5 +26,6 @@ def init_theme_views(blueprint, app):
 
     blueprint.add_url_rule(routes["index"], view_func=index)
     blueprint.add_url_rule(routes["record-search"], view_func=search)
+    blueprint.add_url_rule(routes["deposit-create"], view_func=deposit_create)
 
     return blueprint

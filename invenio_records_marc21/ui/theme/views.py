@@ -11,6 +11,9 @@
 """Routes for general pages provided by Invenio-Records-Marc21."""
 
 from flask import render_template
+from flask_login import login_required
+
+from .deposit import deposit_config, deposit_templates, empty_record
 
 
 def index():
@@ -21,3 +24,14 @@ def index():
 def search():
     """Search help guide."""
     return render_template("invenio_records_marc21/search.html")
+
+
+@login_required
+def deposit_create():
+    """Create a new deposit page."""
+    return render_template(
+        "invenio_records_marc21/deposit.html",
+        record=empty_record(),
+        templates=deposit_templates(),
+        forms_config=deposit_config(),
+    )

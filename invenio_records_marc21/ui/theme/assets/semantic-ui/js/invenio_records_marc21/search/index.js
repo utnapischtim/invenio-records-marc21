@@ -20,7 +20,6 @@ import {
   Marc21CountComponent,
 } from "./components";
 
-
 const initSearchApp = createSearchAppInit({
   "BucketAggregation.element": Marc21BucketAggregationElement,
   "BucketAggregationValues.element": Marc21RecordFacetsValues,
