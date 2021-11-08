@@ -32,6 +32,7 @@ invenio_search_version = ">=1.4.0,<2.0.0"
 extras_require = {
     "docs": [
         "Sphinx>=3,<4",
+        "sphinx-autodoc-typehints>=1.10.3",
     ],
     "elasticsearch7": [
         "invenio-search[elasticsearch7]{}".format(invenio_search_version),

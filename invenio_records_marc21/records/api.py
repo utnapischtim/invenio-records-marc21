@@ -29,7 +29,6 @@ from invenio_records_resources.records.systemfields import (
     PIDField,
     PIDStatusCheckField,
 )
-from werkzeug.local import LocalProxy
 
 from . import models
 from .systemfields import (

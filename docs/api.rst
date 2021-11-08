@@ -8,8 +8,12 @@
 
 API Docs
 ========
-
 .. automodule:: invenio_records_marc21.ext
+   :members:
+
+Service API
+-----------
+.. autoclass:: invenio_records_marc21.services::Marc21RecordService
    :members:
 
 Views
