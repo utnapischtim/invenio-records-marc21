@@ -178,7 +178,29 @@ The access dict structure required for Invenio-Records-Marc21 records:
 ...    }
 ... }
 
+Now let us put this all together
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+
+>>> from invenio_records_marc21.proxies import current_records_marc21
+>>> service = current_records_marc21.records_service
+
+>>> access = {
+...     "record": "open",
+...     "files": "open",
+...     "embargo": {
+...         "active": False,
+...    }
+... }
+>>> from invenio_records_marc21.services.record import Marc21Metadata
+>>> from flask_principal import Identity
+>>> from invenio_access import any_user
+>>> identity = Identity(1)
+>>> identity.provides.add(any_user)
+>>> metadata = Marc21Metadata()
+>>> metadata.xml = "<record><leader>00000nam a2200000zca4500</leader></record>"
+>>> draft = service.create(identity=identity, metadata=metadata, access=access)
+>>> record = service.publish(identity=identity, id_=draft.id)
 
 See :doc:`api` for extensive API documentation.
 
