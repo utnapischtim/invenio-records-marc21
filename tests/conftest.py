@@ -31,15 +31,19 @@ def embargoed_record():
     embargoed_record = {
         "metadata": {"json": "test"},
         "access": {
+            "record": "restricted",
             "files": "restricted",
             "status": "embargoed",
             "embargo": {
                 "active": True,
-                "until": (arrow.utcnow().datetime + timedelta(days=2)).strftime(
+                "until": (arrow.utcnow().datetime + timedelta(days=-365)).strftime(
                     "%Y-%m-%d"
                 ),
                 "reason": None,
             },
+        },
+        "files": {
+            "enabled": False,  # Most tests don't care about files
         },
     }
     return embargoed_record
@@ -53,12 +57,13 @@ def marc21_record():
         "access": {
             "files": "public",
             "status": "public",
-            "metadata": "public",
+            "record": "public",
             "embargo": {
                 "active": False,
                 "reason": None,
             },
         },
+        "files": {"enabled": False},
     }
     return marc21_record
 

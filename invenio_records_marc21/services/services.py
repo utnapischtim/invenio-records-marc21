@@ -10,13 +10,14 @@
 
 """Marc21 Record Service."""
 
-import arrow
 from invenio_db import db
 from invenio_drafts_resources.services.records import RecordService
+from invenio_rdm_records.records.systemfields.access.field.record import (
+    AccessStatusEnum,
+)
 from invenio_records_resources.services.files.service import FileService
 from invenio_records_resources.services.records.results import RecordItem
 
-from ..records.systemfields.access import AccessStatusEnum
 from .config import (
     Marc21DraftFilesServiceConfig,
     Marc21RecordFilesServiceConfig,
@@ -32,22 +33,24 @@ class Marc21RecordService(RecordService):
     config_name = "MARC21_RECORDS_SERVICE_CONFIG"
     default_config = Marc21RecordServiceConfig
 
-    def _create_data(self, identity, data, metadata, access=None):
+    def _create_data(self, identity, data, metadata, files=False, access=None):
         """Create a data json.
 
         :param identity: Identity of user creating the record.
         :param Metadata metadata: Input data according to the metadata schema.
+        :param bool files: enabledisable file support.
         :param dict access: provide access additional information
         :return data: marc21 record data
         """
         if data is None:
             data = {"metadata": {"xml": metadata.xml, "json": metadata.json}}
+        data["files"] = {"enabled": files}
         if "access" not in data:
             default_access = {
                 "access": {
                     "owned_by": [{"user": identity.id}],
-                    "metadata": AccessStatusEnum.PUBLIC.value,
-                    "files": AccessStatusEnum.PUBLIC.value,
+                    "metadata": AccessStatusEnum.OPEN.value,
+                    "files": AccessStatusEnum.OPEN.value,
                 },
             }
             if access is not None:
@@ -56,17 +59,17 @@ class Marc21RecordService(RecordService):
         return data
 
     def create(
-        self, identity, data=None, metadata=Marc21Metadata(), access=None
+        self, identity, data=None, metadata=Marc21Metadata(), files=False, access=None
     ) -> RecordItem:
         """Create a draft record.
 
         :param identity: Identity of user creating the record.
         :param dict data: Input data according to the data schema.
         :param Marc21Metadata metadata: Input data according to the metadata schema.
-        :param links_config: Links configuration.
+         :param bool files: enable/disable file support for the record.
         :param dict access: provide access additional information
         """
-        data = self._create_data(identity, data, metadata, access)
+        data = self._create_data(identity, data, metadata, files, access)
         return super().create(identity, data)
 
     def update_draft(
@@ -91,7 +94,7 @@ class Marc21RecordService(RecordService):
 
     def _lift_embargo_from(self, record):
         """Lifts embargo from record or draft."""
-        if not record.access.embargo.lift():
+        if not record.access.lift_embargo():
             raise EmbargoNotLiftedError(record["id"])
         record.access.protection.metadata = "public"
         record.access.protection.files = "public"

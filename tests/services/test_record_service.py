@@ -100,7 +100,7 @@ def _create_and_publish(service, metadata, identity_simple):
     assert record.id == draft.id
 
     # files attribute in record causes at create change the revision_id twice
-    assert record._record.revision_id == 1
+    assert record._record.revision_id == 2
 
     return record
 
@@ -178,7 +178,7 @@ def test_create_publish_new_version(running_app, metadata):
     assert record_2._record.pid.status == PIDStatus.REGISTERED
 
     # files attribute in record causes at create change the revision_id twice
-    assert record_2._record.revision_id == 1
+    assert record_2._record.revision_id == 2
     assert record_2["id"] != record["id"]
 
 
@@ -206,8 +206,8 @@ def test_embargo_lift_without_draft(mock_arrow, running_app, marc21_record):
 
     assert not record_lifted.access.embargo.active
     assert record_lifted.access.protection.files == "public"
-    assert record_lifted.access.protection.metadata == "public"
-    assert record_lifted.access.status.value == "public"
+    assert record_lifted.access.protection.record == "public"
+    assert record_lifted.access.status.value == "metadata-only"
 
 
 @mock.patch("arrow.utcnow")
@@ -235,11 +235,11 @@ def test_embargo_lift_with_draft(mock_arrow, running_app, marc21_record):
 
     assert record_lifted.access.embargo.active is False
     assert record_lifted.access.protection.files == "public"
-    assert record_lifted.access.protection.metadata == "public"
+    assert record_lifted.access.protection.record == "public"
 
     assert draft_lifted.access.embargo.active is False
     assert draft_lifted.access.protection.files == "public"
-    assert draft_lifted.access.protection.metadata == "public"
+    assert draft_lifted.access.protection.record == "public"
 
 
 @mock.patch("arrow.utcnow")
@@ -276,11 +276,11 @@ def test_embargo_lift_with_updated_draft(mock_arrow, running_app, marc21_record)
 
     assert record_lifted.access.embargo.active is False
     assert record_lifted.access.protection.files == "public"
-    assert record_lifted.access.protection.metadata == "public"
+    assert record_lifted.access.protection.record == "public"
 
     assert draft_lifted.access.embargo.active is False
     assert draft_lifted.access.protection.files == "restricted"
-    assert draft_lifted.access.protection.metadata == "public"
+    assert draft_lifted.access.protection.record == "public"
 
 
 def test_embargo_lift_with_error(running_app, marc21_record):

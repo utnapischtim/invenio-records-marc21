@@ -15,24 +15,29 @@ from __future__ import absolute_import, print_function
 from invenio_drafts_resources.records import Draft, Record
 from invenio_drafts_resources.records.api import ParentRecord as BaseParentRecord
 from invenio_drafts_resources.records.systemfields import ParentField
-from invenio_records.systemfields import ConstantField, ModelField
+from invenio_pidstore.models import PIDStatus
+from invenio_rdm_records.records.systemfields import (
+    HasDraftCheckField,
+    ParentRecordAccessField,
+    RecordAccessField,
+)
+from invenio_records.systemfields import ConstantField, DictField, ModelField
 from invenio_records_resources.records.api import FileRecord as BaseFileRecord
 from invenio_records_resources.records.systemfields import (
     FilesField,
     IndexField,
     PIDField,
+    PIDStatusCheckField,
 )
 from werkzeug.local import LocalProxy
 
 from . import models
 from .systemfields import (
-    HasDraftField,
     MarcDraftProvider,
     MarcPIDFieldContext,
     MarcRecordProvider,
     MarcResolver,
 )
-from .systemfields.access import ParentRecordAccessField, RecordAccessField
 
 
 #
@@ -60,7 +65,7 @@ class DraftFile(BaseFileRecord):
     """Marc21 file associated with a marc21 draft model."""
 
     model_cls = models.DraftFile
-    record_cls = LocalProxy(lambda: Marc21Draft)
+    record_cls = None  # defined below
 
 
 class Marc21Draft(Draft):
@@ -90,18 +95,21 @@ class Marc21Draft(Draft):
         delete=False,
     )
     access = RecordAccessField()
-    has_draft = HasDraftField()
+    has_draft = HasDraftCheckField()
 
     bucket_id = ModelField(dump=False)
 
     bucket = ModelField(dump=False)
 
 
+DraftFile.record_cls = Marc21Draft
+
+
 class RecordFile(BaseFileRecord):
     """Marc21 record file API."""
 
     model_cls = models.RecordFile
-    record_cls = LocalProxy(lambda: Marc21Record)
+    record_cls = None  # defined below
 
 
 class Marc21Record(Record):
@@ -133,8 +141,15 @@ class Marc21Record(Record):
     )
 
     access = RecordAccessField()
-    has_draft = HasDraftField(Marc21Draft)
+    has_draft = HasDraftCheckField(Marc21Draft)
 
     bucket_id = ModelField(dump=False)
 
     bucket = ModelField(dump=False)
+
+    is_published = PIDStatusCheckField(status=PIDStatus.REGISTERED, dump=True)
+
+    pids = DictField("pids")
+
+
+RecordFile.record_cls = Marc21Record

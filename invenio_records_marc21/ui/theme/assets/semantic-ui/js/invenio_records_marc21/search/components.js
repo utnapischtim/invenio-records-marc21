@@ -27,10 +27,20 @@ import Overridable from "react-overridable";
 import { SearchBar, SearchApp } from "@js/invenio_search_ui/components";
 
 export const Marc21RecordResultsListItem = ({ result, index }) => {
-  const createdDate = _get(result, "ui.created", "No creation date found.");
-
-  const publicationDate = _get(result, "ui.updated", "No update date found.");
-  const access = _get(result, ["ui", "access"], []);
+  
+  const createdDate = _get(
+    result,
+    "ui.created",
+    "No creation date found."
+  );
+  
+  const publicationDate = _get(
+    result,
+    "ui.updated",
+    "No update date found."
+  );
+  const access = _get(result, ["ui", "access_status"], []);
+  
   const access_id = _get(access, "id", "public");
   const access_status = _get(access, "title", "Public");
   const access_icon = _get(access, "icon", "unlock");

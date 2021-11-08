@@ -6,6 +6,7 @@
 // modify it under the terms of the MIT License; see LICENSE file for more
 // details.
 
+
 import { createSearchAppInit } from "@js/invenio_search_ui";
 import {
   Marc21BucketAggregationElement,

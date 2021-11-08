@@ -12,6 +12,7 @@
 
 
 from flask_babelex import gettext as _
+from invenio_drafts_resources.services.records.components import DraftFilesComponent
 from invenio_drafts_resources.services.records.config import (
     RecordServiceConfig,
     SearchDraftsOptions,
@@ -19,18 +20,19 @@ from invenio_drafts_resources.services.records.config import (
     is_draft,
     is_record,
 )
+from invenio_rdm_records.records.systemfields.access.field.record import (
+    AccessStatusEnum,
+)
 from invenio_records_resources.services import (
     ConditionalLink,
     FileServiceConfig,
     pagination_links,
 )
-from invenio_records_resources.services.files.config import FileServiceConfig
 from invenio_records_resources.services.files.links import FileLink
 from invenio_records_resources.services.records.facets import TermsFacet
 from invenio_records_resources.services.records.links import RecordLink
 
 from ..records import Marc21Draft, Marc21Parent, Marc21Record
-from ..records.systemfields.access import AccessStatusEnum
 from .components import AccessComponent, MetadataComponent, PIDComponent
 from .permissions import Marc21RecordPermissionPolicy
 from .schemas import Marc21ParentSchema, Marc21RecordSchema
@@ -39,7 +41,7 @@ access_right_facet = TermsFacet(
     field="access.metadata",
     label=_("Access status"),
     value_labels={
-        AccessStatusEnum.PUBLIC.value: _("Public"),
+        AccessStatusEnum.OPEN.value: _("Public"),
         AccessStatusEnum.EMBARGOED.value: _("Embargoed"),
         AccessStatusEnum.RESTRICTED.value: _("Restricted"),
     },
@@ -95,6 +97,7 @@ class Marc21RecordServiceConfig(RecordServiceConfig):
     components = [
         MetadataComponent,
         AccessComponent,
+        DraftFilesComponent,
         PIDComponent,
     ]
 

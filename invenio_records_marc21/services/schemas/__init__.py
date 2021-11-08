@@ -9,14 +9,15 @@
 # details.
 
 """Marc21 record schemas."""
-
 from invenio_drafts_resources.services.records.schema import ParentSchema
+from invenio_rdm_records.services.schemas.access import AccessSchema
+from invenio_rdm_records.services.schemas.parent.access import ParentAccessSchema
 from invenio_records_resources.services.records.schema import BaseRecordSchema
 from marshmallow.decorators import post_dump
 from marshmallow.fields import Boolean, Integer, List, Nested, Str
 from marshmallow_utils.fields import NestedAttribute
+from marshmallow_utils.permissions import FieldPermissionsMixin
 
-from .access import AccessSchema, ParentAccessSchema
 from .files import FilesSchema
 from .metadata import MetadataField
 from .pids import PIDSchema
@@ -26,12 +27,19 @@ from .versions import VersionsSchema
 class Marc21ParentSchema(ParentSchema):
     """Record schema."""
 
+    field_dump_permissions = {
+        "access": "manage",
+    }
+
     access = Nested(ParentAccessSchema)
 
 
-class Marc21RecordSchema(BaseRecordSchema):
+class Marc21RecordSchema(BaseRecordSchema, FieldPermissionsMixin):
     """Record schema."""
 
+    field_load_permissions = {
+        "files": "update_draft",
+    }
     id = Str()
     # pid
     pids = List(NestedAttribute(PIDSchema))
@@ -40,7 +48,7 @@ class Marc21RecordSchema(BaseRecordSchema):
 
     metadata = MetadataField(attribute="metadata")
     access = NestedAttribute(AccessSchema)
-    files = NestedAttribute(FilesSchema, dump_only=True)
+    files = NestedAttribute(FilesSchema)
 
     created = Str(dump_only=True)
     updated = Str(dump_only=True)

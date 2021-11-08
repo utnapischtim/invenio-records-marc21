@@ -13,10 +13,9 @@
 
 
 """Routes for record-related pages provided by Invenio-Records-Marc21."""
-
 from functools import wraps
 
-from flask import g
+from flask import g, request
 from invenio_records_resources.services.errors import PermissionDeniedError
 from sqlalchemy.orm.exc import NoResultFound
 
@@ -73,6 +72,21 @@ def pass_record_or_draft(f):
     return view
 
 
+def pass_is_preview(f):
+    """Decorate a view to check if it's a preview."""
+
+    @wraps(f)
+    def view(**kwargs):
+        preview = request.args.get("preview")
+        is_preview = False
+        if preview == "1":
+            is_preview = True
+        kwargs["is_preview"] = is_preview
+        return f(**kwargs)
+
+    return view
+
+
 def pass_record_files(f):
     """Decorate a view to pass a record's files using the files service."""
 
@@ -100,6 +114,72 @@ def pass_record_files(f):
         except PermissionDeniedError:
             kwargs["files"] = None
 
+        return f(**kwargs)
+
+    return view
+
+
+# NOTE:
+# copy pasted code from invenio_app_rdm/records_ui/views/decorators.py to use
+# the local file_service service
+def pass_file_item(f):
+    """Decorate a view to pass a file item using the files service."""
+
+    @wraps(f)
+    def view(**kwargs):
+        pid_value = kwargs.get("pid_value")
+        file_key = kwargs.get("filename")
+        is_preview = kwargs.get("is_preview")
+
+        def get_record_file_content():
+            """Retrieve record file content."""
+            return files_service().get_file_content(
+                id_=pid_value, file_key=file_key, identity=g.identity
+            )
+
+        if is_preview:
+            try:
+                item = draft_files_service().get_file_content(
+                    id_=pid_value, file_key=file_key, identity=g.identity
+                )
+            except NoResultFound:
+                item = get_record_file_content()
+        else:
+            item = get_record_file_content()
+        kwargs["file_item"] = item
+        return f(**kwargs)
+
+    return view
+
+
+# NOTE:
+# copy pasted code from invenio_app_rdm/records_ui/views/decorators.py to use
+# the local file_service service
+def pass_file_metadata(f):
+    """Decorate a view to pass a file's metadata using the files service."""
+
+    @wraps(f)
+    def view(**kwargs):
+        pid_value = kwargs.get("pid_value")
+        file_key = kwargs.get("filename")
+        is_preview = kwargs.get("is_preview")
+
+        def get_record_file_content():
+            """Retrieve record file metadata."""
+            return files_service().read_file_metadata(
+                id_=pid_value, file_key=file_key, identity=g.identity
+            )
+
+        if is_preview:
+            try:
+                files = draft_files_service().read_file_metadata(
+                    id_=pid_value, file_key=file_key, identity=g.identity
+                )
+            except NoResultFound:
+                files = get_record_file_content()
+        else:
+            files = get_record_file_content()
+        kwargs["file_metadata"] = files
         return f(**kwargs)
 
     return view

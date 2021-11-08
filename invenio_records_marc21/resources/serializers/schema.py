@@ -10,8 +10,6 @@
 
 """Schemas for marc21 records serializers."""
 
-from functools import partial
-
 from marshmallow import Schema
 from marshmallow_utils.fields import SanitizedUnicode
 
@@ -28,7 +26,7 @@ class Marc21Schema(Schema):
         """Meta class to accept unknwon fields."""
 
         additional = (
-            "access",
+            "access_status",
             "created",
             "updated",
             "links",
