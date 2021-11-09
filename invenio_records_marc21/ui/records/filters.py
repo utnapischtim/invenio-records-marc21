@@ -11,19 +11,13 @@
 """Filters to be used in the Jinja templates."""
 
 import re
-from flask_babelex import gettext as _
+
 import idutils
 from dojson.contrib.marc21.utils import create_record
 from dojson.contrib.to_marc21 import to_marc21
 from flask import current_app
 
-
-PERSONAL_CODES = {
-    "aut": _("Author")
-}
-
-def get_personal_code(code):
-    return PERSONAL_CODES.get(code, code)
+from .wrappers import get_personal_code
 
 
 def pid_url(identifier, scheme=None, url_scheme="https"):
