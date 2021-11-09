@@ -18,7 +18,7 @@ from .errors import (
     record_permission_denied_error,
     record_tombstone_error,
 )
-from .filters import pid_url, sanitize_title, personal_name
+from .filters import personal_name, pid_url, sanitize_title
 from .records import (
     record_detail,
     record_export,

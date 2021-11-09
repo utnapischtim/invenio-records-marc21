@@ -58,10 +58,10 @@ def sanitize_title(title):
     """Sanitize record title."""
     return re.sub("[<>]", "", title)
 
+
 def personal_name(titles):
     """Personal Name for the Frontend."""
     name = titles.get("personal_name")
     code = get_personal_code(titles.get("relator_code"))
 
-    return f"{name}[{code}]" 
-
+    return f"{name}[{code}]"
