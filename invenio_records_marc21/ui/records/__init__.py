@@ -18,7 +18,7 @@ from .errors import (
     record_permission_denied_error,
     record_tombstone_error,
 )
-from .filters import pid_url, sanitize_title
+from .filters import pid_url, sanitize_title, personal_name
 from .records import (
     record_detail,
     record_export,
@@ -61,4 +61,5 @@ def init_records_views(blueprint, app):
 
     blueprint.add_app_template_filter(pid_url)
     blueprint.add_app_template_filter(sanitize_title)
+    blueprint.add_app_template_filter(personal_name)
     return blueprint
