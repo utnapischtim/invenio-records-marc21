@@ -58,4 +58,4 @@ def personal_name(titles):
     name = titles.get("personal_name")
     code = get_personal_code(titles.get("relator_code"))
 
-    return f"{name}[{code}]"
+    return f"{name} [{code}]"

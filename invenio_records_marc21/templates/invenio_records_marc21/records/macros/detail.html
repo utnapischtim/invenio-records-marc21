@@ -43,7 +43,7 @@
 
 {% macro show_personal_name(titles) %}
   {% for key, value in titles.items() %}
-    {% if key != "type_of_personal_name_entry_element" %}
+    {% if key != "type_of_personal_name_entry_element" and key != "relator_code" %}
       {% if key == "personal_name" %}
         {% set key = _("Name") %}
         {% set value = titles | personal_name %}
