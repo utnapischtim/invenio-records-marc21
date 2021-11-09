@@ -11,12 +11,12 @@
 {% set details = marcrecord %}
 <h4 class="ui header">{{ _('Details')}}</h4>
 <hr class="thin-line">
-<dd class="top-bottom-padded" id="marc21-landing-page-details">  
+<div class="top-bottom-padded" id="marc21-landing-page-details">  
   {{ show_detail(_('Author'), show_personal_name(details.main_entry_personal_name)) if details.main_entry_personal_name }}
   {{ show_detail(_('Publisher'), show_publisher(details.production_publication_distribution_manufacture_and_copyright_notice)) if details.production_publication_distribution_manufacture_and_copyright_notice }}
   {{ show_detail(_('Publication date'), record.ui.publication_date_l10n) if record.ui.publication_date_l10n }}
   {{ show_detail(_('Dissertation'), show_dissertation(details.dissertation_note)) if details.dissertation_note }}
   {{ show_detail(_('Location and Access'), show_location_and_access(details.electronic_location_and_access)) if details.electronic_location_and_access }}
   {{ show_detail(_('Metadata'), show_index_term_genre(details.index_term_genre_form)) if details.index_term_genre_form }}
-</dd>
+</div>
 
