@@ -40,17 +40,13 @@
 </div>
 {%- endmacro %}
 
-{% macro show_subtitles(titles) %}
+
+{% macro show_personal_name(titles) %}
   {% for key, value in titles.items() %}
-    {% if key != "title" and key != "nonfiling_characters" %}
-      {% if key == "statement_of_responsibility" %}
-        {% set key = _("Responsible") %}
-      {% elif key == "title_added_entry"%}
-        {% set key = _("Added Title") %}
-      {% elif key == "title_added_entry"%}
-        {% set key = _("Added Title") %}
-      {% elif key == "remainder_of_title"%}
-        {% set key = _("Subtitle") %}
+    {% if key != "type_of_personal_name_entry_element" %}
+      {% if key == "personal_name" %}
+        {% set key = _("Name") %}
+        {% set value = titles | personal_name %}
       {% endif %}
     {{ show_detail(key, value) }}
     {% endif %}
@@ -61,18 +57,18 @@
 
 {% macro show_publisher(publishers) %}
   {% for key, value in publishers.items() %}
-    {% if key == "sequence_of_statements" %}
-      {% set key = _("Sequence") %}
-    {% elif key == "name_of_producer_publisher_distributor_manufacturer"%}
-      {% set key = _("Publisher") %}
-    {% elif key == "place_of_production_publication_distribution_manufacture"%}
-      {% set key = _("Place of publication") %}
-    {% elif key == "date_of_production_publication_distribution_manufacture_or_copyright_notice"%}
-      {% set key = _("Publication Date") %}
-    {% elif key == "function_of_entity"%}
-      {% set key = _("Function") %}     
+    {% if key != "sequence_of_statements" %}
+      {% if key == "name_of_producer_publisher_distributor_manufacturer"%}
+        {% set key = _("Publisher") %}
+      {% elif key == "place_of_production_publication_distribution_manufacture"%}
+        {% set key = _("Place of publication") %}
+      {% elif key == "date_of_production_publication_distribution_manufacture_or_copyright_notice"%}
+        {% set key = _("Publication Date") %}
+      {% elif key == "function_of_entity"%}
+        {% set key = _("Function") %}     
+      {% endif %}
+      {{ show_detail(key, value) }}
     {% endif %}
-    {{ show_detail(key, value) }}
   {% endfor %}
 {%- endmacro %}
 
@@ -94,34 +90,32 @@
 
 {% macro show_location_and_access(location_and_access) %}
   {% for key, value in location_and_access.items() %}
-    {%set type = "str" %}
-    {% if key == "uniform_resource_identifier" %}
-      {% set key = _("Link") %}
-      {% set type = "link" %}
-    {% elif key == "nonpublic_note"%}
-      {% set key = _("Note") %}
-    {% elif key == "materials_specified"%}
-      {% set key = _("Materials") %}
-    {% elif key == "access_method"%}
-      {% set key = _("Access Method") %}
+    {% if key != "access_method" %}
+      {%set type = "str" %}
+      {% if key == "uniform_resource_identifier" %}
+        {% set key = _("Link") %}
+        {% set type = "link" %}
+      {% elif key == "nonpublic_note"%}
+        {% set key = _("Note") %}
+      {% elif key == "materials_specified"%}
+        {% set key = _("Materials") %}
+      {% endif %}
+      {{ show_detail(key, value, type) }}
     {% endif %}
-    {{ show_detail(key, value, type) }}
   {% endfor %}
 {%- endmacro %}
 
 
 {% macro show_index_term_genre(index_term_genre) %}
   {% for key, value in index_term_genre.items() %}
-    {% if key == "authority_record_control_number" %}
-      {% set key = _("Control number") %}
-    {% elif key == "genre_form_data_or_focus_term"%}
-      {% set key = _("Type") %}
-    {% elif key == "type_of_heading"%}
-      {% set key = _("Heading") %}
-    {% elif key == "source_of_term"%}
-      {% set key = _("Source") %}
+    {% if key != "source_of_term" and  key != "type_of_heading" %}
+      {% if key == "authority_record_control_number" %}
+        {% set key = _("Control number") %}
+      {% elif key == "genre_form_data_or_focus_term"%}
+        {% set key = _("Type") %}
+      {% endif %}
+      {{ show_detail(key, value) }}
     {% endif %}
-    {{ show_detail(key, value) }}
   {% endfor %}
 {%- endmacro %}
 
