@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: invenio-records-marc21 0.2.1\n"
 "Report-Msgid-Bugs-To: info@tugraz.at\n"
-"POT-Creation-Date: 2021-11-09 08:02+0100\n"
-"PO-Revision-Date: 2021-11-09 08:02+0100\n"
+"POT-Creation-Date: 2021-11-09 10:57+0100\n"
+"PO-Revision-Date: 2021-11-09 10:58+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: de\n"
 "Language-Team: de <LL@li.org>\n"
@@ -120,13 +120,13 @@ msgid "Details"
 msgstr ""
 
 #: invenio_records_marc21/templates/invenio_records_marc21/records/helpers/details.html:15
-#: invenio_records_marc21/templates/invenio_records_marc21/records/macros/detail.html:53
-msgid "Subtitle"
+#: invenio_records_marc21/ui/records/filters.py:22
+msgid "Author"
 msgstr ""
 
 #: invenio_records_marc21/templates/invenio_records_marc21/records/helpers/details.html:16
-#: invenio_records_marc21/templates/invenio_records_marc21/records/macros/detail.html:67
-#: invenio_records_marc21/templates/invenio_records_marc21/records/macros/detail.html:135
+#: invenio_records_marc21/templates/invenio_records_marc21/records/macros/detail.html:62
+#: invenio_records_marc21/templates/invenio_records_marc21/records/macros/detail.html:129
 msgid "Publisher"
 msgstr ""
 
@@ -167,67 +167,46 @@ msgstr ""
 msgid "Export"
 msgstr ""
 
-#: invenio_records_marc21/templates/invenio_records_marc21/records/macros/detail.html:47
-msgid "Responsible"
+#: invenio_records_marc21/templates/invenio_records_marc21/records/macros/detail.html:48
+#: invenio_records_marc21/templates/invenio_records_marc21/records/macros/files.html:51
+msgid "Name"
 msgstr ""
 
-#: invenio_records_marc21/templates/invenio_records_marc21/records/macros/detail.html:49
-#: invenio_records_marc21/templates/invenio_records_marc21/records/macros/detail.html:51
-msgid "Added Title"
-msgstr ""
-
-#: invenio_records_marc21/templates/invenio_records_marc21/records/macros/detail.html:65
-#: invenio_records_marc21/templates/invenio_records_marc21/records/macros/detail.html:133
-msgid "Sequence"
-msgstr ""
-
-#: invenio_records_marc21/templates/invenio_records_marc21/records/macros/detail.html:69
-#: invenio_records_marc21/templates/invenio_records_marc21/records/macros/detail.html:137
+#: invenio_records_marc21/templates/invenio_records_marc21/records/macros/detail.html:64
+#: invenio_records_marc21/templates/invenio_records_marc21/records/macros/detail.html:131
 msgid "Place of publication"
 msgstr ""
 
-#: invenio_records_marc21/templates/invenio_records_marc21/records/macros/detail.html:71
+#: invenio_records_marc21/templates/invenio_records_marc21/records/macros/detail.html:66
 msgid "Publication Date"
 msgstr ""
 
-#: invenio_records_marc21/templates/invenio_records_marc21/records/macros/detail.html:73
+#: invenio_records_marc21/templates/invenio_records_marc21/records/macros/detail.html:68
 msgid "Function"
 msgstr ""
 
-#: invenio_records_marc21/templates/invenio_records_marc21/records/macros/detail.html:99
+#: invenio_records_marc21/templates/invenio_records_marc21/records/macros/detail.html:96
 msgid "Link"
 msgstr ""
 
-#: invenio_records_marc21/templates/invenio_records_marc21/records/macros/detail.html:102
+#: invenio_records_marc21/templates/invenio_records_marc21/records/macros/detail.html:99
 msgid "Note"
 msgstr ""
 
-#: invenio_records_marc21/templates/invenio_records_marc21/records/macros/detail.html:104
+#: invenio_records_marc21/templates/invenio_records_marc21/records/macros/detail.html:101
 msgid "Materials"
 msgstr ""
 
-#: invenio_records_marc21/templates/invenio_records_marc21/records/macros/detail.html:106
-msgid "Access Method"
-msgstr ""
-
-#: invenio_records_marc21/templates/invenio_records_marc21/records/macros/detail.html:116
+#: invenio_records_marc21/templates/invenio_records_marc21/records/macros/detail.html:113
 msgid "Control number"
 msgstr ""
 
-#: invenio_records_marc21/templates/invenio_records_marc21/records/macros/detail.html:118
+#: invenio_records_marc21/templates/invenio_records_marc21/records/macros/detail.html:115
 msgid "Type"
 msgstr ""
 
-#: invenio_records_marc21/templates/invenio_records_marc21/records/macros/detail.html:120
-msgid "Heading"
-msgstr ""
-
-#: invenio_records_marc21/templates/invenio_records_marc21/records/macros/detail.html:122
-msgid "Source"
-msgstr ""
-
-#: invenio_records_marc21/templates/invenio_records_marc21/records/macros/files.html:51
-msgid "Name"
+#: invenio_records_marc21/templates/invenio_records_marc21/records/macros/detail.html:127
+msgid "Sequence"
 msgstr ""
 
 #: invenio_records_marc21/templates/invenio_records_marc21/records/macros/files.html:52
