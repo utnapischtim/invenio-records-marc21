@@ -76,11 +76,11 @@
 {% macro show_dissertation(dissertation) %}
   {% for key, value in dissertation.items() %}
     {% if key == "degree_type" %}
-      {% set key = "Dissertation Type" %}
+      {% set key = _("Dissertation Type") %}
     {% elif key == "name_of_granting_institution"%}
-      {% set key = "Institution" %}
+      {% set key = _("Institution") %}
     {% elif key == "year_degree_granted"%}
-      {% set key = "Year of degree" %}
+      {% set key = _("Year of degree") %}
     {% endif %}
     {{ show_detail(key, value) }}
   {% endfor %}

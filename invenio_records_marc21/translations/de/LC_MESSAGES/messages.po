@@ -64,7 +64,7 @@ msgstr ""
 
 #: invenio_records_marc21/templates/invenio_records_marc21/deposit.html:11
 msgid "New upload"
-msgstr ""
+msgstr "Neuer upload"
 
 #: invenio_records_marc21/templates/invenio_records_marc21/index.html:25
 msgid "Type and press enter to search"
@@ -72,7 +72,7 @@ msgstr ""
 
 #: invenio_records_marc21/templates/invenio_records_marc21/record.html:34
 msgid "Creation date"
-msgstr ""
+msgstr "Erstellungsdatum"
 
 #: invenio_records_marc21/templates/invenio_records_marc21/record.html:48
 #: invenio_records_marc21/templates/invenio_records_marc21/records/helpers/files.html:42
@@ -86,7 +86,7 @@ msgstr ""
 
 #: invenio_records_marc21/templates/invenio_records_marc21/tombstone.html:14
 msgid "Gone"
-msgstr ""
+msgstr "Gelöscht"
 
 #: invenio_records_marc21/templates/invenio_records_marc21/tombstone.html:16
 #, python-format
@@ -100,24 +100,24 @@ msgstr ""
 
 #: invenio_records_marc21/templates/invenio_records_marc21/records/export.html:27
 msgid "Back to details"
-msgstr ""
+msgstr "Zurück zu den Details"
 
 #: invenio_records_marc21/templates/invenio_records_marc21/records/details/subjects.html:12
 #: invenio_records_marc21/templates/invenio_records_marc21/records/helpers/subjects.html:12
 msgid "Subjects"
-msgstr ""
+msgstr "Themen"
 
 #: invenio_records_marc21/templates/invenio_records_marc21/records/helpers/authors.html:13
 msgid "Rights Holder(s)"
-msgstr ""
+msgstr "Rechteinhaber"
 
 #: invenio_records_marc21/templates/invenio_records_marc21/records/helpers/description.html:15
 msgid "Desciption"
-msgstr ""
+msgstr "Beschreibung"
 
-#: invenio_records_marc21/templates/invenio_records_marc21/records/helpers/details.html:12
+#: invenio_records_marSsc21/templates/invenio_records_marc21/records/helpers/details.html:12
 msgid "Details"
-msgstr ""
+msgstr "Details"
 
 #: invenio_records_marc21/templates/invenio_records_marc21/records/helpers/details.html:15
 #: invenio_records_marc21/ui/records/wrappers.py:16
@@ -128,11 +128,11 @@ msgstr ""
 #: invenio_records_marc21/templates/invenio_records_marc21/records/macros/detail.html:62
 #: invenio_records_marc21/templates/invenio_records_marc21/records/macros/detail.html:129
 msgid "Publisher"
-msgstr ""
+msgstr "Herausgeber"
 
 #: invenio_records_marc21/templates/invenio_records_marc21/records/helpers/details.html:17
 msgid "Publication date"
-msgstr ""
+msgstr "Erscheinungsdatum"
 
 #: invenio_records_marc21/templates/invenio_records_marc21/records/helpers/details.html:18
 msgid "Dissertation"
@@ -149,28 +149,28 @@ msgstr ""
 #: invenio_records_marc21/templates/invenio_records_marc21/records/helpers/files.html:34
 #: invenio_records_marc21/templates/invenio_records_marc21/records/macros/files.html:101
 msgid "Files"
-msgstr ""
+msgstr "Dateien"
 
 #: invenio_records_marc21/templates/invenio_records_marc21/records/helpers/footer.html:14
 msgid "Upload infromation"
-msgstr ""
+msgstr "Upload infromation"
 
 #: invenio_records_marc21/templates/invenio_records_marc21/records/helpers/footer.html:18
 msgid "Created:"
-msgstr ""
+msgstr "Erstellt:"
 
 #: invenio_records_marc21/templates/invenio_records_marc21/records/helpers/footer.html:18
 msgid "Modified:"
-msgstr ""
+msgstr "Bearbeitet:"
 
 #: invenio_records_marc21/templates/invenio_records_marc21/records/helpers/side_bar.html:10
 msgid "Export"
-msgstr ""
+msgstr "Export"
 
 #: invenio_records_marc21/templates/invenio_records_marc21/records/macros/detail.html:48
 #: invenio_records_marc21/templates/invenio_records_marc21/records/macros/files.html:51
 msgid "Name"
-msgstr ""
+msgstr "Name"
 
 #: invenio_records_marc21/templates/invenio_records_marc21/records/macros/detail.html:64
 #: invenio_records_marc21/templates/invenio_records_marc21/records/macros/detail.html:131
@@ -185,9 +185,21 @@ msgstr ""
 msgid "Function"
 msgstr ""
 
+#: invenio_records_marc21/templates/invenio_records_marc21/records/macros/detail.html:79
+msgid "Dissertation Type"
+msgstr ""
+
+#: invenio_records_marc21/templates/invenio_records_marc21/records/macros/detail.html:81
+msgid "Institution"
+msgstr ""
+
+#: invenio_records_marc21/templates/invenio_records_marc21/records/macros/detail.html:83
+msgid "Year of degree"
+msgstr ""
+
 #: invenio_records_marc21/templates/invenio_records_marc21/records/macros/detail.html:96
 msgid "Link"
-msgstr ""
+msgstr "Link"
 
 #: invenio_records_marc21/templates/invenio_records_marc21/records/macros/detail.html:99
 msgid "Note"

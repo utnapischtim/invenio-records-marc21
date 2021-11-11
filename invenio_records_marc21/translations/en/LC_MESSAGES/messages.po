@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: invenio-records-marc21 0.2.1\n"
 "Report-Msgid-Bugs-To: info@tugraz.at\n"
-"POT-Creation-Date: 2021-11-09 12:13+0100\n"
-"PO-Revision-Date: 2021-11-09 12:13+0100\n"
+"POT-Creation-Date: 2021-11-11 11:13+0100\n"
+"PO-Revision-Date: 2021-11-11 11:14+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
 "Language-Team: en <LL@li.org>\n"
@@ -185,6 +185,18 @@ msgstr ""
 msgid "Function"
 msgstr ""
 
+#: invenio_records_marc21/templates/invenio_records_marc21/records/macros/detail.html:79
+msgid "Dissertation Type"
+msgstr ""
+
+#: invenio_records_marc21/templates/invenio_records_marc21/records/macros/detail.html:81
+msgid "Institution"
+msgstr ""
+
+#: invenio_records_marc21/templates/invenio_records_marc21/records/macros/detail.html:83
+msgid "Year of degree"
+msgstr ""
+
 #: invenio_records_marc21/templates/invenio_records_marc21/records/macros/detail.html:96
 msgid "Link"
 msgstr ""
@@ -250,4 +262,3 @@ msgstr ""
 #: invenio_records_marc21/ui/records/wrappers.py:22
 msgid "Curator"
 msgstr ""
-
