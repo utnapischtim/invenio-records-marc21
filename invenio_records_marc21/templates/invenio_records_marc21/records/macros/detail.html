@@ -41,12 +41,12 @@
 {%- endmacro %}
 
 
-{% macro show_personal_name(titles) %}
-  {% for key, value in titles.items() %}
+{% macro show_personal_name(personal) %}
+  {% for key, value in personal.items() %}
     {% if key != "type_of_personal_name_entry_element" and key != "relator_code" %}
       {% if key == "personal_name" %}
         {% set key = _("Name") %}
-        {% set value = titles | personal_name %}
+        {% set value = personal | personal_name %}
       {% endif %}
     {{ show_detail(key, value) }}
     {% endif %}
