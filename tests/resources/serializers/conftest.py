@@ -169,6 +169,7 @@ def full_record(marc21_record, marc21_metadata):
         "status": "restricted",
     }
     marc21_record["metadata"] = marc21_metadata
+    marc21_record["versions"] = {"index": 1, "is_latest": True, "is_latest_draft": True}
 
     return marc21_record
 
