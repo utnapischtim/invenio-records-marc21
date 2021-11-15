@@ -18,4 +18,12 @@
     </div>
   </div>
   <div style="text-align: center;">
+  <div class="ui segment">
+    <dt><b>{{ _('Versions')}}</b></dt>
+    <hr class="thin-line"/>
+    <dd class="versions">
+      <div id="recordVersions" data-record='{{ record | tojson }}' data-preview='{{ is_preview | tojson }}'></div>
+    </dd>
+  </div>
+  
 </div>
