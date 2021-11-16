@@ -107,7 +107,7 @@ class Marc21RecordService(RecordService):
         """Lifts embargo from record or draft."""
         if not record.access.lift_embargo():
             raise EmbargoNotLiftedError(record["id"])
-        record.access.protection.metadata = "public"
+        record.access.protection.record = "public"
         record.access.protection.files = "public"
 
     def _is_draft_access_field_modified(self, draft, record):
