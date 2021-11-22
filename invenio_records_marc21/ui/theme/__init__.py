@@ -14,7 +14,7 @@
 from flask_babelex import lazy_gettext as _
 from flask_menu import current_menu
 
-from .views import deposit_create, index, search
+from .views import deposit_create, deposit_edit, index, search
 
 
 #
@@ -27,5 +27,6 @@ def init_theme_views(blueprint, app):
     blueprint.add_url_rule(routes["index"], view_func=index)
     blueprint.add_url_rule(routes["record-search"], view_func=search)
     blueprint.add_url_rule(routes["deposit-create"], view_func=deposit_create)
+    blueprint.add_url_rule(routes["deposit-edit"], view_func=deposit_edit)
 
     return blueprint
