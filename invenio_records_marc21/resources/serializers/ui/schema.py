@@ -14,13 +14,19 @@ from functools import partial
 
 from flask_babelex import get_locale
 from invenio_rdm_records.resources.serializers.ui.fields import AccessStatusField
-from invenio_rdm_records.resources.serializers.ui.schema import record_version
 from marshmallow_utils.fields import FormatDate as BaseFormatDatetime
 from marshmallow_utils.fields import Function, SanitizedUnicode
 
 from ..schema import Marc21Schema
 
 FormatDatetime = partial(BaseFormatDatetime, locale=get_locale)
+
+
+def record_version(obj):
+    """Return record's version."""
+    # TODO default should be used the field 251, but that is not yet
+    # implemented in dojson
+    return f"v{obj['versions']['index']}"
 
 
 class Marc21UISchema(Marc21Schema):
