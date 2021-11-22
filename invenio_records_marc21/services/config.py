@@ -110,7 +110,7 @@ class Marc21RecordServiceConfig(RecordServiceConfig):
         "self_html": ConditionalLink(
             cond=is_record,
             if_=RecordLink("{+ui}/marc21/{id}"),
-            else_=RecordLink("{+ui}/marc21/upload/{id}"),
+            else_=RecordLink("{+ui}/marc21/uploads/{id}"),
         ),
         "latest": RecordLink("{+api}/marc21/{id}/versions/latest"),
         "latest_html": RecordLink("{+ui}/marc21/{id}/latest"),
