@@ -41,7 +41,7 @@ def empty_record():
     """Create an empty record."""
     record = dump_empty(Marc21RecordSchema)
 
-    record["metadata"] = ""
+    record["metadata"] = "<record> <leader>00000nam a2200000zca4500</leader></record>"
     record["is_published"] = False
     record["files"] = {"enabled": True}
     return record
