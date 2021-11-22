@@ -32,7 +32,7 @@
             <div class="left floated left aligned column">
               <div class="twelve wide column">
               <span class="ui" title="{{_('Creation date')}}">{{  record.ui.created }}</span>
-              {%- if record.revision_id %}
+              {%- if record.ui.version %}
               <span class="label text-muted"> | Version {{ record.ui.version }}</span>
               {% endif %}
               </div>
