@@ -22,6 +22,7 @@ theme = WebpackThemeBundle(
                 "invenio-records-marc21-theme": "./less/invenio_records_marc21/theme.less",
                 "invenio-records-marc21-deposit": "./js/invenio_records_marc21/deposit/index.js",
                 "invenio-records-marc21-search": "./js/invenio_records_marc21/search/index.js",
+                "invenio-records-marc21-landing-page": "./js/invenio_records_marc21/landing_page/index.js",
             },
             dependencies={
                 "@babel/runtime": "^7.9.0",

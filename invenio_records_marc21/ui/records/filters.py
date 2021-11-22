@@ -17,6 +17,8 @@ from dojson.contrib.marc21.utils import create_record
 from dojson.contrib.to_marc21 import to_marc21
 from flask import current_app
 
+from .wrappers import get_personal_code
+
 
 def pid_url(identifier, scheme=None, url_scheme="https"):
     """Convert persistent identifier into a link."""
@@ -49,3 +51,11 @@ def json_to_marc21(json):
 def sanitize_title(title):
     """Sanitize record title."""
     return re.sub("[<>]", "", title)
+
+
+def personal_name(personal):
+    """Personal Name for the Frontend."""
+    name = personal.get("personal_name")
+    code = get_personal_code(personal.get("relator_code"))
+
+    return f"{name} [{code}]"

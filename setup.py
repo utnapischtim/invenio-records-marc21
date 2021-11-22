@@ -18,9 +18,8 @@ readme = open("README.rst").read()
 history = open("CHANGES.rst").read()
 
 tests_require = [
-    "invenio-app>=1.3.0,<2.0.0",
-    "invenio-indexer>=1.2.0",
     "pytest-invenio>=1.4.0,<2.0.0",
+    "invenio-app>=1.3.0,<2.0.0",
     "mock>=4.0.3",
     "invenio-previewer>=1.3.4",
 ]
@@ -58,8 +57,6 @@ install_requires = [
     "arrow>=1.0.0",
     "dojson>=1.4.0",
     "lxml>=4.6.2",
-    "invenio-celery>=1.2.0,<2.0.0",
-    "invenio-drafts-resources>=0.14.1",
     "invenio-rdm-records>=0.32.2,<1.0.0",
 ]
 
