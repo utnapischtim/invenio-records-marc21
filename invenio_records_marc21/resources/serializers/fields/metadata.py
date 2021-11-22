@@ -47,7 +47,7 @@ class MetadataField(Field):
         marcxml = self.context.get("marcxml", False)
         if data and marcxml:
             try:
-                data = dumps(to_marc21.do(data))  # .decode("UTF-8")
+                data = dumps(to_marc21.do(data)).decode("UTF-8")
             except Exception as e:
                 raise Marc21XMLConvertError(e)
 
