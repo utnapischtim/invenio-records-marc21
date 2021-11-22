@@ -85,8 +85,15 @@ def record_detail(record=None, files=None, pid_value=None, is_preview=False):
     )
 
 
+@pass_is_preview
 @pass_record_or_draft
-def record_export(record=None, export_format=None, pid_value=None, permissions=None):
+def record_export(
+    record=None,
+    export_format=None,
+    pid_value=None,
+    permissions=None,
+    is_preview=False,
+):
     """Export marc21 record page view."""
     exporter = current_app.config.get("INVENIO_MARC21_RECORD_EXPORTERS", {}).get(
         export_format
@@ -111,7 +118,9 @@ def record_export(record=None, export_format=None, pid_value=None, permissions=N
         export_format=exporter.get("name", export_format),
         exported_record=exported_record,
         record=Marc21UIJSONSerializer().dump_one(record.to_dict()),
-        permissions=permissions,
+        permissions=record.has_permissions_to(["update_draft"]),
+        is_preview=is_preview,
+        is_draft=record._record.is_draft,
     )
 
 

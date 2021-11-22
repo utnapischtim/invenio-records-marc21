@@ -13,14 +13,14 @@
   <div class="ui relaxed grid">
     <div class="two column row">
       <div class="twelve wide column">
-              
+
         {% block record_header %}
         <div class="ui grid middle aligned">
           <div class="two column row">
             <div class="left floated left aligned column">
               <div class="ten wide column">
                 <h2>{{ export_format }} Export</h2>
-              </div>  
+              </div>
             </div>
             <div class="right floated right aligned column">
               <div class="two wide column">
@@ -32,7 +32,6 @@
         {% endblock record_header %}
 
         {% block record_content %}
-        
         <div class="top-padded">
           <pre class="export result">
           {{- exported_record -}}
@@ -43,8 +42,8 @@
         {% block record_files %}{% endblock %}
         {% block record_details %}{% endblock %}
         {% block record_footer %}
-                
-       
+
+
         {% endblock %}
         <div class="centered" id="jump-btn">
           <a style="cursor: pointer;" href="#">
@@ -60,3 +59,8 @@
   </div>
 </div>
 {%- endblock page_body %}
+
+{%- block javascript %}
+{{ super() }}
+{{ webpack["invenio-records-marc21-landing-page.js"] }}
+{%- endblock javascript %}
