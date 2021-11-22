@@ -56,16 +56,14 @@ def deposit_templates():
     return []
 
 
-def deposit_config():
+def deposit_config(**kwargs):
     """Create an deposit configuration."""
     jsonschema = current_app.extensions["invenio-jsonschemas"]
     schema = {}
     if jsonschema:
         schema = jsonschema.get_schema(path="marc21/marc21-structure-v1.0.0.json")
-    config = {
-        "error": "",
-        "loaded": False,
-        "schema": schema,
-        "createUrl": ("/api/marc21"),
-    }
+    config = {**kwargs}
+    config.setdefault("error", "")
+    config.setdefault("schema", schema)
+    config.setdefault("createUrl", "/api/marc21")
     return config
