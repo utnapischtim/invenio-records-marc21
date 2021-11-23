@@ -62,7 +62,7 @@ class Marc21UIXMLSerializer(Marc21UIBASESerializer):
         """Dump the object into a JSON string."""
         obj[self._object_key] = self._schema_cls(context=self.ctx).dump(deepcopy(obj))
 
-        # For edit a marc21 record in the deposit react app we need 
+        # For edit a marc21 record in the deposit react app we need
         # the metadata field also as a marcxml string
-        obj["metadata"] = obj[self._object_key]["metadata"]
+        obj["metadata"] = deepcopy(obj[self._object_key]["metadata"])
         return obj
