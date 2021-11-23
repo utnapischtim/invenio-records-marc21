@@ -27,7 +27,7 @@ def test_ui_marcxml_serializer_init():
 def test_ui_marcxml_serializer_dump_one(full_record):
     marc = Marc21UIXMLSerializer()
     obj = marc.dump_one(full_record)
-    assert isinstance(obj["metadata"], dict)
+    assert isinstance(obj["metadata"], str)
     assert full_record["metadata"] == obj["metadata"]
 
     assert marc._object_key in obj
