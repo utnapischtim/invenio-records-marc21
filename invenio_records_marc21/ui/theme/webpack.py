@@ -40,6 +40,9 @@ theme = WebpackThemeBundle(
                 "marcjs": "^2.0.1",
                 "react-invenio-deposit": "^0.16.1",
                 "react-invenio-forms": "^0.8.7",
+                "i18next": "^20.3.1",
+                "react-i18next": "^11.11.3",
+                "i18next-browser-languagedetector": "^6.1.1",
             },
             aliases={
                 "@less/invenio_records_marc21": "./less/invenio_records_marc21",

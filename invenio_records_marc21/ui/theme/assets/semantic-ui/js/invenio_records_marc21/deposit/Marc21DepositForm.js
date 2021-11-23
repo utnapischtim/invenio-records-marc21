@@ -13,7 +13,7 @@ import { Marc21DepositApp } from "./Marc21DepositApp";
 import { AccordionField, MetadataFields } from "./components";
 import { Card, Container, Grid, Ref, Sticky } from "semantic-ui-react";
 import { TemplateField } from "./components/TemplateField";
-
+import { AccessRightField } from "react-invenio-deposit";
 export class Marc21DepositForm extends Component {
   constructor(props) {
     super(props);
@@ -73,9 +73,7 @@ export class Marc21DepositForm extends Component {
                       />
                     )}
                   </Sticky>
-                  {/* <AccessRightField 
-                    label={"Visibility"}
-                    labelIcon={"shield"}/> */}
+                  <AccessRightField label={"Visibility"} labelIcon={"shield"} />
                 </Grid.Column>
               </Ref>
             </Grid.Row>

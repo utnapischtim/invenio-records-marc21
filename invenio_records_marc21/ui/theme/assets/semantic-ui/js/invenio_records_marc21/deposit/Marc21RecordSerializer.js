@@ -17,6 +17,13 @@ export class Marc21RecordSerializer {
   constructor() {}
 
   depositRecordSchema = {
+    access: new Field({
+      fieldpath: "access",
+      deserializedDefault: {
+        record: "public",
+        files: "public",
+      },
+    }),
     files: new Field({
       fieldpath: "files",
     }),
