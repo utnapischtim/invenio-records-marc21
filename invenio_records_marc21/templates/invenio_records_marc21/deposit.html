@@ -8,7 +8,13 @@
 {%- extends config.INVENIO_MARC21_BASE_TEMPLATE %}
 
 
-{%- set title = _("New upload") %}
+{%- if not record.is_published and record.versions.index and record.versions.index > 1%}
+  {%- set title = _("New version") %}
+{%- elif not record.is_published %}
+  {%- set title = _("New upload") %}
+{% else %}
+  {%- set title = _("Edit upload") %}
+{%- endif %}
 
 
 {%- block page_body %}

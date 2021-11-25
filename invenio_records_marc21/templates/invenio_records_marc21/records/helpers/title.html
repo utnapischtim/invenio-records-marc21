@@ -16,7 +16,7 @@
 {% if personal %}
 <p>{{ personal.get('personal_name')}}</p>
 {% endif %}
-{% if publisher.get('place_of_production_publication_distribution_manufacture') %}
+{% if publisher %}
 <p>{{ publisher.get('place_of_production_publication_distribution_manufacture') + " " + publisher.get('date_of_production_publication_distribution_manufacture_or_copyright_notice') }}</p>
 {% endif %}
 </div>

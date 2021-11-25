@@ -37,7 +37,8 @@ export class Marc21RecordSerializer {
     }),
     metadata: new MetadataFields({
       fieldpath: "metadata",
-      deserializedDefault: { leader: "00000nam a2200000zca4500" },
+      deserializedDefault:
+        "<record> <leader>00000nam a2200000zca4500</leader></record>",
       serializedDefault: "",
     }),
   };

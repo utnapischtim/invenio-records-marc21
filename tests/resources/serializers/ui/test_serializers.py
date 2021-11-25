@@ -27,13 +27,13 @@ def test_ui_marcxml_serializer_init():
 def test_ui_marcxml_serializer_dump_one(full_record):
     marc = Marc21UIXMLSerializer()
     obj = marc.dump_one(full_record)
-    assert isinstance(obj["metadata"], dict)
+    assert isinstance(obj["metadata"], str)
     assert full_record["metadata"] == obj["metadata"]
 
     assert marc._object_key in obj
     obj_ui = obj[marc._object_key]
     assert "metadata" in obj_ui
-    assert isinstance(obj_ui["metadata"], bytes)
+    assert isinstance(obj_ui["metadata"], str)
 
 
 def test_ui_marcxml_serializer_dump_many(list_records):
@@ -47,7 +47,7 @@ def test_ui_marcxml_serializer_dump_many(list_records):
 
         obj_ui = obj[marc._object_key]
         assert "metadata" in obj_ui
-        assert isinstance(obj_ui["metadata"], bytes)
+        assert isinstance(obj_ui["metadata"], str)
 
 
 def test_ui_json_serializer_init():

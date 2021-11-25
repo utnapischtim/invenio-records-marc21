@@ -68,9 +68,13 @@ export class Marc21Controller {
     );
 
     let response = {};
-    let payload = recordSerializer.serialize(draft);
-    response = await this.createDraft(draft, { store });
-    //response = await this.apihandler.save(payload);
+    //let payload = recordSerializer.serialize(draft);
+    if (!this.draftAlreadyCreated(draft)) {
+      response = await this.createDraft(draft, { store });
+    } else {
+      let payload = recordSerializer.serialize(draft);
+      response = await this.apihandler.save(payload);
+    }
 
     if (_has(response, ["data", "ui", "metadata"])) {
       _set(response.data, "metadata", response.data.ui.metadata);
@@ -111,6 +115,9 @@ export class Marc21Controller {
 
     if (!this.draftAlreadyCreated(draft)) {
       response = await this.createDraft(draft, { store });
+    } else {
+      let payload = recordSerializer.serialize(draft);
+      response = await this.apihandler.save(payload);
     }
 
     let payload = recordSerializer.serialize(draft);

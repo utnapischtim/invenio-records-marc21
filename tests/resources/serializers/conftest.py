@@ -15,6 +15,8 @@ fixtures are available.
 """
 
 
+from copy import deepcopy
+
 import pytest
 
 
@@ -177,6 +179,6 @@ def full_record(marc21_record, marc21_metadata):
 def list_records(full_record):
     """Fixture list of records."""
     list_records = {
-        "hits": {"hits": [full_record, full_record]},
+        "hits": {"hits": [deepcopy(full_record), deepcopy(full_record)]},
     }
     return list_records
