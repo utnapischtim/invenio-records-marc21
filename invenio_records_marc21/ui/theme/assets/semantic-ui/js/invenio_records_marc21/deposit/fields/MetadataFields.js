@@ -60,16 +60,12 @@ export class MetadataFields extends Field {
   }
 
   static _deserialize_subfields(subfields) {
-    let field = ""; // subfields.join(" ");
-    // Empty datafield leave subfield in UI empty
-    if (subfields == null) {
-      return field;
-    }
-    for (let i = 0; i < subfields.length; i++) {
-      for (const [key, value] of Object.entries(subfields[i])) {
+    let field = "";
+    subfields.forEach((subfield) => {
+      for (const [key, value] of Object.entries(subfield)) {
         field += " $$" + key + " " + value;
       }
-    }
+    });
     return field;
   }
 
