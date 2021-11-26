@@ -62,3 +62,11 @@ def personal_name(personal):
     code = get_personal_code(personal.get("relator_code"))
 
     return f"{name} [{code}]"
+
+
+def physical_description(physical_description):
+    """ "Phsyical description for frontent."""
+    extent = physical_description.get("extent", "")
+    other_physical_details = physical_description.get("other_physical_details", "")
+
+    return f"{extent}, {other_physical_details}"
