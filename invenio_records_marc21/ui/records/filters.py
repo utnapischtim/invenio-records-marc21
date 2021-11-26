@@ -50,7 +50,10 @@ def json_to_marc21(json):
 
 def sanitize_title(title):
     """Sanitize record title."""
-    return re.sub("[<>]", "", title)
+    if isinstance(title, str):
+        return re.sub("[<>]", "", title)
+    else:
+        return ""
 
 
 def personal_name(personal):
