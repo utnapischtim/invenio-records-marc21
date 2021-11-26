@@ -13,8 +13,6 @@
 {% if title %}
 
 {% set personal = marcrecord.get('main_entry_personal_name') %}
-{% set location = publisher.get('place_of_production_publication_distribution_manufacture') %}
-{% set date = publisher.get('date_of_production_publication_distribution_manufacture_or_copyright_notice') %}
 
 <div class="top-bottom-padded" id="marc21-landing-page-record-title">
   <h1>{{title.get('title') | sanitize_title() }}</h1>
@@ -23,6 +21,9 @@
   {% endif %}
 
   {% if publisher %}
+    {% set location = publisher.get('place_of_production_publication_distribution_manufacture') %}
+    {% set date = publisher.get('date_of_production_publication_distribution_manufacture_or_copyright_notice') %}
+
     <p>{{location if location}} {{date if date}}</p>
   {% endif %}
 
