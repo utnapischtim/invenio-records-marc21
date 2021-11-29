@@ -58,9 +58,9 @@ def test_ui_metadata_convert_xml(marc21_metadata):
     test = deepcopy(marc21_metadata)
 
     data = metadata.dump({"metadata": test})
-    assert isinstance(data["metadata"], bytes)
+    assert isinstance(data["metadata"], str)
 
-    expect_str = dumps(to_marc21.do(marc21_metadata))
+    expect_str = dumps(to_marc21.do(marc21_metadata)).decode("UTF-8")
     assert expect_str == data["metadata"]
 
 
@@ -85,7 +85,7 @@ def test_ui_metadata_xml_schema(marc21_metadata):
     test = deepcopy(marc21_metadata)
     data = metadata.dump({"metadata": test})
 
-    s = "".join(data["metadata"].decode("UTF-8").split("\n")[1:-1])
+    s = "".join(data["metadata"].split("\n")[1:-1])
     test = marc21.do(create_record(s))
     _test_without_order(
         test,
