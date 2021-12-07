@@ -26,6 +26,7 @@ class Marc21Metadata(object):
         """Default constructor of the class."""
         self._xml = ""
         self._json = {}
+        self._etree = None
         self.leader = leader
         self.controlfields = list()
         self.datafields = list()
@@ -34,6 +35,11 @@ class Marc21Metadata(object):
     def json(self):
         """Metadata json getter method."""
         return self._json
+
+    @property
+    def etree(self):
+        """Metadata json getter method."""
+        return self._etree
 
     @json.setter
     def json(self, json: dict):
@@ -59,6 +65,7 @@ class Marc21Metadata(object):
 
     def load(self, xml: etree):
         """Load metadata from etree."""
+        self._etree = xml
         self._to_xml_tree(xml)
 
     def _to_xml_tree_from_string(self, xml: str):

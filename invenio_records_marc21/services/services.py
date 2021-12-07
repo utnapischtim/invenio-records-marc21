@@ -42,7 +42,8 @@ class Marc21RecordService(RecordService):
         :rtype: dict
         """
         if data is None:
-            data = {"metadata": {"xml": metadata.xml, "json": metadata.json}}
+            record = create_record(metadata.etree)
+            data = {"metadata": marc21.do(record)}
         data["files"] = {"enabled": files}
         if "access" not in data:
             default_access = {
