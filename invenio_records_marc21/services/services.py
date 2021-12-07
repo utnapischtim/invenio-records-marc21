@@ -10,6 +10,8 @@
 
 """Marc21 Record Service."""
 
+from dojson.contrib.marc21 import marc21
+from dojson.contrib.marc21.utils import create_record
 from invenio_db import db
 from invenio_drafts_resources.services.records import RecordService
 from invenio_rdm_records.records.systemfields.access.field.record import (
@@ -49,7 +51,7 @@ class Marc21RecordService(RecordService):
             default_access = {
                 "access": {
                     "owned_by": [{"user": identity.id}],
-                    "metadata": AccessStatusEnum.OPEN.value,
+                    "record": AccessStatusEnum.OPEN.value,
                     "files": AccessStatusEnum.OPEN.value,
                 },
             }
