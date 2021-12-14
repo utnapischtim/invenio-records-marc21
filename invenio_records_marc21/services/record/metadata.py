@@ -38,7 +38,7 @@ class Marc21Metadata(object):
 
     @property
     def etree(self):
-        """Metadata json getter method."""
+        """Metadata etree getter method."""
         return self._etree
 
     @json.setter
