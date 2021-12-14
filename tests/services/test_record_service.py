@@ -16,6 +16,8 @@ from unittest import mock
 import arrow
 import pytest
 from dateutil import tz
+from dojson.contrib.marc21 import marc21
+from dojson.contrib.marc21.utils import create_record
 from dojson.contrib.to_marc21 import to_marc21
 from invenio_pidstore.errors import PIDDoesNotExistError
 from invenio_pidstore.models import PIDStatus
@@ -24,9 +26,22 @@ from sqlalchemy.orm.exc import NoResultFound
 from invenio_records_marc21.proxies import current_records_marc21
 from invenio_records_marc21.services.errors import EmbargoNotLiftedError
 
-#
-# Operations tests
-#
+
+def _test_metadata(test, expected):
+    assert test.keys() == expected.keys()
+    for key in test.keys():
+        assert test[key] == expected[key]
+
+
+def test_full_metadata_xml_schema(running_app, full_metadata):
+    """Test metadata schema."""
+    service = running_app.service
+    data = service.create(running_app.identity_simple, metadata=full_metadata)
+
+    _test_metadata(
+        data["metadata"],
+        marc21.do(create_record(full_metadata.xml)),
+    )
 
 
 def test_create_draft(running_app, metadata):

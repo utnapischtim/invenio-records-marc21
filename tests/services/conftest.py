@@ -65,7 +65,7 @@ def service(appctx):
 def metadata():
     """Input data (as coming from the view layer)."""
     metadata = Marc21Metadata()
-    metadata.emplace_field(tag="245", ind1="1", ind2="0", value="laborum sunt ut nulla")
+    metadata.xml = "<record><datafield tag='245' ind1='1' ind2='0'><subfield code=' '>laborum sunt ut nulla</subfield></datafield></record>"
     return metadata
 
 
@@ -73,7 +73,7 @@ def metadata():
 def metadata2():
     """Input data (as coming from the view layer)."""
     metadata = Marc21Metadata()
-    metadata.emplace_field(tag="245", ind1="1", ind2="0", value="nulla sunt laborum")
+    metadata.xml = "<record><datafield tag='245' ind1='1' ind2='0'><subfield code=' '>nulla sunt laborum</subfield></datafield></record>"
     return metadata
 
 
@@ -85,3 +85,19 @@ def embargoedrecord(embargoed_record):
     draft = service.create(identity_simple, embargoed_record)
     record = service.publish(id_=draft.id, identity=identity_simple)
     return record
+
+
+@pytest.fixture()
+def full_metadata():
+    """Metadata full record marc21 xml."""
+    metadata = Marc21Metadata()
+    metadata.xml = "<record><leader>00000nam a2200000zca4500</leader><datafield tag='035' ind1=' ' ind2=' '><subfield code='a'>AC08088803</subfield></datafield></record>"
+    return metadata
+
+
+@pytest.fixture()
+def min_metadata():
+    """Metadata empty record marc21 xml."""
+    metadata = Marc21Metadata()
+    metadata.xml = "<record></record>"
+    return metadata

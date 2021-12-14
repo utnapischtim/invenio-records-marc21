@@ -34,7 +34,7 @@ def _assert_fields(fields, values, expected):
 @pytest.fixture()
 def marc21():
     """marc21 record."""
-    return {"metadata": {"xml": "<record></record>"}}
+    return {"metadata": {}}
 
 
 def test_create_with_service(running_app, marc21):
