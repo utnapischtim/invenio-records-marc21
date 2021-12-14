@@ -60,7 +60,8 @@ class Marc21Metadata(object):
         if not isinstance(xml, str):
             raise TypeError("xml must be from type str")
 
-        self._to_xml_tree_from_string(xml)
+        etree = self._to_xml_tree_from_string(xml)
+        self._etree = etree
         self._xml = xml
 
     def load(self, xml: etree):
@@ -70,8 +71,9 @@ class Marc21Metadata(object):
 
     def _to_xml_tree_from_string(self, xml: str):
         """Xml string to internal representation method."""
-        test = etree.parse(StringIO(xml))
-        self._to_xml_tree(test)
+        tree = etree.parse(StringIO(xml))
+        self._to_xml_tree(tree)
+        return tree
 
     def _to_xml_tree(self, xml: etree):
         """Xml to internal representation method."""
