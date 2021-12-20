@@ -57,7 +57,7 @@ install_requires = [
     "arrow>=1.0.0",
     "dojson>=1.4.0",
     "lxml>=4.6.2",
-    "invenio-rdm-records>=0.32.2,<1.0.0",
+    "invenio-rdm-records>=0.32.2,<0.34.0",
 ]
 
 packages = find_packages()
