@@ -13,8 +13,6 @@
 
 import typing
 
-from dojson.contrib.marc21 import marc21
-from dojson.contrib.marc21.utils import create_record
 from marshmallow.fields import Field
 
 
@@ -43,8 +41,6 @@ class MetadataField(Field):
         .. versionchanged:: 3.0.0
             Added ``**kwargs`` to signature.
         """
-        if "xml" in value:
-            value = marc21.do(create_record(value["xml"]))
         return value
 
     def _validate(self, value):

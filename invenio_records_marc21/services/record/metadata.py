@@ -26,6 +26,7 @@ class Marc21Metadata(object):
         """Default constructor of the class."""
         self._xml = ""
         self._json = {}
+        self._etree = None
         self.leader = leader
         self.controlfields = list()
         self.datafields = list()
@@ -34,6 +35,11 @@ class Marc21Metadata(object):
     def json(self):
         """Metadata json getter method."""
         return self._json
+
+    @property
+    def etree(self):
+        """Metadata etree getter method."""
+        return self._etree
 
     @json.setter
     def json(self, json: dict):
@@ -54,17 +60,20 @@ class Marc21Metadata(object):
         if not isinstance(xml, str):
             raise TypeError("xml must be from type str")
 
-        self._to_xml_tree_from_string(xml)
+        tree = self._to_xml_tree_from_string(xml)
+        self._etree = tree
         self._xml = xml
 
     def load(self, xml: etree):
         """Load metadata from etree."""
+        self._etree = xml
         self._to_xml_tree(xml)
 
     def _to_xml_tree_from_string(self, xml: str):
         """Xml string to internal representation method."""
-        test = etree.parse(StringIO(xml))
-        self._to_xml_tree(test)
+        tree = etree.parse(StringIO(xml))
+        self._to_xml_tree(tree)
+        return tree
 
     def _to_xml_tree(self, xml: etree):
         """Xml to internal representation method."""
