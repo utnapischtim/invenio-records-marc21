@@ -12,10 +12,10 @@
 
 
 from invenio_db import db
-from invenio_drafts_resources.services.records import RecordService
 from invenio_rdm_records.records.systemfields.access.field.record import (
     AccessStatusEnum,
 )
+from invenio_rdm_records.services import RDMRecordService
 from invenio_records_resources.services.files.service import FileService
 from invenio_records_resources.services.records.results import RecordItem
 
@@ -24,7 +24,7 @@ from .errors import EmbargoNotLiftedError
 from .record import Marc21Metadata
 
 
-class Marc21RecordService(RecordService):
+class Marc21RecordService(RDMRecordService):
     """Marc21 record service class."""
 
     def _create_data(self, identity, data, metadata, files=False, access=None):
@@ -59,7 +59,13 @@ class Marc21RecordService(RecordService):
         return data
 
     def create(
-        self, identity, data=None, metadata=Marc21Metadata(), files=False, access=None
+        self,
+        identity,
+        data=None,
+        metadata=Marc21Metadata(),
+        files=False,
+        access=None,
+        uow=None,
     ) -> RecordItem:
         """Create a draft record.
 
@@ -76,7 +82,7 @@ class Marc21RecordService(RecordService):
         :rtype: `invenio_records_resources.services.records.results.RecordItem`
         """
         data = self._create_data(identity, data, metadata, files, access)
-        return super().create(identity, data)
+        return super().create(identity=identity, data=data)
 
     def update_draft(
         self,

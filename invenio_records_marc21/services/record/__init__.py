@@ -13,6 +13,4 @@
 
 from .metadata import Marc21Metadata
 
-__all__ = (
-    "Marc21Metadata",
-)
+__all__ = ("Marc21Metadata",)

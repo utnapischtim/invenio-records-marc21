@@ -60,7 +60,7 @@ class HasDraftField(SystemField):
         dict_set(
             data,
             self.key,
-            record.has_draft
+            record.has_draft,
         )
 
     def post_load(self, record, data, **kwargs):

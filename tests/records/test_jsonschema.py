@@ -12,7 +12,6 @@
 """JSONSchema tests."""
 
 import json
-import unittest.mock
 from os.path import dirname, join
 
 import pytest
