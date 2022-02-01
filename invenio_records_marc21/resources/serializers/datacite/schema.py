@@ -33,7 +33,9 @@ class Marc21DataCite43Schema(Schema):
     identifiers = fields.Method("get_identifiers")
     types = fields.Method("get_type")
     titles = fields.Method("get_titles")
-    creators = fields.Nested(CreatorSchema43, attribute="metadata.main_entry_personal_name")
+    creators = fields.Nested(
+        CreatorSchema43, attribute="metadata.main_entry_personal_name"
+    )
     publisher = fields.Str(attribute="metadata.publisher")
     publicationYear = fields.Method("get_publication_year")
     schemaVersion = fields.Constant("http://datacite.org/schema/kernel-4")
