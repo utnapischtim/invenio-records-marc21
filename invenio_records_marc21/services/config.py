@@ -23,17 +23,24 @@ from invenio_drafts_resources.services.records.config import (
 from invenio_rdm_records.records.systemfields.access.field.record import (
     AccessStatusEnum,
 )
+from invenio_rdm_records.services.config import has_doi, is_record_and_has_doi
+from invenio_rdm_records.services.customizations import (
+    FileConfigMixin,
+    RecordConfigMixin,
+    SearchOptionsMixin,
+)
 from invenio_records_resources.services import (
     ConditionalLink,
     FileServiceConfig,
     pagination_links,
 )
+from invenio_records_resources.services.base.links import Link
 from invenio_records_resources.services.files.links import FileLink
 from invenio_records_resources.services.records.facets import TermsFacet
 from invenio_records_resources.services.records.links import RecordLink
 
 from ..records import Marc21Draft, Marc21Parent, Marc21Record
-from .components import AccessComponent, MetadataComponent, PIDComponent
+from .components import AccessComponent, MetadataComponent, PIDComponent, PIDsComponent
 from .permissions import Marc21RecordPermissionPolicy
 from .schemas import Marc21ParentSchema, Marc21RecordSchema
 
@@ -54,7 +61,7 @@ is_published_facet = TermsFacet(
 )
 
 
-class Marc21SearchOptions(SearchOptions):
+class Marc21SearchOptions(SearchOptions, SearchOptionsMixin):
     """Search options for record search."""
 
     facets = {
@@ -62,7 +69,7 @@ class Marc21SearchOptions(SearchOptions):
     }
 
 
-class Marc21SearchDraftsOptions(SearchDraftsOptions):
+class Marc21SearchDraftsOptions(SearchDraftsOptions, SearchOptionsMixin):
     """Search options for drafts search."""
 
     facets = {
@@ -71,7 +78,7 @@ class Marc21SearchDraftsOptions(SearchDraftsOptions):
     }
 
 
-class Marc21RecordServiceConfig(RecordServiceConfig):
+class Marc21RecordServiceConfig(RecordServiceConfig, RecordConfigMixin):
     """Marc21 record service config."""
 
     # Record class
@@ -99,6 +106,7 @@ class Marc21RecordServiceConfig(RecordServiceConfig):
         AccessComponent,
         DraftFilesComponent,
         PIDComponent,
+        PIDsComponent,
     ]
 
     links_item = {
@@ -112,6 +120,26 @@ class Marc21RecordServiceConfig(RecordServiceConfig):
             if_=RecordLink("{+ui}/marc21/{id}"),
             else_=RecordLink("{+ui}/marc21/uploads/{id}"),
         ),
+        "self_doi": Link(
+            "{+ui}/doi/{+pid_doi}",
+            when=is_record_and_has_doi,
+            vars=lambda record, vars: vars.update(
+                {
+                    f"pid_{scheme}": pid["identifier"]
+                    for (scheme, pid) in record.pids.items()
+                }
+            ),
+        ),
+        "doi": Link(
+            "https://doi.org/{+pid_doi}",
+            when=has_doi,
+            vars=lambda record, vars: vars.update(
+                {
+                    f"pid_{scheme}": pid["identifier"]
+                    for (scheme, pid) in record.pids.items()
+                }
+            ),
+        ),
         "latest": RecordLink("{+api}/marc21/{id}/versions/latest"),
         "latest_html": RecordLink("{+ui}/marc21/{id}/latest"),
         "draft": RecordLink("{+api}/marc21/{id}/draft", when=is_record),
@@ -121,11 +149,15 @@ class Marc21RecordServiceConfig(RecordServiceConfig):
         "versions": RecordLink("{+api}/marc21/{id}/versions"),
     }
 
+    # PIDs providers - set from config in customizations.
+    pids_providers = {}
+    pids_required = []
+
 
 #
 # Record files
 #
-class Marc21RecordFilesServiceConfig(FileServiceConfig):
+class Marc21RecordFilesServiceConfig(FileServiceConfig, FileConfigMixin):
     """Marc21 record files service configuration."""
 
     record_cls = Marc21Record
@@ -145,7 +177,7 @@ class Marc21RecordFilesServiceConfig(FileServiceConfig):
 #
 # Draft files
 #
-class Marc21DraftFilesServiceConfig(FileServiceConfig):
+class Marc21DraftFilesServiceConfig(FileServiceConfig, FileConfigMixin):
     """Marc21 draft files service configuration."""
 
     record_cls = Marc21Draft

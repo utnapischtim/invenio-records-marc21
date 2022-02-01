@@ -100,6 +100,8 @@ class Marc21Draft(Draft):
 
     bucket = ModelField(dump=False)
 
+    pids = DictField("pids")
+
 
 DraftFile.record_cls = Marc21Draft
 
