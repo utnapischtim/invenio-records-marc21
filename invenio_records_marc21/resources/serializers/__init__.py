@@ -12,10 +12,12 @@
 
 from __future__ import absolute_import, print_function
 
+from .datacite import Marc21DataCite43JSONSerializer
 from .errors import Marc21XMLConvertError
 from .serializer import Marc21BASESerializer, Marc21JSONSerializer, Marc21XMLSerializer
 
 __all__ = (
+    "Marc21DataCite43JSONSerializer",
     "Marc21XMLConvertError",
     "Marc21BASESerializer",
     "Marc21JSONSerializer",
