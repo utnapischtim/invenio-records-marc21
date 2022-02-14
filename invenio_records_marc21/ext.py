@@ -13,6 +13,7 @@
 from __future__ import absolute_import, print_function
 
 import six
+from invenio_rdm_records.services.pids import PIDManager, PIDsService
 from invenio_records_resources.resources import FileResource
 from invenio_records_resources.services import FileService
 from werkzeug.utils import import_string
@@ -72,7 +73,7 @@ class InvenioRecordsMARC21(object):
         """
         with_endpoints = app.config.get("INVENIO_MARC21_ENDPOINTS_ENABLED", True)
         for k in dir(config):
-            if k.startswith("INVENIO_MARC21_"):
+            if k.startswith("INVENIO_MARC21_") or k.startswith("DATACITE_"):
                 app.config.setdefault(k, getattr(config, k))
             elif k == "SEARCH_UI_JSTEMPLATE_RESULTS":
                 app.config["SEARCH_UI_JSTEMPLATE_RESULTS"] = getattr(config, k)
@@ -90,17 +91,44 @@ class InvenioRecordsMARC21(object):
                         app.config.setdefault(n, {})
                         app.config[n].update(getattr(config, k))
 
+    def service_configs(self, app):
+        """Customized service configs."""
+        permission_policy = app.config.get(
+            "RDM_PERMISSION_POLICY", Marc21RecordPermissionPolicy
+        )
+
+        doi_enabled = app.config["DATACITE_ENABLED"]
+        pid_providers = app.config["INVENIO_MARC21_PERSISTENT_IDENTIFIER_PROVIDERS"]
+        pids = app.config["INVENIO_MARC21_PERSISTENT_IDENTIFIERS"]
+
+        class ServiceConfigs:
+            record = Marc21RecordServiceConfig.customize(
+                permission_policy=permission_policy,
+                pid_providers=pid_providers,
+                pids=pids,
+                doi_enabled=doi_enabled,
+                # search=search_opts,
+                # search_drafts=search_drafts_opts,
+                # search_versions=search_versions_opts,
+            )
+            file = Marc21RecordFilesServiceConfig.customize(
+                permission_policy=permission_policy,
+            )
+            file_draft = Marc21DraftFilesServiceConfig.customize(
+                permission_policy=permission_policy,
+            )
+
+        return ServiceConfigs
+
     def init_services(self, app):
         """Initialize services."""
-        service_config = Marc21RecordServiceConfig
-        service_config.permission_policy_cls = obj_or_import_string(
-            app.config.get("RECORDS_PERMISSIONS_RECORD_POLICY1"),
-            default=Marc21RecordPermissionPolicy,
-        )
+        service_config = self.service_configs(app)
+
         self.records_service = Marc21RecordService(
-            config=service_config,
-            files_service=FileService(Marc21RecordFilesServiceConfig),
-            draft_files_service=FileService(Marc21DraftFilesServiceConfig),
+            config=service_config.record,
+            files_service=FileService(service_config.file),
+            draft_files_service=FileService(service_config.file_draft),
+            pids_service=PIDsService(service_config.record, PIDManager),
         )
         self.templates_service = Marc21TemplateService(
             config=Marc21TemplateConfig,

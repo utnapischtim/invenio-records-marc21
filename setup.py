@@ -20,7 +20,7 @@ history = open("CHANGES.rst").read()
 tests_require = [
     "pytest-invenio>=1.4.0,<2.0.0",
     "invenio-app>=1.3.0,<2.0.0",
-    "mock>=4.0.3",
+    "pytest-mock>=1.6.0",
     "invenio-previewer>=1.3.4",
 ]
 
@@ -57,7 +57,7 @@ install_requires = [
     "arrow>=1.0.0",
     "dojson>=1.4.0",
     "lxml>=4.6.2",
-    "invenio-rdm-records>=0.32.2,<0.34.0",
+    "invenio-rdm-records>=0.33.2,<0.34.0",
 ]
 
 packages = find_packages()

@@ -8,16 +8,8 @@
 # modify it under the terms of the MIT License; see LICENSE file for more
 # details.
 
-"""Marc21 record components."""
+"""PIDs module."""
 
-from .access import AccessComponent
-from .metadata import MetadataComponent
-from .pid import PIDComponent
-from .pids import PIDsComponent
+from .tasks import register_or_update_pid
 
-__all__ = (
-    "AccessComponent",
-    "PIDComponent",
-    "MetadataComponent",
-    "PIDsComponent",
-)
+__all__ = ("register_or_update_pid",)

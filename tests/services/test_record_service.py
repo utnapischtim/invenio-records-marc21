@@ -79,13 +79,12 @@ def test_create_empty_draft(running_app):
 
 def test_read_draft(running_app, metadata):
     """Test read a draft can be created."""
-
     service = running_app.service
     identity_simple = running_app.identity_simple
-    draft = service.create(identity_simple, metadata=metadata)
+    draft = service.create(identity=identity_simple, metadata=metadata)
     assert draft.id
 
-    draft_2 = service.read_draft(draft.id, identity_simple)
+    draft_2 = service.read_draft(identity=identity_simple, id_=draft.id)
     assert draft.id == draft_2.id
 
 
@@ -97,12 +96,12 @@ def test_delete_draft(running_app, metadata):
     draft = service.create(identity=identity_simple, metadata=metadata)
     assert draft.id
 
-    success = service.delete_draft(draft.id, identity_simple)
+    success = service.delete_draft(identity=identity_simple, id_=draft.id)
     assert success
 
     # Check draft deleted
     with pytest.raises(PIDDoesNotExistError):
-        delete_draft = service.read_draft(draft.id, identity=identity_simple)
+        delete_draft = service.read_draft(identity=identity_simple, id_=draft.id)
 
 
 def _create_and_publish(service, metadata, identity_simple):
@@ -110,7 +109,7 @@ def _create_and_publish(service, metadata, identity_simple):
     # Cannot create with record service due to the lack of versioning
     draft = service.create(identity=identity_simple, metadata=metadata)
 
-    record = service.publish(draft.id, identity=identity_simple)
+    record = service.publish(identity=identity_simple, id_=draft.id)
 
     assert record.id == draft.id
 
@@ -155,11 +154,11 @@ def test_update_draft(running_app, metadata, metadata2):
 
     # Update draft content
     update_draft = service.update_draft(
-        draft.id, identity=identity_simple, metadata=metadata2
+        identity=identity_simple, id_=draft.id, metadata=metadata2
     )
 
     # Check the updates where savedif "json" in data:
-    read_draft = service.read_draft(id_=draft.id, identity=identity_simple)
+    read_draft = service.read_draft(identity=identity_simple, id_=draft.id)
 
     assert draft.id == update_draft.id
     _test_metadata(
@@ -179,7 +178,7 @@ def test_create_publish_new_version(running_app, metadata):
     marcid = record.id
 
     # Create new version
-    draft = service.new_version(marcid, identity_simple)
+    draft = service.new_version(identity=identity_simple, id_=marcid)
 
     # files attribute in record causes at create change the revision_id twice
     assert draft._record.revision_id == 3
@@ -187,7 +186,7 @@ def test_create_publish_new_version(running_app, metadata):
     assert draft._record.pid.status == PIDStatus.NEW
 
     # Publish it
-    record_2 = service.publish(draft.id, identity_simple)
+    record_2 = service.publish(identity=identity_simple, id_=draft.id)
 
     assert record_2.id
     assert record_2._record.pid.status == PIDStatus.REGISTERED
@@ -203,6 +202,7 @@ def test_create_publish_new_version(running_app, metadata):
 def test_embargo_lift_without_draft(mock_arrow, running_app, marc21_record):
     identity_simple = running_app.identity_simple
     service = current_records_marc21.records_service
+
     # Add embargo to record
     marc21_record["access"]["files"] = "restricted"
     marc21_record["access"]["status"] = "embargoed"
@@ -211,12 +211,12 @@ def test_embargo_lift_without_draft(mock_arrow, running_app, marc21_record):
     )
     # We need to set the current date in the past to pass the validations
     mock_arrow.return_value = arrow.get(datetime(1954, 9, 29), tz.gettz("UTC"))
-    draft = service.create(identity_simple, marc21_record)
-    record = service.publish(id_=draft.id, identity=identity_simple)
+    draft = service.create(identity=identity_simple, data=marc21_record)
+    record = service.publish(identity=identity_simple, id_=draft.id)
     # Recover current date
     mock_arrow.return_value = arrow.get(datetime.utcnow())
 
-    service.lift_embargo(_id=record["id"], identity=identity_simple)
+    service.lift_embargo(identity=identity_simple, _id=draft.id)
     record_lifted = service.record_cls.pid.resolve(record["id"])
 
     assert not record_lifted.access.embargo.active
@@ -237,14 +237,14 @@ def test_embargo_lift_with_draft(mock_arrow, running_app, marc21_record):
     )
 
     mock_arrow.return_value = arrow.get(datetime(1954, 9, 29), tz.gettz("UTC"))
-    draft = service.create(identity_simple, marc21_record)
-    record = service.publish(id_=draft.id, identity=identity_simple)
+    draft = service.create(identity=identity_simple, data=marc21_record)
+    record = service.publish(identity=identity_simple, id_=draft.id)
     # This draft simulates an existing one while lifting the record
-    ongoing_draft = service.edit(id_=draft.id, identity=identity_simple)
+    ongoing_draft = service.edit(identity=identity_simple, id_=draft.id)
 
     mock_arrow.return_value = arrow.get(datetime.utcnow())
 
-    service.lift_embargo(_id=record["id"], identity=identity_simple)
+    service.lift_embargo(identity=identity_simple, _id=record["id"])
     record_lifted = service.record_cls.pid.resolve(record["id"])
     draft_lifted = service.draft_cls.pid.resolve(ongoing_draft["id"])
 
@@ -267,12 +267,13 @@ def test_embargo_lift_with_updated_draft(mock_arrow, running_app, marc21_record)
     marc21_record["access"]["embargo"] = dict(
         active=True, until="2020-06-01", reason=None
     )
+
     # We need to set the current date in the past to pass the validations
     mock_arrow.return_value = arrow.get(datetime(1954, 9, 29), tz.gettz("UTC"))
-    draft = service.create(identity_simple, marc21_record)
-    record = service.publish(id_=draft.id, identity=identity_simple)
+    draft = service.create(identity=identity_simple, data=marc21_record)
+    record = service.publish(identity=identity_simple, id_=draft.id)
     # This draft simulates an existing one while lifting the record
-    service.edit(id_=draft.id, identity=identity_simple)
+    service.edit(identity=identity_simple, id_=draft.id)
     # Recover current date
     mock_arrow.return_value = arrow.get(datetime.utcnow())
 
@@ -282,18 +283,18 @@ def test_embargo_lift_with_updated_draft(mock_arrow, running_app, marc21_record)
     marc21_record["access"]["embargo"] = dict(active=False, until=None, reason=None)
     # Update the ongoing draft with the new data simulating the user's input
     ongoing_draft = service.update_draft(
-        id_=draft.id, identity=identity_simple, data=marc21_record
+        identity=identity_simple, id_=draft.id, data=marc21_record
     )
 
     service.lift_embargo(_id=record["id"], identity=identity_simple)
     record_lifted = service.record_cls.pid.resolve(record["id"])
     draft_lifted = service.draft_cls.pid.resolve(ongoing_draft["id"])
 
-    assert record_lifted.access.embargo.active is False
+    assert not record_lifted.access.embargo.active
     assert record_lifted.access.protection.files == "public"
     assert record_lifted.access.protection.record == "public"
 
-    assert draft_lifted.access.embargo.active is False
+    assert not draft_lifted.access.embargo.active
     assert draft_lifted.access.protection.files == "restricted"
     assert draft_lifted.access.protection.record == "public"
 
@@ -307,9 +308,9 @@ def test_embargo_lift_with_error(running_app, marc21_record):
     marc21_record["access"]["embargo"] = dict(
         active=True, until="3220-06-01", reason=None
     )
-    draft = service.create(identity_simple, marc21_record)
-    record = service.publish(id_=draft.id, identity=identity_simple)
+    draft = service.create(identity=identity_simple, data=marc21_record)
+    record = service.publish(identity=identity_simple, id_=draft.id)
 
     # Record should not be lifted since it didn't expire (until 3220)
     with pytest.raises(EmbargoNotLiftedError):
-        service.lift_embargo(_id=record["id"], identity=identity_simple)
+        service.lift_embargo(identity=identity_simple, _id=record["id"])

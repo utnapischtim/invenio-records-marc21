@@ -19,31 +19,22 @@ import pytest
 from flask_principal import Identity
 from invenio_access import any_user
 from invenio_app.factory import create_api
+from invenio_rdm_records.services.pids import PIDManager, PIDsService
 
 from invenio_records_marc21.proxies import current_records_marc21
-from invenio_records_marc21.services import (
-    Marc21RecordService,
-    Marc21RecordServiceConfig,
-)
 from invenio_records_marc21.services.record import Marc21Metadata
-
-
-@pytest.fixture(scope="module")
-def create_app(instance_path):
-    """Application factory fixture."""
-    return create_api
-
 
 RunningApp = namedtuple("RunningApp", ["app", "service", "identity_simple"])
 
 
 @pytest.fixture(scope="module")
-def running_app(app, service, identity_simple):
+def running_app(app, identity_simple):
     """This fixture provides an app with the typically needed db data loaded.
 
     All of these fixtures are often needed together, so collecting them
     under a semantic umbrella makes sense.
     """
+    service = app.extensions["invenio-records-marc21"].records_service
     return RunningApp(app, service, identity_simple)
 
 
@@ -53,12 +44,6 @@ def identity_simple():
     i = Identity(1)
     i.provides.add(any_user)
     return i
-
-
-@pytest.fixture(scope="module")
-def service(appctx):
-    """Service instance."""
-    return Marc21RecordService(config=Marc21RecordServiceConfig())
 
 
 @pytest.fixture(scope="session")

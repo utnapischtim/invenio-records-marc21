@@ -12,7 +12,17 @@
 
 from __future__ import absolute_import, print_function
 
+import idutils
 from celery.schedules import crontab
+from invenio_rdm_records.services.pids import providers
+
+from .resources.serializers.datacite import Marc21DataCite43JSONSerializer
+
+
+def _(x):
+    """Identity function for string extraction."""
+    return x
+
 
 INVENIO_MARC21_BASE_TEMPLATE = "invenio_records_marc21/base.html"
 
@@ -73,3 +83,96 @@ CELERY_BEAT_SCHEDULE = {
     },
 }
 """Celery tasks for the module."""
+
+
+#
+# Persistent identifiers configuration
+#
+INVENIO_MARC21_PERSISTENT_IDENTIFIER_PROVIDERS = [
+    # DataCite DOI provider
+    providers.DataCitePIDProvider(
+        "datacite",
+        client=providers.DataCiteClient("datacite", config_prefix="DATACITE"),
+        pid_type="doi",
+        serializer=Marc21DataCite43JSONSerializer(),
+        label=_("DOI"),
+    ),
+    # DOI provider for externally managed DOIs
+    providers.ExternalPIDProvider(
+        "external",
+        "doi",
+        validators=[providers.BlockedPrefixes(config_names=["DATACITE_PREFIX"])],
+        label=_("DOI"),
+    ),
+]
+"""A list of configured persistent identifier providers.
+
+ATTENTION: All providers (and clients) takes a name as the first parameter.
+This name is stored in the database and used in the REST API in order to
+identify the given provider and client.
+
+The name is further used to configure the desired persistent identifiers (see
+``INVENIO_MARC21_PERSISTENT_IDENTIFIER_PROVIDERS`` below)
+"""
+
+
+INVENIO_MARC21_IDENTIFIERS_SCHEMES = {
+    "doi": {"label": _("DOI"), "validator": idutils.is_doi, "datacite": "DOI"},
+}
+"""These are used for main, alternate and related identifiers."""
+
+INVENIO_MARC21_PERSISTENT_IDENTIFIERS = {
+    "doi": {
+        "providers": ["datacite", "external"],
+        "required": True,
+        "label": _("DOI"),
+        "validator": idutils.is_doi,
+        "normalizer": idutils.normalize_doi,
+    },
+}
+"""The configured persistent identifiers for records.
+
+.. code-block:: python
+
+    "<scheme>": {
+        "providers": ["<default-provider-name>", "<provider-name>", ...],
+        "required": True/False,
+    }
+"""
+
+# Configuration for the DataCiteClient used by the DataCitePIDProvider
+# Configuration may come from RDM records module
+DATACITE_ENABLED = False
+"""Flag to enable/disable DOI registration."""
+
+
+DATACITE_USERNAME = ""
+"""DataCite username."""
+
+
+DATACITE_PASSWORD = ""
+"""DataCite password."""
+
+
+DATACITE_PREFIX = ""
+"""DataCite DOI prefix."""
+
+
+DATACITE_TEST_MODE = True
+"""DataCite test mode enabled."""
+
+
+DATACITE_FORMAT = "{prefix}/{id}"
+"""A string used for formatting the DOI or a callable.
+
+If set to a string, you can used ``{prefix}`` and ``{id}`` inside the string.
+
+You can also provide a callable instead:
+
+.. code-block:: python
+
+    def make_doi(prefix, record):
+        return f"{prefix}/{record.pid.pid_value}"
+
+    DATACITE_FORMAT = make_doi
+"""

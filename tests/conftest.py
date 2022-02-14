@@ -21,8 +21,17 @@ import arrow
 import pytest
 from invenio_app.factory import create_api
 from invenio_files_rest.models import Location
+from invenio_rdm_records.services.pids import PIDManager, PIDsService
+from invenio_records_resources.services import FileService
 
-from invenio_records_marc21.records import Marc21Draft, Marc21Parent
+from invenio_records_marc21.records import Marc21Draft, Marc21Parent, Marc21Record
+from invenio_records_marc21.services import (
+    Marc21DraftFilesServiceConfig,
+    Marc21RecordFilesServiceConfig,
+    Marc21RecordPermissionPolicy,
+    Marc21RecordService,
+    Marc21RecordServiceConfig,
+)
 
 
 @pytest.fixture()
@@ -103,8 +112,35 @@ def app_config(app_config):
 
     # Variable not used. We set it to silent warnings
     app_config["JSONSCHEMAS_HOST"] = "not-used"
+    app_config["RDM_PERMISSION_POLICY"] = Marc21RecordPermissionPolicy
+    # Enable DOI miting
+    app_config["DATACITE_ENABLED"] = True
+    app_config["DATACITE_USERNAME"] = "INVALID"
+    app_config["DATACITE_PASSWORD"] = "INVALID"
+    app_config["DATACITE_PREFIX"] = "10.123"
 
     return app_config
+
+
+@pytest.fixture(scope="module")
+def service(app):
+    """Service instance."""
+    doi_enabled = False
+    pid_providers = app.config["INVENIO_MARC21_PERSISTENT_IDENTIFIER_PROVIDERS"]
+    pids = app.config["INVENIO_MARC21_PERSISTENT_IDENTIFIERS"]
+
+    config = Marc21RecordServiceConfig.customize(
+        permission_policy=Marc21RecordPermissionPolicy,
+        pid_providers=pid_providers,
+        pids=pids,
+        doi_enabled=doi_enabled,
+    )
+    return Marc21RecordService(
+        config=config,
+        files_service=FileService(Marc21RecordFilesServiceConfig()),
+        draft_files_service=FileService(Marc21DraftFilesServiceConfig()),
+        pids_service=PIDsService(config, PIDManager),
+    )
 
 
 @pytest.fixture(scope="module")

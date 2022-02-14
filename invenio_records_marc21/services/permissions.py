@@ -52,3 +52,11 @@ class Marc21RecordPermissionPolicy(RecordPermissionPolicy):
     can_create_files = [AnyUser(), SystemProcess()]
     can_update_files = [AnyUser()]
     can_delete_files = [AnyUser()]
+
+    #
+    # PIDs
+    can_pid_create = [AnyUser()]
+    can_pid_register = [AnyUser(), SystemProcess()]
+    can_pid_update = [AnyUser()]
+    can_pid_discard = [AnyUser()]
+    can_pid_delete = [AnyUser()]

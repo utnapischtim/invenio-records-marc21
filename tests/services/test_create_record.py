@@ -15,11 +15,6 @@ from datetime import timedelta
 import arrow
 import pytest
 
-from invenio_records_marc21.services import (
-    Marc21RecordService,
-    Marc21RecordServiceConfig,
-)
-
 
 def _assert_fields_exists(fields, data):
     for key in fields:
@@ -37,9 +32,8 @@ def marc21():
     return {"metadata": {}}
 
 
-def test_create_with_service(running_app, marc21):
+def test_create_with_service(running_app, service, marc21):
     identity_simple = running_app.identity_simple
-    service = Marc21RecordService(config=Marc21RecordServiceConfig)
 
     draft = service.create(data=marc21, identity=identity_simple, access=None)
 
@@ -70,7 +64,7 @@ def test_create_with_service(running_app, marc21):
 @pytest.fixture()
 def empty_data():
     """marc21 record."""
-    return {"metadata": {"xml": "<record></record>"}}
+    return {"metadata": {}}
 
 
 @pytest.mark.parametrize(
@@ -137,11 +131,11 @@ def empty_data():
         },
     ],
 )
-def test_create_with_access(running_app, empty_data, access):
+def test_create_with_access(running_app, service, empty_data, access):
     identity_simple = running_app.identity_simple
-    service = Marc21RecordService(config=Marc21RecordServiceConfig)
+
     draft = service.create(
-        data=empty_data, identity=identity_simple, access=access["input"]
+        identity=identity_simple, data=empty_data, access=access["input"]
     )
     record = service.publish(id_=draft.id, identity=identity_simple)
     _assert_fields(

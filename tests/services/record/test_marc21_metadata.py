@@ -182,7 +182,9 @@ def test_load_metadata():
     assert len(controlfield) == 1
     assert controlfield[0].text == "990079940640203331"
 
-    datafield = metadata._etree.xpath(".//datafield[@tag='245' and @ind2='0' and @ind1='0']")
+    datafield = metadata._etree.xpath(
+        ".//datafield[@tag='245' and @ind2='0' and @ind1='0']"
+    )
     assert datafield
     assert len(datafield) == 1
 

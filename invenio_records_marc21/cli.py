@@ -97,18 +97,20 @@ def create_fake_record(filename):
     """Create records for demo purposes."""
     data_to_use = _load_json(filename)
     metadata_access = fake_access_right()
-    data_acces = {
+    data_access = {
         "owned_by": [{"user": system_identity().id}],
         "files": AccessStatusEnum.OPEN.value,
         "record": metadata_access,
     }
+
     if metadata_access == AccessStatusEnum.EMBARGOED.value:
-        data_acces.update({"embargo_date": fake_feature_date()})
+        data_access.update({"embargo_date": fake_feature_date()})
+        data_access.update({"record": AccessStatusEnum.RESTRICTED.value})
 
     service = current_records_marc21.records_service
 
     draft = service.create(
-        data=data_to_use, identity=system_identity(), access=data_acces
+        data=data_to_use, identity=system_identity(), access=data_access, files=False
     )
 
     record = service.publish(id_=draft.id, identity=system_identity())
