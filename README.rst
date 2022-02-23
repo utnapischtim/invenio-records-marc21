@@ -69,7 +69,7 @@ are already implemented:
     - [ ] over rest API
     - [ ] over GUI
 
-  - [ ] apply the same permission handling as for the rest of the repository
+  - [ ] inherit from the global permission system and customize it if necessary
 
     - [ ] create a curator for marc21 records over the normal interface for it
     - [ ] inherit ownership of records
