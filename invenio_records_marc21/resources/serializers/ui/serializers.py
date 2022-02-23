@@ -30,26 +30,16 @@ class Marc21UIBASESerializer(Marc21BASESerializer):
 
     def dump_one(self, obj):
         """Dump the object into a JSON string."""
-        obj[self._object_key] = self._schema_cls(context=self.ctx).dump(deepcopy(obj))
+        obj[self._object_key] = self._schema_cls().dump(deepcopy(obj))
         return obj
 
 
 class Marc21UIJSONSerializer(Marc21UIBASESerializer):
     """UI JSON serializer implementation."""
 
-    ctx = {
-        "remove_order": True,
-        "marcxml": False,
-    }
-
 
 class Marc21UIXMLSerializer(Marc21UIBASESerializer):
     """UI Marc21 xml serializer implementation."""
-
-    ctx = {
-        "remove_order": False,
-        "marcxml": True,
-    }
 
     def __init__(self, object_key="ui", **options):
         """Marc21 UI XML Constructor.
@@ -60,7 +50,7 @@ class Marc21UIXMLSerializer(Marc21UIBASESerializer):
 
     def dump_one(self, obj):
         """Dump the object into a JSON string."""
-        obj[self._object_key] = self._schema_cls(context=self.ctx).dump(deepcopy(obj))
+        obj[self._object_key] = self._schema_cls().dump(deepcopy(obj))
 
         # For edit a marc21 record in the deposit react app we need
         # the metadata field also as a marcxml string

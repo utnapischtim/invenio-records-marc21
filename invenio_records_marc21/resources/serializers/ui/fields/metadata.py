@@ -10,14 +10,13 @@
 
 """Metadata field for marc21 records."""
 
-
 import itertools
 
 from marshmallow.fields import Field
 
 
 def field_item(key: str, value: dict):
-    """Find first dict with key from a list of dict."""
+    """Find a dict with key from a list of dict."""
     keys = [list(field.keys())[0] for field in value]
     field = {}
     if key in keys:
@@ -43,10 +42,10 @@ class MetadataField(Field):
 
     def _serialize(self, value, attr, obj, **kwargs):
         """Serialise access status."""
-        fields = value.get("fields", [])
+        fields = value.get("fields", {})
         out = {}
 
-        if value:
+        if fields:
             language_code = field_subfields(fields.get("041", []))
             title_statement = field_subfields(fields.get("245", []))
             manufacture_copyright = field_subfields(fields.get("264", []))

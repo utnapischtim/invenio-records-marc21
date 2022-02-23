@@ -18,6 +18,7 @@ from marshmallow_utils.fields import FormatDate as BaseFormatDatetime
 from marshmallow_utils.fields import Function, SanitizedUnicode
 
 from ..schema import Marc21Schema
+from .fields import MetadataField
 
 FormatDatetime = partial(BaseFormatDatetime, locale=get_locale)
 
@@ -35,6 +36,8 @@ class Marc21UISchema(Marc21Schema):
     id = SanitizedUnicode(data_key="id", attribute="id")
 
     access_status = AccessStatusField(attribute="access")
+
+    metadata = MetadataField(attribute="metadata")
 
     created = FormatDatetime(attribute="created", format="long")
 
