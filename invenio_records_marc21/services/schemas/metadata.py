@@ -11,13 +11,34 @@
 """Marc21 record metadata field."""
 
 
+import json
 import typing
+from os.path import dirname, join
 
+from jsonschema import ValidationError, validate
+from marshmallow.exceptions import ValidationError as MarshmallowValidationError
 from marshmallow.fields import Field
+
+
+def get_schema():
+    """Marc21 load json schema."""
+    with open(
+        join(
+            dirname(__file__),
+            "../../records/jsonschemas/marc21/marc21-structure-v1.0.0.json",
+        ),
+        "rb",
+    ) as fp:
+        input = fp.read()
+        return json.loads(input.decode("utf-8"))
 
 
 class MetadataField(Field):
     """Schema for the record metadata."""
+
+    # FIXME: get_schema
+
+    schema = get_schema()
 
     def _deserialize(
         self,
@@ -50,4 +71,8 @@ class MetadataField(Field):
         does not succeed.
         """
         # TODO: validate the marc21 xml during loading the Schema
+        try:
+            validate(instance=value, schema=self.schema)
+        except ValidationError as e:
+            raise MarshmallowValidationError(e)
         self._validate_all(value)
