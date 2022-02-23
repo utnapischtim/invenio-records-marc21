@@ -16,9 +16,6 @@ from unittest import mock
 import arrow
 import pytest
 from dateutil import tz
-from dojson.contrib.marc21 import marc21
-from dojson.contrib.marc21.utils import create_record
-from dojson.contrib.to_marc21 import to_marc21
 from invenio_pidstore.errors import PIDDoesNotExistError
 from invenio_pidstore.models import PIDStatus
 from sqlalchemy.orm.exc import NoResultFound
@@ -30,26 +27,29 @@ from invenio_records_marc21.services.errors import EmbargoNotLiftedError
 def _test_metadata(test, expected):
     assert test.keys() == expected.keys()
     for key in test.keys():
-        assert test[key] == expected[key]
+        assert key in expected
 
 
-def test_full_metadata_xml_schema(running_app, full_metadata):
+def test_full_metadata_xml_schema(running_app, full_metadata, full_metadata_expected):
     """Test metadata schema."""
     service = running_app.service
     data = service.create(running_app.identity_simple, metadata=full_metadata)
 
+    # leader
+    assert data["metadata"]["leader"] == full_metadata_expected["metadata"]["leader"]
+
+    # fields controlfields and datafields
     _test_metadata(
-        data["metadata"],
-        marc21.do(create_record(full_metadata.xml)),
+        data["metadata"]["fields"],
+        full_metadata_expected["metadata"]["fields"],
     )
 
 
-def test_create_draft(running_app, metadata):
+def test_create_draft(running_app, xml_metadata):
     """Test draft creation of a non-existing record."""
 
     service = running_app.service
-    draft = service.create(running_app.identity_simple, metadata=metadata)
-    draft_dict = draft.to_dict()
+    draft = service.create(running_app.identity_simple, metadata=xml_metadata)
 
     assert draft.id
 
@@ -77,23 +77,23 @@ def test_create_empty_draft(running_app):
     assert draft._record.pid.status == PIDStatus.NEW
 
 
-def test_read_draft(running_app, metadata):
+def test_read_draft(running_app, xml_metadata):
     """Test read a draft can be created."""
     service = running_app.service
     identity_simple = running_app.identity_simple
-    draft = service.create(identity=identity_simple, metadata=metadata)
+    draft = service.create(identity=identity_simple, metadata=xml_metadata)
     assert draft.id
 
     draft_2 = service.read_draft(identity=identity_simple, id_=draft.id)
     assert draft.id == draft_2.id
 
 
-def test_delete_draft(running_app, metadata):
+def test_delete_draft(running_app, xml_metadata):
     """Test a created  draft can be deleted."""
     identity_simple = running_app.identity_simple
     service = running_app.service
 
-    draft = service.create(identity=identity_simple, metadata=metadata)
+    draft = service.create(identity=identity_simple, metadata=xml_metadata)
     assert draft.id
 
     success = service.delete_draft(identity=identity_simple, id_=draft.id)
@@ -104,10 +104,10 @@ def test_delete_draft(running_app, metadata):
         delete_draft = service.read_draft(identity=identity_simple, id_=draft.id)
 
 
-def _create_and_publish(service, metadata, identity_simple):
+def _create_and_publish(service, xml_metadata, identity_simple):
     """Creates a draft and publishes it."""
     # Cannot create with record service due to the lack of versioning
-    draft = service.create(identity=identity_simple, metadata=metadata)
+    draft = service.create(identity=identity_simple, metadata=xml_metadata)
 
     record = service.publish(identity=identity_simple, id_=draft.id)
 
@@ -119,14 +119,14 @@ def _create_and_publish(service, metadata, identity_simple):
     return record
 
 
-def test_publish_draft(running_app, metadata):
+def test_publish_draft(running_app, xml_metadata):
     """Test draft publishing of a non-existing record.
 
     Note that the publish action requires a draft to be created first.
     """
     service = running_app.service
     identity_simple = running_app.identity_simple
-    record = _create_and_publish(service, metadata, identity_simple)
+    record = _create_and_publish(service, xml_metadata, identity_simple)
     assert record._record.pid.status == PIDStatus.REGISTERED
 
     # Check draft deleted
@@ -140,21 +140,16 @@ def test_publish_draft(running_app, metadata):
     assert record._record.pid.status == PIDStatus.REGISTERED
 
 
-def _test_metadata(metadata, metadata2):
-    assert metadata.keys() == metadata2.keys()
-    for key in metadata.keys():
-        assert metadata[key] == metadata2[key]
-
-
-def test_update_draft(running_app, metadata, metadata2):
+def test_update_draft(running_app, xml_metadata, xml_metadata2, json_metadata, json_metadata2):
     service = running_app.service
     identity_simple = running_app.identity_simple
-    draft = service.create(identity=identity_simple, metadata=metadata)
+
+    draft = service.create(identity=identity_simple, metadata=xml_metadata)
     assert draft.id
 
     # Update draft content
     update_draft = service.update_draft(
-        identity=identity_simple, id_=draft.id, metadata=metadata2
+        id_=draft.id, identity=identity_simple, metadata=xml_metadata2
     )
 
     # Check the updates where savedif "json" in data:
@@ -162,19 +157,19 @@ def test_update_draft(running_app, metadata, metadata2):
 
     assert draft.id == update_draft.id
     _test_metadata(
-        to_marc21.do(update_draft["metadata"]),
-        to_marc21.do(read_draft["metadata"]),
+        update_draft["metadata"],
+        read_draft["metadata"],
     )
 
 
-def test_create_publish_new_version(running_app, metadata):
+def test_create_publish_new_version(running_app, xml_metadata):
     """Test creating a new revision of a record.
 
     This tests the `new_version` service method.
     """
     service = running_app.service
     identity_simple = running_app.identity_simple
-    record = _create_and_publish(service, metadata, identity_simple)
+    record = _create_and_publish(service, xml_metadata, identity_simple)
     marcid = record.id
 
     # Create new version

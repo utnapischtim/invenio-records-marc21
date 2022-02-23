@@ -13,7 +13,9 @@
 See https://pytest-invenio.readthedocs.io/ for documentation on which test
 fixtures are available.
 """
+import json
 from collections import namedtuple
+from os.path import dirname, join
 
 import pytest
 from flask_principal import Identity
@@ -47,18 +49,32 @@ def identity_simple():
 
 
 @pytest.fixture(scope="session")
-def metadata():
+def xml_metadata():
     """Input data (as coming from the view layer)."""
     metadata = Marc21Metadata()
-    metadata.xml = "<record><datafield tag='245' ind1='1' ind2='0'><subfield code=' '>laborum sunt ut nulla</subfield></datafield></record>"
+    metadata.xml = "<record><leader>00000nam a2200000zca4500</leader><datafield tag='245' ind1='1' ind2='0'><subfield code=' '>laborum sunt ut nulla</subfield></datafield></record>"
     return metadata
 
 
 @pytest.fixture(scope="session")
-def metadata2():
+def xml_metadata2():
     """Input data (as coming from the view layer)."""
     metadata = Marc21Metadata()
-    metadata.xml = "<record><datafield tag='245' ind1='1' ind2='0'><subfield code=' '>nulla sunt laborum</subfield></datafield></record>"
+    metadata.xml = "<record><leader>00000nam a2200000zca4500</leader><datafield tag='245' ind1='1' ind2='0'><subfield code=' '>nulla sunt laborum</subfield></datafield></record>"
+    return metadata
+
+
+@pytest.fixture(scope="session")
+def json_metadata():
+    """Input data (as coming from the view layer)."""
+    metadata = {'metadata': {'leader': '00000nam a2200000zca4500', 'fields': {'245': [{'subfields': [{' ': 'laborum sunt ut nulla'}], 'ind1': '1', 'ind2': '0'}]}}}
+    return metadata
+
+
+@pytest.fixture(scope="session")
+def json_metadata2():
+    """Input data (as coming from the view layer)."""
+    metadata = {'metadata': {'leader': '00000nam a2200000zca4500', 'fields': {'245': [{'subfields': [{' ': 'nulla sunt laborum'}], 'ind1': '1', 'ind2': '0'}]}}}
     return metadata
 
 
@@ -72,12 +88,24 @@ def embargoedrecord(embargoed_record):
     return record
 
 
+def _load_file(filename):
+    with open(join(dirname(__file__), filename), "rb") as fp:
+        return fp.read()
+
+
 @pytest.fixture()
 def full_metadata():
     """Metadata full record marc21 xml."""
     metadata = Marc21Metadata()
-    metadata.xml = "<record><leader>00000nam a2200000zca4500</leader><datafield tag='035' ind1=' ' ind2=' '><subfield code='a'>AC08088803</subfield></datafield></record>"
+    metadata.xml = _load_file("test-metadata.xml").decode("UTF-8")
     return metadata
+
+
+@pytest.fixture()
+def full_metadata_expected():
+    """Metadata full record marc21 json expected."""
+    json_string = _load_file("test-metadata.json")
+    return json.loads(json_string.decode("UTF-8"))
 
 
 @pytest.fixture()

@@ -47,62 +47,50 @@ def _test_without_order(data, key="__order__"):
             _test_without_order(item, key)
 
 
-def test_ui_metadata_remove_order(marc21_metadata):
-    metadata = Marc21TestSchema(context={"remove_order": True})
-    data = metadata.dump({"metadata": marc21_metadata})
-    _test_without_order(data["metadata"])
-
-
 def test_ui_metadata_convert_xml(marc21_metadata):
-    metadata = Marc21TestSchema(context={"marcxml": True})
+    metadata = Marc21TestSchema()
     test = deepcopy(marc21_metadata)
 
     data = metadata.dump({"metadata": test})
-    assert isinstance(data["metadata"], str)
+    assert isinstance(data["metadata"], dict)
 
-    expect_str = dumps(to_marc21.do(marc21_metadata)).decode("UTF-8")
-    assert expect_str == data["metadata"]
+    expect_keys = [
+        "main_entry_personal_name",
+        "title_statement",
+        "physical_description",
+        "dissertation_note",
+        "general_note",
+        "language_code",
+        "production_publication_distribution_manufacture_and_copyright_notice",
+    ]
+    for key in expect_keys:
+        assert key in data["metadata"]
 
 
 def test_ui_metadata_default_schema(marc21_metadata):
+    metadataschema = Marc21TestSchema()
+    data = metadataschema.dump({"metadata": marc21_metadata})
+
+    expect_keys = [
+        "main_entry_personal_name",
+        "title_statement",
+        "physical_description",
+        "dissertation_note",
+        "general_note",
+        "language_code",
+        "production_publication_distribution_manufacture_and_copyright_notice",
+    ]
+    for key in expect_keys:
+        assert key in data["metadata"]
+        assert data["metadata"][key] is not None
+
+
+def test_ui_metadata_json_schema(marc21_metadata, expect_metadata_ui):
     metadata = Marc21TestSchema()
-    data = metadata.dump({"metadata": marc21_metadata})
-    assert data["metadata"] == marc21_metadata
-    _test_metadata(
-        data["metadata"],
-        marc21_metadata,
-    )
-
-
-def test_ui_metadata_xml_schema(marc21_metadata):
-    """Test metadata schema."""
-
-    metadata = Marc21TestSchema(
-        context={
-            "marcxml": True,
-        }
-    )
-    test = deepcopy(marc21_metadata)
-    data = metadata.dump({"metadata": test})
-
-    s = "".join(data["metadata"].split("\n")[1:-1])
-    test = marc21.do(create_record(s))
-    _test_without_order(
-        test,
-        marc21_metadata,
-    )
-
-
-def test_ui_metadata_json_schema(marc21_metadata):
-    metadata = Marc21TestSchema(
-        context={
-            "marcxml": False,
-        }
-    )
     test = deepcopy(marc21_metadata)
     data = metadata.dump({"metadata": test})
 
     _test_metadata(
         data["metadata"],
-        marc21_metadata,
+        expect_metadata_ui,
     )
