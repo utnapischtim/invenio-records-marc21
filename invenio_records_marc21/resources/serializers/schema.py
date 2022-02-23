@@ -13,20 +13,18 @@
 from marshmallow import Schema
 from marshmallow_utils.fields import SanitizedUnicode
 
-from .fields import MetadataField
-
 
 class Marc21Schema(Schema):
     """Schema for dumping extra information for the marc21 record."""
 
     id = SanitizedUnicode(data_key="id", attribute="id")
-    metadata = MetadataField(attribute="metadata")
 
     class Meta:
         """Meta class to accept unknwon fields."""
 
         additional = (
             "access_status",
+            "metadata",
             "created",
             "updated",
             "links",
