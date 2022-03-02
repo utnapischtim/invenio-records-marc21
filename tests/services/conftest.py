@@ -67,14 +67,40 @@ def xml_metadata2():
 @pytest.fixture(scope="session")
 def json_metadata():
     """Input data (as coming from the view layer)."""
-    metadata = {'metadata': {'leader': '00000nam a2200000zca4500', 'fields': {'245': [{'subfields': [{' ': 'laborum sunt ut nulla'}], 'ind1': '1', 'ind2': '0'}]}}}
+    metadata = {
+        "metadata": {
+            "leader": "00000nam a2200000zca4500",
+            "fields": {
+                "245": [
+                    {
+                        "subfields": {" ": ["laborum sunt ut nulla"]},
+                        "ind1": "1",
+                        "ind2": "0",
+                    }
+                ]
+            },
+        }
+    }
     return metadata
 
 
 @pytest.fixture(scope="session")
 def json_metadata2():
     """Input data (as coming from the view layer)."""
-    metadata = {'metadata': {'leader': '00000nam a2200000zca4500', 'fields': {'245': [{'subfields': [{' ': 'nulla sunt laborum'}], 'ind1': '1', 'ind2': '0'}]}}}
+    metadata = {
+        "metadata": {
+            "leader": "00000nam a2200000zca4500",
+            "fields": {
+                "245": [
+                    {
+                        "subfields": {" ": ["nulla sunt laborum"]},
+                        "ind1": "1",
+                        "ind2": "0",
+                    }
+                ]
+            },
+        }
+    }
     return metadata
 
 

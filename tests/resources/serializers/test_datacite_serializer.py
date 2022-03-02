@@ -23,7 +23,7 @@ def test_datacite43_serializer(app, full_record):
             {"identifier": "10.5281/inveniordm.1234", "identifierType": "DOI"}
         ],
         "titles": {
-            "title": "Proceedings of the 3rd International Brain-Computer Interface Workshop and Training Course"
+            "title": "<<The>> development of high strain actuator materials"
         },
         "creators": {"name": "Philipp"},
         "types": {"resourceTypeGeneral": "Other", "resourceType": "Text"},

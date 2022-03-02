@@ -30,21 +30,41 @@ def marc21_metadata():
             "005": "20200511091822.0",
             "007": "tu",
             "009": "AC11056824",
+            "100": [
+                {
+                    "ind1": "_",
+                    "ind2": "_",
+                    "subfields": {
+                        "a": ["Philipp"],
+                    },
+                }
+            ],
             "245": [
                 {
                     "ind1": "1",
                     "ind2": "0",
-                    "subfields": [
-                        {"a": "<<The>> development of high strain actuator materials"},
-                        {"c": "Denis Sch\u00fctz"},
-                    ],
+                    "subfields": {
+                        "a": ["<<The>> development of high strain actuator materials"],
+                        "c": ["Denis Sch\u00fctz"],
+                    },
+                }
+            ],
+            "362": [
+                {
+                    "ind1": "0",
+                    "ind2": "_",
+                    "subfields": {
+                        "a": ["2022"],
+                    },
                 }
             ],
             "502": [
                 {
                     "ind1": "_",
                     "ind2": "_",
-                    "subfields": [{"a": "Graz, Techn. Univ., Diss., 2012"}],
+                    "subfields": {
+                        "a": ["Graz, Techn. Univ., Diss., 2012"],
+                    },
                 }
             ],
         },
@@ -55,7 +75,7 @@ def marc21_metadata():
 def expect_metadata_ui():
     """Record UI metadata."""
     return {
-        "main_entry_personal_name": {"personal_name": "", "relator_code": ""},
+        "main_entry_personal_name": {"personal_name": "Philipp", "relator_code": ""},
         "title_statement": {
             "title": "<<The>> development of high strain actuator materials"
         },
