@@ -13,10 +13,9 @@
 import re
 
 import idutils
-from dojson.contrib.marc21.utils import create_record
-from dojson.contrib.to_marc21 import to_marc21
 from flask import current_app
 
+from ...services.record.metadata import convert_marc21xml_to_json
 from .wrappers import get_personal_code
 
 
@@ -40,12 +39,7 @@ def pid_url(identifier, scheme=None, url_scheme="https"):
 
 def marc21_to_json(marcxml):
     """Convert record into json."""
-    return create_record(marcxml)
-
-
-def json_to_marc21(json):
-    """Convert record into marc21 xml."""
-    return to_marc21.do(json)
+    return convert_marc21xml_to_json(marcxml)
 
 
 def sanitize_title(title):

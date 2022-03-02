@@ -39,7 +39,6 @@ def test_marcxml_serializer_serialize_object(full_record):
     assert isinstance(obj, str)
     _test_key_in_serialized_obj(obj, test_keys, exept_keys)
     assert obj.startswith("<?xml version='1.0' encoding='UTF-8'?>")
-    assert 'xmlns:prefix="http://www.loc.gov/MARC21/slim"' in obj
 
 
 def test_marcxml_serializer_serialize_object_list(list_records):
@@ -53,7 +52,6 @@ def test_marcxml_serializer_serialize_object_list(list_records):
         assert isinstance(obj, str)
         _test_key_in_serialized_obj(obj, test_keys, exept_keys)
         assert obj.startswith("<?xml version='1.0' encoding='UTF-8'?>")
-        assert 'xmlns:prefix="http://www.loc.gov/MARC21/slim"' in obj
 
 
 def test_json_serializer_init():

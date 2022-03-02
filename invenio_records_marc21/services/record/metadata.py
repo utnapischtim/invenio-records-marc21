@@ -14,10 +14,95 @@ from io import StringIO
 from os import linesep
 from os.path import dirname, join
 
-from dojson.contrib.marc21 import marc21
-from dojson.contrib.marc21.utils import create_record
 from lxml import etree
-from lxml.builder import ElementMaker
+from lxml.etree import _Element as Element
+
+
+class XmlToJsonVisitor:
+    """XmlToJsonVisitor class."""
+
+    def __init__(self):
+        """Constructor."""
+        self.record = {"leader": "", "fields": {}}
+
+    def process(self, node: Element):
+        """Execute the corresponding method to the tag name."""
+
+        def func_not_found(*args, **kwargs):
+            localname = etree.QName(node).localname
+            namespace = etree.QName(node).namespace
+            raise ValueError(f"NO visitor node: '{localname}' ns: '{namespace}'")
+
+        tag_name = etree.QName(node).localname
+        visit_func = getattr(self, f"visit_{tag_name}", func_not_found)
+        result = visit_func(node)
+        return result
+
+    def visit(self, node: Element):
+        """Visit default method and entry point for the class."""
+        for child in node:
+            self.process(child)
+
+    def append_string(self, tag: str, value: str):
+        """Append to the field list a single string."""
+        self.record["fields"][tag] = value
+
+    def append(self, tag: str, field: dict):
+        """Append to the field list."""
+        if tag not in self.record["fields"]:
+            self.record["fields"][tag] = []
+
+        self.record["fields"][tag].append(field)
+
+    def get_json_record(self):
+        """Get the mij representation of the marc21 xml record."""
+        return self.record
+
+    def visit_record(self, node: Element):
+        """Visit the record."""
+        self.record = {"leader": "", "fields": []}
+        self.visit(node)
+
+    def visit_leader(self, node: Element):
+        """Visit the controlfield field."""
+        self.record["leader"] = node.text
+
+    def visit_controlfield(self, node: Element):
+        """Visit the controlfield field."""
+        field = node.text
+        self.append_string(node.get("tag"), field)
+
+    def visit_datafield(self, node: Element):
+        """Visit the datafield field."""
+        self.subfields = {}
+        self.visit(node)
+
+        tag = node.get("tag")
+        ind1 = node.get("ind1", "_").replace(" ", "_")
+        ind2 = node.get("ind2", "_").replace(" ", "_")
+
+        field = {
+            "ind1": ind1,
+            "ind2": ind2,
+            "subfields": self.subfields,
+        }
+        self.append(tag, field)
+
+    def visit_subfield(self, node: Element):
+        """Visit the subfield field."""
+        subf_code = node.get("code")
+
+        if subf_code not in self.subfields:
+            self.subfields[subf_code] = []
+
+        self.subfields[subf_code].append(node.text)
+
+
+def convert_marc21xml_to_json(record):
+    """MARC21 Record class convert to json."""
+    visitor = XmlToJsonVisitor()
+    visitor.visit(record)
+    return visitor.get_json_record()
 
 
 class Marc21Metadata(object):
@@ -37,8 +122,7 @@ class Marc21Metadata(object):
     @property
     def json(self):
         """Metadata json getter method."""
-        record = create_record(self._etree)
-        self._json = {"metadata": marc21.do(record)}
+        self._json = {"metadata": convert_marc21xml_to_json(self._etree)}
         return self._json
 
     @property
@@ -75,7 +159,7 @@ class Marc21Metadata(object):
     def _to_xml_tree_from_string(self, xml: str):
         """Xml string to internal representation method."""
         tree = etree.parse(StringIO(xml))
-        return tree
+        return tree.getroot()
 
     def _to_string(self, tagsep: str = linesep, indent: int = 4) -> str:
         """Get a pretty-printed XML string of the record."""
@@ -122,9 +206,7 @@ class Marc21Metadata(object):
         value: str = "",
     ) -> None:
         """Add value to record for given datafield and subfield."""
-        datafield = etree.Element(
-            "datafield", tag=tag, ind1=ind1, ind2=ind2
-        )
+        datafield = etree.Element("datafield", tag=tag, ind1=ind1, ind2=ind2)
         subfield = etree.Element("subfield", code=code)
         subfield.text = value
         datafield.append(subfield)

@@ -27,17 +27,26 @@ def test_ui_marcxml_serializer_init():
 def test_ui_marcxml_serializer_dump_one(full_record):
     marc = Marc21UIXMLSerializer()
     obj = marc.dump_one(full_record)
-    assert isinstance(obj["metadata"], str)
+    assert isinstance(obj["metadata"], dict)
     assert full_record["metadata"] == obj["metadata"]
 
     assert marc._object_key in obj
     obj_ui = obj[marc._object_key]
     assert "metadata" in obj_ui
-    assert isinstance(obj_ui["metadata"], str)
+    assert isinstance(obj_ui["metadata"], dict)
 
 
 def test_ui_marcxml_serializer_dump_many(list_records):
     marc = Marc21UIXMLSerializer()
+    expect_keys = [
+        "main_entry_personal_name",
+        "title_statement",
+        "physical_description",
+        "dissertation_note",
+        "general_note",
+        "language_code",
+        "production_publication_distribution_manufacture_and_copyright_notice",
+    ]
     obj_list = marc.dump_many(list_records)
     for record, obj in zip(obj_list["hits"]["hits"], list_records["hits"]["hits"]):
         assert marc._object_key in obj
@@ -47,7 +56,8 @@ def test_ui_marcxml_serializer_dump_many(list_records):
 
         obj_ui = obj[marc._object_key]
         assert "metadata" in obj_ui
-        assert isinstance(obj_ui["metadata"], str)
+        for key in expect_keys:
+            assert key in obj_ui["metadata"]
 
 
 def test_ui_json_serializer_init():

@@ -12,10 +12,6 @@
 
 import json
 
-from dojson._compat import iteritems, string_types
-from dojson.contrib.to_marc21 import to_marc21
-from dojson.contrib.to_marc21.utils import MARC21_NS
-from dojson.utils import GroupableOrderedDict
 from flask_resources.serializers import MarshmallowJSONSerializer
 from lxml import etree
 from lxml.builder import E, ElementMaker
@@ -36,7 +32,7 @@ class Marc21BASESerializer(MarshmallowJSONSerializer):
 
     def dump_one(self, obj):
         """Dump the object into a JSON string."""
-        return self._schema_cls(context=self.ctx).dump(obj)
+        return self._schema_cls().dump(obj)
 
     def dump_many(self, obj_list):
         """Serialize a list of records.
@@ -51,10 +47,6 @@ class Marc21BASESerializer(MarshmallowJSONSerializer):
 class Marc21JSONSerializer(Marc21BASESerializer):
     """Marc21 JSON export serializer implementation."""
 
-    ctx = {
-        "remove_order": True,
-    }
-
     def serialize_object_list(self, obj_list):
         """Serialize a list of records.
 
@@ -67,9 +59,15 @@ class Marc21JSONSerializer(Marc21BASESerializer):
 class Marc21XMLSerializer(Marc21BASESerializer):
     """Marc21 XML export serializer implementation."""
 
-    ctx = {
-        "remove_order": False,
-    }
+    controlfields = [
+        "001",
+        "003",
+        "005",
+        "006",
+        "007",
+        "008",
+        "009",
+    ]
 
     def serialize_object(self, obj):
         """Serialize a single record.
@@ -100,11 +98,11 @@ class Marc21XMLSerializer(Marc21BASESerializer):
 
     def convert_record(self, data):
         """Convert marc21 record to xml."""
-        E = ElementMaker(namespace=MARC21_NS, nsmap={"prefix": MARC21_NS})
+        E = ElementMaker()
         record = E.record()
         for key, value in data.items():
             if "metadata" in key:
-                record.append(self.convert_metadata(to_marc21.do(value)))
+                record.append(self.convert_metadata(value))
                 continue
             record.append(self._convert(key, value))
         return etree.tostring(
@@ -122,57 +120,29 @@ class Marc21XMLSerializer(Marc21BASESerializer):
         if leader:
             rec.append(E.leader(leader))
 
-        if isinstance(data, GroupableOrderedDict):
-            items = data.iteritems(with_order=False, repeated=True)
-        else:
-            items = iteritems(data)
+        fields = data.get("fields", [])
 
-        for df, subfields in items:
+        # items = iteritems(fields)
+
+        for key, value in fields.items():
             # Control fields
-            if len(df) == 3:
-                if isinstance(subfields, string_types):
-                    controlfield = E.controlfield(subfields)
-                    controlfield.attrib["tag"] = df[0:3]
-                    rec.append(controlfield)
-                elif isinstance(subfields, (list, tuple, set)):
-                    for subfield in subfields:
-                        controlfield = E.controlfield(subfield)
-                        controlfield.attrib["tag"] = df[0:3]
-                        rec.append(controlfield)
+            if key in self.controlfields:
+                controlfield = E.controlfield(value)
+                controlfield.attrib["tag"] = key
+                rec.append(controlfield)
             else:
-                # Skip leader.
-                if df == "leader":
-                    continue
 
-                if not isinstance(subfields, (list, tuple, set)):
-                    subfields = (subfields,)
+                for subfields in value:
+                    datafield = E.datafield()
+                    datafield.attrib["tag"] = key
 
-                df = df.replace("_", " ")
-                for subfield in subfields:
-                    if not isinstance(subfield, (list, tuple, set)):
-                        subfield = [subfield]
+                    indicator1 = subfields.get("ind1", " ")
+                    indicator2 = subfields.get("ind2", " ")
 
-                    for s in subfield:
-                        datafield = E.datafield()
-                        datafield.attrib["tag"] = df[0:3]
-                        datafield.attrib["ind1"] = df[3]
-                        datafield.attrib["ind2"] = df[4]
-
-                        if isinstance(s, GroupableOrderedDict):
-                            items = s.iteritems(with_order=False, repeated=True)
-                        elif isinstance(s, dict):
-                            items = iteritems(s)
-                        else:
-                            datafield.append(E.subfield(s))
-
-                            items = tuple()
-
-                        for code, value in items:
-                            if not isinstance(value, string_types):
-                                for v in value:
-                                    datafield.append(E.subfield(v, code=code))
-                            else:
-                                datafield.append(E.subfield(value, code=code))
-
-                        rec.append(datafield)
+                    datafield.attrib["ind1"] = indicator1.replace("_", " ")
+                    datafield.attrib["ind2"] = indicator2.replace("_", " ")
+                    items = subfields.get("subfields", {})
+                    for k in items.keys():
+                        datafield.append(E.subfield(", ".join(items[k]), code=k))
+                rec.append(datafield)
         return rec

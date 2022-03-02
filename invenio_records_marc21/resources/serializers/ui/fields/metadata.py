@@ -11,8 +11,6 @@
 """Metadata field for marc21 records."""
 
 
-import itertools
-
 from marshmallow.fields import Field
 
 
@@ -35,10 +33,10 @@ class MetadataField(Field):
 
     def _serialize(self, value, attr, obj, **kwargs):
         """Serialise access status."""
-        fields = value.get("fields", [])
+        fields = value.get("fields", {})
         out = {}
 
-        if value:
+        if fields:
             language_code = field_subfields(fields.get("041", []))
             title_statement = field_subfields(fields.get("245", []))
             manufacture_copyright = field_subfields(fields.get("264", []))
