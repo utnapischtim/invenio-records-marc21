@@ -16,25 +16,17 @@ import itertools
 from marshmallow.fields import Field
 
 
-def field_item(key: str, value: dict):
-    """Find first dict with key from a list of dict."""
-    keys = [list(field.keys())[0] for field in value]
-    field = {}
-    if key in keys:
-        index = keys.index(key)
-        field = value[index][key]
-    return field
-
-
 def field_subfields(value: list):
     """MARC21 get list of subfields from json."""
-    subfields = list(itertools.chain(*[field.get("subfields", []) for field in value]))
+    subfields = dict(*[field.get("subfields", {}) for field in value])
     return subfields
 
 
-def field_subfield(key: str, subfields: list):
+def field_subfield(key: str, subfields: dict):
     """Find subfield in a list of subfields dicts."""
-    subfield = field_item(key, subfields)
+    subfield = subfields.get(key, [])
+    if isinstance(subfield, list):
+        subfield = ", ".join(subfield)
     return subfield if subfield else ""
 
 

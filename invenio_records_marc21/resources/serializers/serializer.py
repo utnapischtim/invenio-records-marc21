@@ -141,11 +141,8 @@ class Marc21XMLSerializer(Marc21BASESerializer):
 
                     datafield.attrib["ind1"] = indicator1.replace("_", " ")
                     datafield.attrib["ind2"] = indicator2.replace("_", " ")
-                    skeys = subfields.get("subfields", [])
-                    for item in skeys:
-                        [
-                            datafield.append(E.subfield(v, code=k))
-                            for k, v in item.items()
-                        ]
+                    items = subfields.get("subfields", {})
+                    for k in items.keys():
+                        datafield.append(E.subfield(", ".join(items[k]), code=k))
                 rec.append(datafield)
         return rec

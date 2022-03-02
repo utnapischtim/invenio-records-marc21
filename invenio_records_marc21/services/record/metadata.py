@@ -43,17 +43,16 @@ class XmlToJsonVisitor:
         for child in node:
             self.process(child)
 
-    def append_string(self, tag: str, string: str):
+    def append_string(self, tag: str, value: str):
         """Append to the field list a single string."""
-        self.record["fields"].update({tag: string})
+        self.record["fields"][tag] = value
 
     def append(self, tag: str, field: dict):
         """Append to the field list."""
-        helper = self.record["fields"].get(tag, [])
-        if helper:
-            helper.append(field)
-        else:
-            self.record["fields"].update({tag: [field]})
+        if tag not in self.record["fields"]:
+            self.record["fields"][tag] = []
+
+        self.record["fields"][tag].append(field)
 
     def get_json_record(self):
         """Get the mij representation of the marc21 xml record."""
@@ -75,14 +74,28 @@ class XmlToJsonVisitor:
 
     def visit_datafield(self, node: Element):
         """Visit the datafield field."""
-        ind1 = node.get("ind1", "_")
-        ind2 = node.get("ind2", "_")
+        self.subfields = {}
+        self.visit(node)
+
+        tag = node.get("tag")
+        ind1 = node.get("ind1", "_").replace(" ", "_")
+        ind2 = node.get("ind2", "_").replace(" ", "_")
+
         field = {
-            "subfields": [{sub.get("code"): sub.text} for sub in node],
-            "ind1": ind1.replace(" ", "_"),
-            "ind2": ind2.replace(" ", "_"),
+            "ind1": ind1,
+            "ind2": ind2,
+            "subfields": self.subfields,
         }
-        self.append(node.get("tag"), field)
+        self.append(tag, field)
+
+    def visit_subfield(self, node: Element):
+        """Visit the subfield field."""
+        subf_code = node.get("code")
+
+        if subf_code not in self.subfields:
+            self.subfields[subf_code] = []
+
+        self.subfields[subf_code].append(node.text)
 
 
 def convert_marc21xml_to_json(record):
