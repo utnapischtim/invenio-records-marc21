@@ -22,9 +22,7 @@ def test_datacite43_serializer(app, full_record):
         "identifiers": [
             {"identifier": "10.5281/inveniordm.1234", "identifierType": "DOI"}
         ],
-        "titles": {
-            "title": "<<The>> development of high strain actuator materials"
-        },
+        "titles": {"title": "<<The>> development of high strain actuator materials"},
         "creators": {"name": "Philipp"},
         "types": {"resourceTypeGeneral": "Other", "resourceType": "Text"},
     }

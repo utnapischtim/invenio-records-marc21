@@ -140,7 +140,9 @@ def test_publish_draft(running_app, xml_metadata):
     assert record._record.pid.status == PIDStatus.REGISTERED
 
 
-def test_update_draft(running_app, xml_metadata, xml_metadata2, json_metadata, json_metadata2):
+def test_update_draft(
+    running_app, xml_metadata, xml_metadata2, json_metadata, json_metadata2
+):
     service = running_app.service
     identity_simple = running_app.identity_simple
 

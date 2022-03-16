@@ -39,8 +39,10 @@ def system_identity():
 def fake_access_right():
     """Generates a fake access_right."""
     _type = random.choice(list(AccessStatusEnum)).value
-    if _type == AccessStatusEnum.METADATA_ONLY.value or \
-       _type == AccessStatusEnum.OPEN.value:
+    if (
+        _type == AccessStatusEnum.METADATA_ONLY.value
+        or _type == AccessStatusEnum.OPEN.value
+    ):
         return "public"
     return _type
 
