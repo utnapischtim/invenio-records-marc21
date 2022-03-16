@@ -33,10 +33,18 @@ def test_marc_resolver(app, db):
         rec_a = uuid.uuid4()
         PersistentIdentifier.create("marcid", 1, status=PIDStatus.NEW)
 
-        PersistentIdentifier.create("marcid", 2, status=PIDStatus.NEW, object_type="rec", object_uuid=rec_a)
+        PersistentIdentifier.create(
+            "marcid", 2, status=PIDStatus.NEW, object_type="rec", object_uuid=rec_a
+        )
         PersistentIdentifier.create("marcid", 3, status=PIDStatus.RESERVED)
         PersistentIdentifier.create("marcid", 4, status=PIDStatus.REGISTERED)
-        PersistentIdentifier.create("marcid", 5, status=PIDStatus.REGISTERED, object_type="rec", object_uuid=rec_a)
+        PersistentIdentifier.create(
+            "marcid",
+            5,
+            status=PIDStatus.REGISTERED,
+            object_type="rec",
+            object_uuid=rec_a,
+        )
         pid = PersistentIdentifier.create("marcid", 6, status=PIDStatus.DELETED)
         # Create redirects
         pid = PersistentIdentifier.create("marcid", 7, status=PIDStatus.REGISTERED)

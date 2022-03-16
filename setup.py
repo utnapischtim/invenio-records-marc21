@@ -20,6 +20,8 @@ history = open("CHANGES.rst").read()
 tests_require = [
     "pytest-invenio>=1.4.0,<2.0.0",
     "invenio-app>=1.3.0,<2.0.0",
+    "black>=19.0b0,<21.12b0",
+    "pytest-black>=0.3.0,<0.3.10",
     "pytest-mock>=1.6.0",
     "invenio-previewer>=1.3.4",
 ]
@@ -123,11 +125,6 @@ setup(
         # 'invenio_access.actions': [],
         # 'invenio_admin.actions': [],
         # 'invenio_assets.bundles': [],
-        # 'invenio_base.api_apps': [],
-        # 'invenio_base.api_blueprints': [],
-        # 'invenio_base.blueprints': [],
-        # 'invenio_celery.tasks': [],
-        # 'invenio_db.models': [],
         # 'invenio_pidstore.minters': [],
         # 'invenio_records.jsonresolver': [],
     },

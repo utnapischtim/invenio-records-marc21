@@ -39,6 +39,11 @@ def system_identity():
 def fake_access_right():
     """Generates a fake access_right."""
     _type = random.choice(list(AccessStatusEnum)).value
+    if (
+        _type == AccessStatusEnum.METADATA_ONLY.value
+        or _type == AccessStatusEnum.OPEN.value
+    ):
+        return "public"
     return _type
 
 
@@ -66,8 +71,7 @@ def create_fake_metadata(filename):
     metadata = Marc21Metadata()
     metadata.xml = _load_file(filename)
     metadata_access = fake_access_right()
-    data_acces = {
-        "owned_by": [{"user": system_identity().id}],
+    data_access = {
         "files": "public",
         "record": metadata_access,
     }
@@ -79,13 +83,14 @@ def create_fake_metadata(filename):
                 "reason": "Because I can!",
             }
         }
-        data_acces.update(embargo)
+        data_access.update(embargo)
+        data_access["record"] = AccessStatusEnum.RESTRICTED.value
 
     service = current_records_marc21.records_service
     draft = service.create(
         metadata=metadata,
         identity=system_identity(),
-        access=data_acces,
+        access=data_access,
     )
 
     record = service.publish(id_=draft.id, identity=system_identity())
@@ -98,14 +103,20 @@ def create_fake_record(filename):
     data_to_use = _load_json(filename)
     metadata_access = fake_access_right()
     data_access = {
-        "owned_by": [{"user": system_identity().id}],
-        "files": AccessStatusEnum.OPEN.value,
+        "files": "public",
         "record": metadata_access,
     }
 
     if metadata_access == AccessStatusEnum.EMBARGOED.value:
-        data_access.update({"embargo_date": fake_feature_date()})
-        data_access.update({"record": AccessStatusEnum.RESTRICTED.value})
+        embargo = {
+            "embargo": {
+                "until": fake_feature_date(),
+                "active": True,
+                "reason": "Because I can!",
+            }
+        }
+        data_access.update(embargo)
+        data_access["record"] = AccessStatusEnum.RESTRICTED.value
 
     service = current_records_marc21.records_service
 

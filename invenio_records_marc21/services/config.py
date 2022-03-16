@@ -23,6 +23,7 @@ from invenio_drafts_resources.services.records.config import (
 from invenio_rdm_records.records.systemfields.access.field.record import (
     AccessStatusEnum,
 )
+from invenio_rdm_records.services.components import AccessComponent
 from invenio_rdm_records.services.config import has_doi, is_record_and_has_doi
 from invenio_rdm_records.services.customizations import (
     ConfiguratorMixin,
@@ -39,13 +40,13 @@ from invenio_records_resources.services.records.facets import TermsFacet
 from invenio_records_resources.services.records.links import RecordLink
 
 from ..records import Marc21Draft, Marc21Parent, Marc21Record
-from .components import AccessComponent, MetadataComponent, PIDComponent, PIDsComponent
+from .components import MetadataComponent, PIDComponent, PIDsComponent
 from .customizations import FromConfigPIDsProviders, FromConfigRequiredPIDs
 from .permissions import Marc21RecordPermissionPolicy
 from .schemas import Marc21ParentSchema, Marc21RecordSchema
 
 access_right_facet = TermsFacet(
-    field="access.metadata",
+    field="access.record",
     label=_("Access status"),
     value_labels={
         AccessStatusEnum.OPEN.value: _("Public"),

@@ -14,7 +14,9 @@ from flask import current_app
 from flask_babelex import lazy_gettext as _
 from invenio_drafts_resources.services.records.schema import ParentSchema
 from invenio_rdm_records.services.schemas.access import AccessSchema
+from invenio_rdm_records.services.schemas.files import FilesSchema
 from invenio_rdm_records.services.schemas.parent.access import ParentAccessSchema
+from invenio_rdm_records.services.schemas.versions import VersionsSchema
 from invenio_records_resources.services.records.schema import BaseRecordSchema
 from marshmallow import ValidationError
 from marshmallow.decorators import post_dump
@@ -22,10 +24,8 @@ from marshmallow.fields import Boolean, Dict, Integer, Nested, Str
 from marshmallow_utils.fields import NestedAttribute, SanitizedUnicode
 from marshmallow_utils.permissions import FieldPermissionsMixin
 
-from .files import FilesSchema
 from .metadata import MetadataField
 from .pids import PIDSchema
-from .versions import VersionsSchema
 
 
 def validate_scheme(scheme):
