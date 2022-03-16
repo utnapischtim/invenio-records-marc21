@@ -38,7 +38,7 @@ def test_system_identity():
 def test_fake_access_right():
     """Test random access right for demo."""
     access = fake_access_right()
-    assert access in list(map(lambda c: c.value, AccessStatusEnum))
+    assert access in ["public", "restricted", "embargoed"]
 
 
 def test_fake_feature_date():

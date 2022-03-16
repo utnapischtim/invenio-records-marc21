@@ -48,9 +48,8 @@ class Marc21RecordService(RDMRecordService):
         if "access" not in data:
             default_access = {
                 "access": {
-                    "owned_by": [{"user": identity.id}],
-                    "record": AccessStatusEnum.OPEN.value,
-                    "files": AccessStatusEnum.OPEN.value,
+                    "record": "public",
+                    "files": "public",
                 },
             }
             if access is not None:

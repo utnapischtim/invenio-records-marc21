@@ -10,13 +10,11 @@
 
 """Marc21 record components."""
 
-from .access import AccessComponent
 from .metadata import MetadataComponent
 from .pid import PIDComponent
 from .pids import PIDsComponent
 
 __all__ = (
-    "AccessComponent",
     "PIDComponent",
     "MetadataComponent",
     "PIDsComponent",

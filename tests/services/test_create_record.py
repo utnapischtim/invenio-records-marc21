@@ -116,8 +116,8 @@ def empty_data():
             },
             "expect": {
                 "access": {
-                    "files": "public",
-                    "record": "public",
+                    "files": "restricted",
+                    "record": "restricted",
                     "embargo": {
                         "until": (arrow.utcnow().datetime + timedelta(days=2)).strftime(
                             "%Y-%m-%d"

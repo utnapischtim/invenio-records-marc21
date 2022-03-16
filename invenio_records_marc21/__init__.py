@@ -169,8 +169,8 @@ Access
 The access dict structure required for Invenio-Records-Marc21 records:
 
 >>> access = {
-...     "record": "open/restricted",
-...     "files": "open/restricted",
+...     "record": "public/restricted",
+...     "files": "public/restricted",
 ...     "embargo": {
 ...         "active": False/True,
 ...         "until": "YYYY-MM-DD",
@@ -186,8 +186,8 @@ Now let us put this all together
 >>> service = current_records_marc21.records_service
 
 >>> access = {
-...     "record": "open",
-...     "files": "open",
+...     "record": "public",
+...     "files": "public",
 ...     "embargo": {
 ...         "active": False,
 ...    }
