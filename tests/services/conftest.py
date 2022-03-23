@@ -26,18 +26,18 @@ from invenio_rdm_records.services.pids import PIDManager, PIDsService
 from invenio_records_marc21.proxies import current_records_marc21
 from invenio_records_marc21.services.record import Marc21Metadata
 
-RunningApp = namedtuple("RunningApp", ["app", "service", "identity_simple"])
+RunningApp = namedtuple("RunningApp", ["app", "service", "identity_simple", "location"])
 
 
-@pytest.fixture(scope="module")
-def running_app(app, identity_simple):
+@pytest.fixture
+def running_app(app, identity_simple, location):
     """This fixture provides an app with the typically needed db data loaded.
 
     All of these fixtures are often needed together, so collecting them
     under a semantic umbrella makes sense.
     """
     service = app.extensions["invenio-records-marc21"].records_service
-    return RunningApp(app, service, identity_simple)
+    return RunningApp(app, service, identity_simple, location)
 
 
 @pytest.fixture(scope="module")
