@@ -15,10 +15,15 @@ fixtures are available.
 """
 
 import tempfile
+from collections import namedtuple
 from datetime import timedelta
 
 import arrow
 import pytest
+from invenio_access.models import ActionRoles
+from invenio_access.permissions import superuser_access
+from invenio_accounts.models import Role
+from invenio_admin.permissions import action_admin_access
 from invenio_app.factory import create_api
 from invenio_files_rest.models import Location
 from invenio_rdm_records.services.pids import PIDManager, PIDsService, providers
@@ -113,6 +118,7 @@ def celery_config():
 @pytest.fixture(scope="module")
 def app_config(app_config):
     """Application config fixture."""
+    app_config["RATELIMIT_ENABLED"] = False
     app_config[
         "RECORDS_REFRESOLVER_CLS"
     ] = "invenio_records.resolver.InvenioRefResolver"
@@ -149,7 +155,7 @@ def app_config(app_config):
     return app_config
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture
 def service(app):
     """Service instance."""
     config = Marc21RecordServiceConfig.build(app)
@@ -162,19 +168,27 @@ def service(app):
     )
 
 
-@pytest.fixture(scope="module")
-def app(base_app, database):
+@pytest.fixture(scope="function")
+def app(base_app, db):
     """Application with just a database.
 
     Pytest-Invenio also initialises ES with the app fixture.
     """
-    location_obj = Location(
-        name="marctest-location", uri=tempfile.mkdtemp(), default=True
-    )
-
-    database.session.add(location_obj)
-    database.session.commit()
     yield base_app
+
+
+RunningApp = namedtuple("RunningApp", ["app", "service", "location"])
+
+
+@pytest.fixture
+def running_app(app, location):
+    """This fixture provides an app with the typically needed db data loaded.
+
+    All of these fixtures are often needed together, so collecting them
+    under a semantic umbrella makes sense.
+    """
+    service = app.extensions["invenio-records-marc21"].records_service
+    return RunningApp(app, service, location)
 
 
 @pytest.fixture(scope="module")
