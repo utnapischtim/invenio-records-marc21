@@ -10,6 +10,7 @@
 
 """Marc21 record metadata component."""
 
+from marshmallow import ValidationError
 from invenio_records_resources.services.records.components import (
     MetadataComponent as BaseMetadataComponent,
 )
@@ -17,10 +18,13 @@ from invenio_records_resources.services.records.components import (
 
 class MetadataComponent(BaseMetadataComponent):
     """Service component for metadata."""
-
+    
     def create(self, identity, data=None, record=None, errors=None, **kwargs):
         """Inject parsed metadata to the record."""
         record.metadata = data.get("metadata", {})
+        if errors:
+            messages = list({str(e) for e in errors})
+            raise ValidationError(messages, field_name="metadata")
 
     def update(self, identity, data=None, record=None, **kwargs):
         """Inject parsed metadata to the record."""
