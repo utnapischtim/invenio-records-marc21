@@ -13,14 +13,9 @@
 
 from copy import deepcopy
 
-from dojson.contrib.marc21 import marc21
-from dojson.contrib.marc21.utils import create_record
-from dojson.contrib.to_marc21 import to_marc21
-from dojson.contrib.to_marc21.utils import dumps
 from marshmallow import Schema
 
-from invenio_records_marc21.resources.serializers.errors import Marc21XMLConvertError
-from invenio_records_marc21.resources.serializers.fields import MetadataField, metadata
+from invenio_records_marc21.resources.serializers.fields import MetadataField
 
 
 class Marc21TestSchema(Schema):
