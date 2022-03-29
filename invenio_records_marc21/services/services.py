@@ -12,9 +12,6 @@
 
 
 from invenio_db import db
-from invenio_rdm_records.records.systemfields.access.field.record import (
-    AccessStatusEnum,
-)
 from invenio_rdm_records.services import RDMRecordService
 from invenio_records_resources.services.files.service import FileService
 from invenio_records_resources.services.records.results import RecordItem
