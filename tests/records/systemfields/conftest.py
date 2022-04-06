@@ -24,9 +24,9 @@ from invenio_accounts.models import Role
 from invenio_admin.permissions import action_admin_access
 from invenio_db import InvenioDB
 from invenio_files_rest import InvenioFilesREST
-from invenio_files_rest.models import Location
 from invenio_jsonschemas import InvenioJSONSchemas
 from invenio_records import InvenioRecords
+from invenio_search import InvenioSearch
 
 from invenio_records_marc21 import InvenioRecordsMARC21
 
@@ -41,7 +41,9 @@ def create_app(instance_path):
             instance_path=instance_path,
         )
         app_.config.update(config)
+
         InvenioDB(app_)
+        InvenioSearch(app_)
         InvenioFilesREST(app_)
         InvenioRecordsMARC21(app_)
         return app_

@@ -157,7 +157,7 @@ def test_pids(appctx):
 #
 def test_metadata(appctx):
     """Test empty metadata."""
-    assert validates({"metadata": {}})
+    assert validates({"metadata": {"fields": [], "leader": ""}})
 
 
 def test_metadata_record(appctx):
