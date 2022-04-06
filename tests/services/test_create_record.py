@@ -29,7 +29,7 @@ def _assert_fields(fields, values, expected):
 @pytest.fixture()
 def marc21():
     """marc21 record."""
-    return {"metadata": {}}
+    return {"metadata": {"fields": {}, "leader": ""}}
 
 
 def test_create_with_service(running_app, service, marc21):
@@ -48,7 +48,7 @@ def test_create_with_service(running_app, service, marc21):
         "updated",
         "metadata",
     ]
-    expected = {"metadata": {}}
+    expected = {"metadata": {"leader": ""}}
     _assert_fields_exists(root_fields, draft.data)
     _assert_fields(["metadata"], draft.data, expected)
     assert not draft["is_published"]

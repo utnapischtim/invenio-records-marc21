@@ -52,7 +52,7 @@ def identity_simple():
 def xml_metadata():
     """Input data (as coming from the view layer)."""
     metadata = Marc21Metadata()
-    metadata.xml = "<record><leader>00000nam a2200000zca4500</leader><datafield tag='245' ind1='1' ind2='0'><subfield code=' '>laborum sunt ut nulla</subfield></datafield></record>"
+    metadata.xml = "<record><leader>00000nam a2200000zca4500</leader><datafield tag='245' ind1='1' ind2='0'><subfield code='a'>laborum sunt ut nulla</subfield></datafield></record>"
     return metadata
 
 
@@ -60,7 +60,7 @@ def xml_metadata():
 def xml_metadata2():
     """Input data (as coming from the view layer)."""
     metadata = Marc21Metadata()
-    metadata.xml = "<record><leader>00000nam a2200000zca4500</leader><datafield tag='245' ind1='1' ind2='0'><subfield code=' '>nulla sunt laborum</subfield></datafield></record>"
+    metadata.xml = "<record><leader>00000nam a2200000zca4500</leader><datafield tag='245' ind1='1' ind2='0'><subfield code='a'>nulla sunt laborum</subfield></datafield></record>"
     return metadata
 
 
@@ -73,7 +73,7 @@ def json_metadata():
             "fields": {
                 "245": [
                     {
-                        "subfields": {" ": ["laborum sunt ut nulla"]},
+                        "subfields": {"a": ["laborum sunt ut nulla"]},
                         "ind1": "1",
                         "ind2": "0",
                     }
@@ -93,7 +93,7 @@ def json_metadata2():
             "fields": {
                 "245": [
                     {
-                        "subfields": {" ": ["nulla sunt laborum"]},
+                        "subfields": {"a": ["nulla sunt laborum"]},
                         "ind1": "1",
                         "ind2": "0",
                     }

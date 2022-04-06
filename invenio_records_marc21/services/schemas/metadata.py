@@ -70,7 +70,6 @@ class MetadataField(Field):
         Raise a :exc:`ValidationError` if validation
         does not succeed.
         """
-        # TODO: validate the marc21 xml during loading the Schema
         try:
             validate(instance=value, schema=self.schema)
         except ValidationError as e:

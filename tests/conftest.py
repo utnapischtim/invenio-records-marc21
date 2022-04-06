@@ -116,8 +116,10 @@ def celery_config():
 
 
 @pytest.fixture(scope="module")
-def app_config(app_config):
+def app_config(app_config, db_uri):
     """Application config fixture."""
+    app_config["SQLALCHEMY_DATABASE_URI"] = db_uri
+
     app_config["RATELIMIT_ENABLED"] = False
     app_config[
         "RECORDS_REFRESOLVER_CLS"
@@ -168,27 +170,18 @@ def service(app):
     )
 
 
-@pytest.fixture(scope="function")
-def app(base_app, db):
-    """Application with just a database.
-
-    Pytest-Invenio also initialises ES with the app fixture.
-    """
-    yield base_app
-
-
-RunningApp = namedtuple("RunningApp", ["app", "service", "location"])
+RunningApp = namedtuple("RunningApp", ["app", "db", "service", "location"])
 
 
 @pytest.fixture
-def running_app(app, location):
+def running_app(app, db, location):
     """This fixture provides an app with the typically needed db data loaded.
 
     All of these fixtures are often needed together, so collecting them
     under a semantic umbrella makes sense.
     """
     service = app.extensions["invenio-records-marc21"].records_service
-    return RunningApp(app, service, location)
+    return RunningApp(app, db, service, location)
 
 
 @pytest.fixture(scope="module")
