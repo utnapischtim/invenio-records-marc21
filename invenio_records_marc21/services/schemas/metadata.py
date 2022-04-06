@@ -45,7 +45,7 @@ class MetadataField(Field):
         value: typing.Any,
         attr: typing.Optional[str],
         data: typing.Optional[typing.Mapping[str, typing.Any]],
-        **kwargs
+        **kwargs,
     ):
         """Deserialize value. Concrete :class:`Field` classes should implement this method.
 
@@ -73,5 +73,6 @@ class MetadataField(Field):
         try:
             validate(instance=value, schema=self.schema)
         except ValidationError as e:
-            raise MarshmallowValidationError(e)
+            message = f"Field: {e.json_path} Message: {e.message}"
+            raise MarshmallowValidationError(message)
         self._validate_all(value)
