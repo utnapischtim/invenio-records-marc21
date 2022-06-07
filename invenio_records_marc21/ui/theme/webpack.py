@@ -26,23 +26,7 @@ theme = WebpackThemeBundle(
             },
             dependencies={
                 "@babel/runtime": "^7.9.0",
-                "clean-webpack-plugin": "4.0.0",
-                "react-dropzone": "^11.0.3",
-                "react-dnd-html5-backend": "^11.1.3",
-                "prismjs": "1.25.0",
-                "react-redux": "^7.1.0",
-                "formik": "^2.1.4",
-                "path": "^0.12.7",
-                "axios": "^0.21.1",  # load from website data
-                "luxon": "^1.23.0",
-                "prop-types": "^15.7.2",
-                "react-dnd": "^11.1.3",
-                "marcjs": "^2.0.1",
-                "react-invenio-deposit": "^0.16.1",
-                "react-invenio-forms": "^0.8.7",
-                "i18next": "^20.3.1",
-                "react-i18next": "^11.11.3",
-                "i18next-browser-languagedetector": "^6.1.1",
+                "react-records-marc21": "^0.1.0"    
             },
             aliases={
                 "@less/invenio_records_marc21": "./less/invenio_records_marc21",

@@ -8,11 +8,8 @@
 
 import _get from "lodash/get";
 import React, { Component, createRef } from "react";
-import { SaveButton, PublishButton } from "./components";
-import { Marc21DepositApp } from "./Marc21DepositApp";
-import { AccordionField, MetadataFields } from "./components";
+import { Marc21DepositApp, AccordionField, MetadataFields, TemplateField, SaveButton, PublishButton } from "react-records-marc21";
 import { Card, Container, Grid, Ref, Sticky } from "semantic-ui-react";
-import { TemplateField } from "./components/TemplateField";
 import { AccessRightField } from "react-invenio-deposit";
 export class Marc21DepositForm extends Component {
   constructor(props) {
