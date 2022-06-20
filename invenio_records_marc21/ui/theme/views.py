@@ -46,7 +46,7 @@ def deposit_create():
 def deposit_edit(draft=None, draft_files=None, pid_value=None):
     """Edit an existing deposit."""
     serializer = Marc21UIXMLSerializer()
-    record = serializer.dump_one(draft.to_dict())
+    record = serializer.dump_obj(draft.to_dict())
 
     return render_template(
         "invenio_records_marc21/deposit.html",

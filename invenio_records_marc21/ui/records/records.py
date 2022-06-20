@@ -74,7 +74,7 @@ def record_detail(record=None, files=None, pid_value=None, is_preview=False):
     files_dict = None if files is None else files.to_dict()
     return render_template(
         "invenio_records_marc21/record.html",
-        record=Marc21UIJSONSerializer().dump_one(record.to_dict()),
+        record=Marc21UIJSONSerializer().dump_obj(record.to_dict()),
         pid=pid_value,
         files=files_dict,
         permissions=record.has_permissions_to(
@@ -117,7 +117,7 @@ def record_export(
         pid_value=pid_value,
         export_format=exporter.get("name", export_format),
         exported_record=exported_record,
-        record=Marc21UIJSONSerializer().dump_one(record.to_dict()),
+        record=Marc21UIJSONSerializer().dump_obj(record.to_dict()),
         permissions=record.has_permissions_to(["update_draft"]),
         is_preview=is_preview,
         is_draft=record._record.is_draft,
