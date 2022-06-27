@@ -82,12 +82,13 @@ class Marc21RecordService(RDMRecordService):
 
     def update_draft(
         self,
-        id_,
         identity,
+        id_,
         data=None,
         metadata=Marc21Metadata(),
         revision_id=None,
         access=None,
+        uow=None,
     ):
         """Update a draft record.
 
@@ -105,7 +106,7 @@ class Marc21RecordService(RDMRecordService):
         """
         data = self._create_data(identity, data, metadata, access)
         return super().update_draft(
-            id_=id_, identity=identity, data=data, revision_id=revision_id
+            identity=identity, id_=id_, data=data, revision_id=revision_id
         )
 
     def _lift_embargo_from(self, record):
