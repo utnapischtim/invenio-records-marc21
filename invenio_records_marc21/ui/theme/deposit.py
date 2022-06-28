@@ -44,6 +44,8 @@ def empty_record():
     record["metadata"] = "<record> <leader>00000nam a2200000zca4500</leader></record>"
     record["is_published"] = False
     record["files"] = {"enabled": True}
+    record["access"] = {"record": "public", "files": "public"}
+    del record["pids"]
     return record
 
 

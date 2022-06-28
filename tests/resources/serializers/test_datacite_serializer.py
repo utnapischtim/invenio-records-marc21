@@ -29,6 +29,6 @@ def test_datacite43_serializer(app, full_record):
 
     with app.app_context():
         serializer = Marc21DataCite43JSONSerializer()
-        serialized_record = serializer.dump_one(full_record)
+        serialized_record = serializer.dump_obj(full_record)
 
     assert serialized_record == expected_data

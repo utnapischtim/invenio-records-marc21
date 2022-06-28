@@ -2,7 +2,7 @@
 #
 # This file is part of Invenio.
 #
-# Copyright (C) 2021 Graz University of Technology.
+# Copyright (C) 2021-2022 Graz University of Technology.
 #
 # Invenio-Records-Marc21 is free software; you can redistribute it and/or
 # modify it under the terms of the MIT License; see LICENSE file for more
@@ -12,27 +12,31 @@
 
 import json
 
-from flask_resources.serializers import MarshmallowJSONSerializer
+from flask_resources.serializers import JSONSerializer, MarshmallowSerializer
 from lxml import etree
 from lxml.builder import E, ElementMaker
 
 from .schema import Marc21Schema
 
 
-class Marc21BASESerializer(MarshmallowJSONSerializer):
+class Marc21BASESerializer(MarshmallowSerializer):
     """Marc21 Base serializer implementation."""
 
-    def __init__(self, schema_cls=Marc21Schema, **options):
+    def __init__(self, object_schema_cls=Marc21Schema, **options):
         """Marc21 Base Serializer Constructor.
 
-        :param schema_cls: Default Marc21Schema
+        :param object_schema_cls: Default Marc21Schema
         :param options: Json encoding options.
         """
-        super().__init__(schema_cls=schema_cls, **options)
+        super().__init__(
+            format_serializer_cls=JSONSerializer,
+            object_schema_cls=object_schema_cls,
+            **options
+        )
 
-    def dump_one(self, obj):
+    def dump_obj(self, obj):
         """Dump the object into a JSON string."""
-        return self._schema_cls().dump(obj)
+        return self.object_schema_cls().dump(obj)
 
     def dump_many(self, obj_list):
         """Serialize a list of records.
@@ -40,7 +44,7 @@ class Marc21BASESerializer(MarshmallowJSONSerializer):
         :param obj_list: List of records instance.
         """
         records = obj_list["hits"]["hits"]
-        obj_list["hits"]["hits"] = [self.dump_one(obj) for obj in records]
+        obj_list["hits"]["hits"] = [self.dump_obj(obj) for obj in records]
         return obj_list
 
 
@@ -53,7 +57,7 @@ class Marc21JSONSerializer(Marc21BASESerializer):
         :param records: List of records instance.
         """
         obj_list = self.dump_many(obj_list)
-        return json.dumps(obj_list, cls=self.encoder, **self.dumps_options)
+        return json.dumps(obj_list, cls=self.format_serializer_cls.encoder)
 
 
 class Marc21XMLSerializer(Marc21BASESerializer):
@@ -74,7 +78,7 @@ class Marc21XMLSerializer(Marc21BASESerializer):
 
         :param record: Record instance.
         """
-        return self.convert_record(self.dump_one(obj))
+        return self.convert_record(self.dump_obj(obj))
 
     def serialize_object_list(self, obj_list):
         """Dump the object list into a JSON string."""

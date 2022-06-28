@@ -33,10 +33,11 @@
   {%- if permissions %}
   <input id="marc21-deposits-record-permissions" type="hidden" name="marc21-deposits-record-permissions" value='{{permissions | tojson }}'/>
   {%- endif %}
+  
   <div id="marc21-deposit-form"></div>
+
 {%- endblock page_body %}
 
 {%- block javascript %}
-    {{ super() }}
     {{ webpack["invenio-records-marc21-deposit.js"] }}
 {%- endblock %}
