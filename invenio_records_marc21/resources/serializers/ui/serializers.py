@@ -44,12 +44,15 @@ class Marc21UIJSONSerializer(Marc21UIBASESerializer):
 class Marc21UIXMLSerializer(Marc21UIBASESerializer, Marc21XMLMixin):
     """UI Marc21 xml serializer implementation."""
 
-    def __init__(self, object_key="ui", **options):
+    def __init__(self, object_schema_cls=Marc21Schema, object_key="ui", **options):
         """Marc21 UI XML Constructor.
 
+        :param object_schema_cls: object schema serializing the Marc21 record. (default: `Marc21Schema`)
         :param object_key: str key dump ui specific information
         """
-        super().__init__(object_schema_cls=Marc21Schema, object_key=object_key, **options)
+        super().__init__(
+            object_schema_cls=object_schema_cls, object_key=object_key, **options
+        )
 
     def dump_obj(self, obj):
         """Dump the object into a JSON string."""

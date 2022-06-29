@@ -20,6 +20,7 @@ from .schema import Marc21Schema
 
 
 class Marc21XMLMixin:
+    """Marc21 XML converter class."""
 
     controlfields = [
         "001",
@@ -101,13 +102,22 @@ class Marc21XMLMixin:
 class Marc21BASESerializer(MarshmallowSerializer):
     """Marc21 Base serializer implementation."""
 
-    def __init__(self, format_serializer_cls=JSONSerializer, object_schema_cls=Marc21Schema, **options):
+    def __init__(
+        self,
+        format_serializer_cls=JSONSerializer,
+        object_schema_cls=Marc21Schema,
+        **options
+    ):
         """Marc21 Base Serializer Constructor.
 
         :param schema_cls: Default Marc21Schema
         :param options: Json encoding options.
         """
-        super().__init__(format_serializer_cls=format_serializer_cls, object_schema_cls=object_schema_cls, **options)
+        super().__init__(
+            format_serializer_cls=format_serializer_cls,
+            object_schema_cls=object_schema_cls,
+            **options
+        )
 
     def dump_obj(self, obj):
         """Dump the object into a JSON string."""
@@ -132,7 +142,7 @@ class Marc21JSONSerializer(Marc21BASESerializer):
         :param records: List of records instance.
         """
         obj_list = self.dump_list(obj_list)
-        return json.dumps(obj_list, cls=self.encoder, **self.dumps_options)
+        return json.dumps(obj_list, cls=self.format_serializer_cls.encoder)
 
 
 class Marc21XMLSerializer(Marc21BASESerializer, Marc21XMLMixin):
@@ -143,7 +153,7 @@ class Marc21XMLSerializer(Marc21BASESerializer, Marc21XMLMixin):
 
         :param record: Record instance.
         """
-        return self.convert_record(obj)
+        return self.convert_record(super().dump_obj(obj))
 
     def serialize_object(self, obj):
         """Serialize a single record.
