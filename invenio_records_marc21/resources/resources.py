@@ -14,9 +14,16 @@
 """Marc21 Record Resource."""
 
 
-from flask_resources import route
+from flask import g
+from flask_resources import resource_requestctx, response_handler, route
 from invenio_drafts_resources.resources import RecordResource
+from invenio_records_resources.resources.records.resource import (
+    request_data,
+    request_headers,
+    request_view_args,
+)
 
+from ..services.record.metadata import Marc21Metadata
 from . import config
 
 
@@ -68,6 +75,42 @@ class Marc21RecordResource(RecordResource):
             )
 
         return rules
+
+    @request_data
+    @response_handler()
+    def create(self):
+        """Create an item."""
+        metadata = Marc21Metadata()
+        data = resource_requestctx.data
+        metadata.xml = data.get("metadata", "")
+        data["metadata"] = metadata.json.get("metadata", {})
+
+        item = self.service.create(
+            g.identity,
+            data=data,
+        )
+        return item.to_dict(), 201
+
+    @request_headers
+    @request_view_args
+    @request_data
+    @response_handler()
+    def update_draft(self):
+        """Update a draft.
+
+        PUT /marc21/:pid_value/draft
+        """
+        metadata = Marc21Metadata()
+        data = resource_requestctx.data
+        metadata.xml = data.get("metadata", "")
+        data["metadata"] = metadata.json.get("metadata", {})
+        item = self.service.update_draft(
+            g.identity,
+            resource_requestctx.view_args["pid_value"],
+            data,
+            revision_id=resource_requestctx.headers.get("if_match"),
+        )
+        return item.to_dict(), 200
 
 
 class Marc21ParentRecordLinksResource(RecordResource):

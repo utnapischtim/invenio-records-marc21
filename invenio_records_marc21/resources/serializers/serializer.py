@@ -19,49 +19,8 @@ from lxml.builder import E, ElementMaker
 from .schema import Marc21Schema
 
 
-class Marc21BASESerializer(MarshmallowSerializer):
-    """Marc21 Base serializer implementation."""
-
-    def __init__(self, object_schema_cls=Marc21Schema, **options):
-        """Marc21 Base Serializer Constructor.
-
-        :param object_schema_cls: Default Marc21Schema
-        :param options: Json encoding options.
-        """
-        super().__init__(
-            format_serializer_cls=JSONSerializer,
-            object_schema_cls=object_schema_cls,
-            **options
-        )
-
-    def dump_obj(self, obj):
-        """Dump the object into a JSON string."""
-        return self.object_schema_cls().dump(obj)
-
-    def dump_many(self, obj_list):
-        """Serialize a list of records.
-
-        :param obj_list: List of records instance.
-        """
-        records = obj_list["hits"]["hits"]
-        obj_list["hits"]["hits"] = [self.dump_obj(obj) for obj in records]
-        return obj_list
-
-
-class Marc21JSONSerializer(Marc21BASESerializer):
-    """Marc21 JSON export serializer implementation."""
-
-    def serialize_object_list(self, obj_list):
-        """Serialize a list of records.
-
-        :param records: List of records instance.
-        """
-        obj_list = self.dump_many(obj_list)
-        return json.dumps(obj_list, cls=self.format_serializer_cls.encoder)
-
-
-class Marc21XMLSerializer(Marc21BASESerializer):
-    """Marc21 XML export serializer implementation."""
+class Marc21XMLMixin:
+    """Marc21 XML converter class."""
 
     controlfields = [
         "001",
@@ -72,21 +31,6 @@ class Marc21XMLSerializer(Marc21BASESerializer):
         "008",
         "009",
     ]
-
-    def serialize_object(self, obj):
-        """Serialize a single record.
-
-        :param record: Record instance.
-        """
-        return self.convert_record(self.dump_obj(obj))
-
-    def serialize_object_list(self, obj_list):
-        """Dump the object list into a JSON string."""
-        list = []
-        for obj in obj_list["hits"]["hits"]:
-            list.append(self.serialize_object(obj))
-
-        return "\n".join(list)
 
     def _convert(self, key, data):
         root = etree.Element(key)
@@ -116,15 +60,18 @@ class Marc21XMLSerializer(Marc21BASESerializer):
             encoding="UTF-8",
         ).decode("UTF-8")
 
-    def convert_metadata(self, data):
+    def convert_metadata(self, data, root=False):
         """Convert the metadata to Marc21 xml."""
-        rec = E.metadata()
+        if root:
+            rec = E.record()
+        else:
+            rec = E.metadata()
 
         leader = data.get("leader")
         if leader:
             rec.append(E.leader(leader))
 
-        fields = data.get("fields", [])
+        fields = data.get("fields", {})
 
         # items = iteritems(fields)
 
@@ -150,3 +97,75 @@ class Marc21XMLSerializer(Marc21BASESerializer):
                         datafield.append(E.subfield(", ".join(items[k]), code=k))
                 rec.append(datafield)
         return rec
+
+
+class Marc21BASESerializer(MarshmallowSerializer):
+    """Marc21 Base serializer implementation."""
+
+    def __init__(
+        self,
+        format_serializer_cls=JSONSerializer,
+        object_schema_cls=Marc21Schema,
+        **options
+    ):
+        """Marc21 Base Serializer Constructor.
+
+        :param schema_cls: Default Marc21Schema
+        :param options: Json encoding options.
+        """
+        super().__init__(
+            format_serializer_cls=format_serializer_cls,
+            object_schema_cls=object_schema_cls,
+            **options
+        )
+
+    def dump_obj(self, obj):
+        """Dump the object into a JSON string."""
+        return self.object_schema_cls().dump(obj)
+
+    def dump_list(self, obj_list):
+        """Serialize a list of records.
+
+        :param obj_list: List of records instance.
+        """
+        records = obj_list["hits"]["hits"]
+        obj_list["hits"]["hits"] = [self.dump_obj(obj) for obj in records]
+        return obj_list
+
+
+class Marc21JSONSerializer(Marc21BASESerializer):
+    """Marc21 JSON export serializer implementation."""
+
+    def serialize_object_list(self, obj_list):
+        """Serialize a list of records.
+
+        :param records: List of records instance.
+        """
+        obj_list = self.dump_list(obj_list)
+        return json.dumps(obj_list, cls=self.format_serializer_cls.encoder)
+
+
+class Marc21XMLSerializer(Marc21BASESerializer, Marc21XMLMixin):
+    """Marc21 XML export serializer implementation."""
+
+    def dump_obj(self, obj):
+        """Serialize a single record.
+
+        :param record: Record instance.
+        """
+        return self.convert_record(super().dump_obj(obj))
+
+    def serialize_object(self, obj):
+        """Serialize a single record.
+
+        :param record: Record instance.
+        """
+        return self.dump_obj(obj)
+
+    def serialize_object_list(self, obj_list):
+        """Dump the object list into a JSON string."""
+        list = []
+        for obj in obj_list["hits"]["hits"]:
+            list.append(self.serialize_object(obj))
+
+        return "\n".join(list)
