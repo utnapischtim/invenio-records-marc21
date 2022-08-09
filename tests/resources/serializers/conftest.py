@@ -49,6 +49,15 @@ def marc21_metadata():
                     },
                 }
             ],
+            "260": [
+                {
+                    "ind1": "3",
+                    "ind2": "0",
+                    "subfields": {
+                        "b": ["TU Graz"],
+                    },
+                }
+            ],
             "362": [
                 {
                     "ind1": "0",
@@ -79,7 +88,8 @@ def expect_metadata_ui_xml():
         '<controlfield tag="005">20200511091822.0</controlfield><controlfield tag="007">tu</controlfield><controlfield tag="009">'
         'AC11056824</controlfield><datafield tag="100" ind1=" " ind2=" "><subfield code="a">Philipp</subfield></datafield>'
         '<datafield tag="245" ind1="1" ind2="0"><subfield code="a">&lt;&lt;The&gt;&gt; development of high strain actuator materials'
-        '</subfield><subfield code="c">Denis Schütz</subfield></datafield><datafield tag="362" ind1="0" ind2=" "><subfield code="a">2022'
+        '</subfield><subfield code="c">Denis Schütz</subfield></datafield><datafield tag="260" ind1="3" ind2="0"><subfield code="b">TU Graz'
+        '</subfield></datafield><datafield tag="362" ind1="0" ind2=" "><subfield code="a">2022'
         '</subfield></datafield><datafield tag="502" ind1=" " ind2=" "><subfield code="a">Graz, Techn. Univ., Diss., 2012</subfield>'
         "</datafield></record>"
     )
