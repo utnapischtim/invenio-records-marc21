@@ -122,11 +122,11 @@ class Marc21RecordServiceConfig(RecordServiceConfig, ConfiguratorMixin):
             else_=RecordLink("{+ui}/marc21/uploads/{id}"),
         ),
         "self_doi": Link(
-            "{+ui}/doi/{+pid_doi}",
+            "{+ui}/marc21/{+pid_doi}",
             when=is_record_and_has_doi,
             vars=lambda record, vars: vars.update(
                 {
-                    f"pid_{scheme}": pid["identifier"]
+                    f"pid_{scheme}": pid["identifier"].split("/")[1]
                     for (scheme, pid) in record.pids.items()
                 }
             ),

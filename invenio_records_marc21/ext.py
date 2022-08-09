@@ -30,7 +30,6 @@ from .resources import (
 from .services import (
     Marc21DraftFilesServiceConfig,
     Marc21RecordFilesServiceConfig,
-    Marc21RecordPermissionPolicy,
     Marc21RecordService,
     Marc21RecordServiceConfig,
 )

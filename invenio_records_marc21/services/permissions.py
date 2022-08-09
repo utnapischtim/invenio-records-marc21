@@ -36,6 +36,7 @@ class Marc21RecordPermissionPolicy(RecordPermissionPolicy):
     can_new_version = [AnyUser()]
     can_edit = [AnyUser()]
     can_lift_embargo = [AnyUser()]
+    can_search = [AnyUser(), SystemProcess()]
 
     # Draft permissions
     can_read_draft = [AnyUser()]

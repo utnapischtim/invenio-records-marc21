@@ -39,7 +39,7 @@ class Marc21DataCite43Schema(Schema):
     types = fields.Method("get_type")
     titles = fields.Method("get_titles")
     creators = fields.Nested(CreatorSchema43, attribute="metadata.fields")
-    publisher = fields.Str(attribute="metadata.publisher")
+    publisher = fields.Method("get_publisher")
     publicationYear = fields.Method("get_publication_year")
     schemaVersion = fields.Constant("http://datacite.org/schema/kernel-4")
 
@@ -51,22 +51,35 @@ class Marc21DataCite43Schema(Schema):
             "resourceType": "Text",
         }
 
+    def _get_subfields(self, obj, id):
+        """Get subfields from metadata."""
+        fields = obj["metadata"]["fields"]
+        return fields.get(id, [{"subfields": {}}])[0].get("subfields", {})
+    
     def get_titles(self, obj):
         """Get titles list."""
-        fields = obj["metadata"]["fields"]
-        titles = fields.get("245", [{"subfields": {}}])[0]
-        return {"title": titles.get("subfields", {}).get("a", [""])[0]}
+        titles_field = self._get_subfields(obj, "245")
+        
+        titles = []
+        title_fields = titles_field.get("a", [""])
+        for title in title_fields:
+            titles.append({"title": title})
+        return titles
+
+    def get_publisher(self, obj):
+        """Get publisher."""
+        publisher_field = self._get_subfields(obj, "260")
+        return publisher_field.get("b", [""])[0]
 
     def get_publication_year(self, obj):
         """Get publication year from edtf date."""
-        fields = obj["metadata"]["fields"]
-        publication_dates = fields.get("362", [{"subfields": {}}])[0]
-        publication_date = publication_dates.get("subfields", {}).get("a", [""])[0]
+        publication_dates = self._get_subfields(obj, "362")
+        publication_date = publication_dates.get("a", [""])[0]
         return publication_date
 
     def get_language(self, obj):
         """Get language."""
-        fields = obj["metadata"]["fields"]
+        fields = self._get_subfields(obj)
         languages = fields.get("languages", [])
         if languages:
             # DataCite support only one language, so we take the first.

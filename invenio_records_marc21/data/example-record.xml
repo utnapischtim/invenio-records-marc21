@@ -39,4 +39,10 @@
     <datafield tag="020" ind1=" " ind2=" ">
         <subfield code="a">3-902465-46-8</subfield>
     </datafield>
+    <datafield tag="362" ind1="0" ind2=" ">
+        <subfield code="a">2022</subfield>
+    </datafield>
+    <datafield tag="260" ind1="3" ind2=" ">
+        <subfield code="b">Tu Graz</subfield>
+    </datafield>
 </record>
