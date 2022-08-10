@@ -2,6 +2,7 @@
 #
 # Copyright (C) 2021 CERN.
 # Copyright (C) 2021 Northwestern University.
+# Copyright (C) 2022 Graz University of Technology.
 #
 # Invenio-RDM-Records is free software; you can redistribute it and/or modify
 # it under the terms of the MIT License; see LICENSE file for more details.
@@ -39,7 +40,7 @@ class Marc21DataCite43Schema(Schema):
     types = fields.Method("get_type")
     titles = fields.Method("get_titles")
     creators = fields.Nested(CreatorSchema43, attribute="metadata.fields")
-    publisher = fields.Str(attribute="metadata.publisher")
+    publisher = fields.Method("get_publisher")
     publicationYear = fields.Method("get_publication_year")
     schemaVersion = fields.Constant("http://datacite.org/schema/kernel-4")
 
@@ -51,28 +52,37 @@ class Marc21DataCite43Schema(Schema):
             "resourceType": "Text",
         }
 
+    def _get_field(self, obj, id, default=""):
+        """Get field from metadata."""
+        fields = obj["metadata"]["fields"]
+        return fields.get(id, default)
+
+    def _get_subfields(self, obj, id):
+        """Get subfields from metadata."""
+        return self._get_field(obj, id, default=[{"subfields": {}}])[0].get(
+            "subfields", {}
+        )
+
     def get_titles(self, obj):
         """Get titles list."""
-        fields = obj["metadata"]["fields"]
-        titles = fields.get("245", [{"subfields": {}}])[0]
-        return {"title": titles.get("subfields", {}).get("a", [""])[0]}
+        titles_field = self._get_subfields(obj, "245")
+
+        titles = []
+        title_fields = titles_field.get("a", [""])
+        for title in title_fields:
+            titles.append({"title": title})
+        return titles
+
+    def get_publisher(self, obj):
+        """Get publisher."""
+        publisher_field = self._get_subfields(obj, "260")
+        return publisher_field.get("b", ["Graz University of Technology"])[0]
 
     def get_publication_year(self, obj):
         """Get publication year from edtf date."""
-        fields = obj["metadata"]["fields"]
-        publication_dates = fields.get("362", [{"subfields": {}}])[0]
-        publication_date = publication_dates.get("subfields", {}).get("a", [""])[0]
+        publication_dates = self._get_field(obj, "005")
+        publication_date = publication_dates[0:4]
         return publication_date
-
-    def get_language(self, obj):
-        """Get language."""
-        fields = obj["metadata"]["fields"]
-        languages = fields.get("languages", [])
-        if languages:
-            # DataCite support only one language, so we take the first.
-            return languages[0]["id"]
-
-        return missing
 
     def get_identifiers(self, obj):
         """Get (main and alternate) identifiers list."""

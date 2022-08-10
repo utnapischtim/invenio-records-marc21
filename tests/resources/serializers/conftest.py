@@ -27,7 +27,7 @@ def marc21_metadata():
         "leader": "01198nam a2200397 c 4500",
         "fields": {
             "001": "990004519310204517",
-            "005": "20200511091822.0",
+            "005": "20220511091822.0",
             "007": "tu",
             "009": "AC11056824",
             "100": [
@@ -46,6 +46,15 @@ def marc21_metadata():
                     "subfields": {
                         "a": ["<<The>> development of high strain actuator materials"],
                         "c": ["Denis Sch\u00fctz"],
+                    },
+                }
+            ],
+            "260": [
+                {
+                    "ind1": "3",
+                    "ind2": "0",
+                    "subfields": {
+                        "b": ["TU Graz"],
                     },
                 }
             ],
@@ -76,10 +85,11 @@ def expect_metadata_ui_xml():
     """Record UI xml metadata."""
     return (
         '<record><leader>01198nam a2200397 c 4500</leader><controlfield tag="001">990004519310204517</controlfield>'
-        '<controlfield tag="005">20200511091822.0</controlfield><controlfield tag="007">tu</controlfield><controlfield tag="009">'
+        '<controlfield tag="005">20220511091822.0</controlfield><controlfield tag="007">tu</controlfield><controlfield tag="009">'
         'AC11056824</controlfield><datafield tag="100" ind1=" " ind2=" "><subfield code="a">Philipp</subfield></datafield>'
         '<datafield tag="245" ind1="1" ind2="0"><subfield code="a">&lt;&lt;The&gt;&gt; development of high strain actuator materials'
-        '</subfield><subfield code="c">Denis Schütz</subfield></datafield><datafield tag="362" ind1="0" ind2=" "><subfield code="a">2022'
+        '</subfield><subfield code="c">Denis Schütz</subfield></datafield><datafield tag="260" ind1="3" ind2="0"><subfield code="b">TU Graz'
+        '</subfield></datafield><datafield tag="362" ind1="0" ind2=" "><subfield code="a">2022'
         '</subfield></datafield><datafield tag="502" ind1=" " ind2=" "><subfield code="a">Graz, Techn. Univ., Diss., 2012</subfield>'
         "</datafield></record>"
     )
