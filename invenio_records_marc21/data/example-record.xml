@@ -2,6 +2,8 @@
 <record xmlns="http://www.loc.gov/MARC21/slim" xsi:schemaLocation="http://www.loc.gov/MARC21/slim schema.xsd" type="Bibliographic"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <leader>00000nam a2200000zca4500</leader>
+    <controlfield tag="001">990079940640203331</controlfield>
+    <controlfield tag="005">20170703041800.0</controlfield>
     <datafield tag="245" ind1="0" ind2="0">
         <subfield code="a">Proceedings of the 3rd International Brain-Computer Interface Workshop and Training Course</subfield>
         <subfield code="b">Subtitle field.</subfield>
