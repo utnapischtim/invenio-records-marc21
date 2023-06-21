@@ -11,10 +11,9 @@
 """Marc21 record response serializers."""
 
 import json
+from xml.etree.ElementTree import tostring
 
 from flask_resources.serializers import JSONSerializer, MarshmallowSerializer
-from lxml import etree
-from lxml.builder import E, ElementMaker
 
 from .schema import Marc21Schema
 
@@ -32,70 +31,30 @@ class Marc21XMLMixin:
         "009",
     ]
 
-    def _convert(self, key, data):
-        root = etree.Element(key)
-        if isinstance(data, dict):
-            for k, v in data.items():
-                root.append(self._convert(k, v))
-        elif isinstance(data, (list, tuple)):
-            for item in data:
-                root.append(self._convert(key, item))
-        else:
-            root.text = str(data)
-        return root
-
-    def convert_record(self, data):
-        """Convert marc21 record to xml."""
-        E = ElementMaker()
-        record = E.record()
-        for key, value in data.items():
-            if "metadata" in key:
-                record.append(self.convert_metadata(value))
-                continue
-            record.append(self._convert(key, value))
-        return etree.tostring(
-            record,
-            pretty_print=True,
-            xml_declaration=True,
-            encoding="UTF-8",
-        ).decode("UTF-8")
-
     def convert_metadata(self, data, root=False):
         """Convert the metadata to Marc21 xml."""
-        if root:
-            rec = E.record()
-        else:
-            rec = E.metadata()
-
-        leader = data.get("leader")
-        if leader:
-            rec.append(E.leader(leader))
-
-        fields = data.get("fields", {})
-
-        # items = iteritems(fields)
-
-        for key, value in fields.items():
-            # Control fields
+        fields = []
+        for key, value in data.get("fields").items():
             if key in self.controlfields:
-                controlfield = E.controlfield(value)
-                controlfield.attrib["tag"] = key
-                rec.append(controlfield)
+                fields.append(
+                    {"id": key, "ind1": None, "ind2": None, "subfield": value}
+                )
             else:
-                for subfields in value:
-                    datafield = E.datafield()
-                    datafield.attrib["tag"] = key
+                for field in value:
+                    subfield = [
+                        f"$${key} {' '.join(value)}"
+                        for key, value in field["subfields"].items()
+                    ]
+                    fields.append(
+                        {
+                            "id": key,
+                            "ind1": field["ind1"],
+                            "ind2": field["ind2"],
+                            "subfield": " ".join(subfield),
+                        }
+                    )
 
-                    indicator1 = subfields.get("ind1", " ")
-                    indicator2 = subfields.get("ind2", " ")
-
-                    datafield.attrib["ind1"] = indicator1.replace("_", " ")
-                    datafield.attrib["ind2"] = indicator2.replace("_", " ")
-                    items = subfields.get("subfields", {})
-                    for k in items.keys():
-                        datafield.append(E.subfield(", ".join(items[k]), code=k))
-                rec.append(datafield)
-        return rec
+        return {"fields": fields, "leader": data.get("leader", "")}
 
 
 class Marc21BASESerializer(MarshmallowSerializer):
@@ -105,7 +64,7 @@ class Marc21BASESerializer(MarshmallowSerializer):
         self,
         format_serializer_cls=JSONSerializer,
         object_schema_cls=Marc21Schema,
-        **options
+        **options,
     ):
         """Marc21 Base Serializer Constructor.
 
@@ -115,7 +74,7 @@ class Marc21BASESerializer(MarshmallowSerializer):
         super().__init__(
             format_serializer_cls=format_serializer_cls,
             object_schema_cls=object_schema_cls,
-            **options
+            **options,
         )
 
     def dump_obj(self, obj):
@@ -152,7 +111,7 @@ class Marc21XMLSerializer(Marc21BASESerializer, Marc21XMLMixin):
 
         :param record: Record instance.
         """
-        return self.convert_record(super().dump_obj(obj))
+        return self.convert_metadata(super().dump_obj(obj))
 
     def serialize_object(self, obj):
         """Serialize a single record.

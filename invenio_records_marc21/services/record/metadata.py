@@ -46,7 +46,7 @@ class JsonToXmlVisitor:
     def __init__(self, leader_):
         """Constructor."""
         self.namespace = "http://www.loc.gov/MARC21/slim"
-        self.record = Element("record", xmlns=self.namespace)
+        self.record = Element(f"{{{self.namespace}}}record", xmlns=self.namespace)
 
         leader = Element(f"{{{self.namespace}}}leader")
         leader.text = leader_

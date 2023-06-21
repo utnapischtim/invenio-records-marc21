@@ -14,8 +14,7 @@ from flask import g, render_template
 from flask_login import current_user, login_required
 from invenio_users_resources.proxies import current_user_resources
 
-from invenio_records_marc21.resources.serializers.ui import Marc21UIXMLSerializer
-
+from ...resources.serializers.ui import Marc21UIXMLSerializer
 from .decorators import pass_draft, pass_draft_files
 from .deposit import deposit_config, deposit_templates, empty_record
 
@@ -61,7 +60,7 @@ def deposit_edit(draft=None, draft_files=None, pid_value=None):
     """Edit an existing deposit."""
     serializer = Marc21UIXMLSerializer()
     record = serializer.dump_obj(draft.to_dict())
-
+    print(f"deposit_edit record: {record}")
     return render_template(
         "invenio_records_marc21/deposit.html",
         forms_config=deposit_config(apiUrl=f"/api/marc21/{pid_value}/draft"),

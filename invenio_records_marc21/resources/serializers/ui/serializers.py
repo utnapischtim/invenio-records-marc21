@@ -10,10 +10,7 @@
 
 """Marc21 UI record response serializers."""
 
-
 from copy import deepcopy
-
-from lxml import etree
 
 from ..schema import Marc21Schema
 from ..serializer import Marc21BASESerializer, Marc21XMLMixin
@@ -58,17 +55,9 @@ class Marc21UIXMLSerializer(Marc21UIBASESerializer, Marc21XMLMixin):
         """Dump the object into a JSON string."""
         obj[self._object_key] = self.object_schema_cls().dump(deepcopy(obj))
 
-        # For edit a marc21 record in the deposit react app we need
-        # the metadata field also as a marcxml string
-        metadata = self.convert_metadata(obj[self._object_key]["metadata"], root=True)
+        obj[self._object_key]["metadata"] = self.convert_metadata(
+            obj[self._object_key]["metadata"]
+        )
+        obj["metadata"] = obj[self._object_key]["metadata"]
 
-        metadata = etree.tostring(
-            metadata,
-            pretty_print=False,
-            xml_declaration=False,
-            encoding="UTF-8",
-        ).decode("UTF-8")
-
-        obj[self._object_key]["metadata"] = metadata
-        obj["metadata"] = deepcopy(obj[self._object_key]["metadata"])
         return obj
