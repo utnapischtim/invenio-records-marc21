@@ -174,8 +174,24 @@ class MetadataField(Field):
         return authors
 
     def get_titles(self, fields):
-        """Get title."""
+        """Get title.
+
+        The normal separator between the main title and the additional
+        title is ':'.
+
+        There are special cases where the 245 subfield 'b' has a '='
+        in front. If this happens the separator between 'a' and 'b'
+        should not be ':' because there is already the '=' as a
+        separator.
+        """
         titles = fields.get_values("245", subfield_notation="a")
+        additional_titles = fields.get_values("245", subfield_notation="b")
+
+        if len(additional_titles) > 0 and additional_titles[0][0] != "=":
+            titles += [":"]
+
+        titles += additional_titles
+
         return [re.sub(r"[<>]", "", title) for title in titles]
 
     def get_published_month(self, fields):
