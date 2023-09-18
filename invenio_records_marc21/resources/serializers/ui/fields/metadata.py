@@ -10,6 +10,7 @@
 
 """Metadata field for marc21 records."""
 import re
+from contextlib import suppress
 from dataclasses import dataclass
 from typing import Dict, List
 
@@ -103,7 +104,8 @@ class Marc21Fields:
 
         values = []
         for field in fields:
-            values += field.get(subfield_notation)
+            with suppress(KeyError):
+                values += field.get(subfield_notation)
 
         return values
 
