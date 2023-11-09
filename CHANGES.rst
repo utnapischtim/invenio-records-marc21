@@ -8,6 +8,58 @@
 Changes
 =======
 
+Version v0.17.0 (release 2023-11-09)
+
+- ui: change dependency to invenio_rdm_records
+- bugfix: files links list
+- bugfix: add missing permissions
+- CI: disable python 3.10
+- tests: remove sqlalchemy NoResultFound
+- tests: modification to testset and codestyle
+- modification: permission policy records and files
+- modification: create marc21 v2 schema and mappings
+- global: change path to publications
+- tests: add parameters to run-tests
+- ui: redesign edit button
+- records: add deletion_status
+- services: make components customizable
+- cli: change parameters
+- resources: add dublin core serializer
+- build:  limit draft resource version
+- testset: modification files in record
+- modification: import structure
+- modification: unit of work
+- modification: parent schema
+- tests: fix test
+- modification: records service config
+- modifcation: use invenio-i18n translations module
+- modification: create demo records
+- modification: serializer structure
+- build: bump version
+- modification: marc21 v1 mapping
+- modification: result item on dashboard
+- modification: search mapping
+- modification: user dashboard translations
+- modification: translations in config module
+- modification: empty search result
+- translations: resource type translations
+- modification: resource type translate
+- modification: code style
+- modification: gitignore
+- translations: i18next update
+- modification: result item translations
+- modification: dashboard layout
+- modification: user dashboard search
+- fix: subfield may not exist
+- landing-page: add additional titles
+- translations: update
+- modification: user dashboard search application
+- modification: search components
+- modification: configuration search application
+- modification: api search options
+- modification: clean code
+
+
 Version v0.16.1 (release 2023-09-14)
 
 - fix: doi modal
