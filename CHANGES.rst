@@ -8,6 +8,11 @@
 Changes
 =======
 
+Version v0.17.1 (release 2023-12-01)
+
+- alembic: add missing deletion_status
+
+
 Version v0.17.0 (release 2023-11-09)
 
 - ui: change dependency to invenio_rdm_records
