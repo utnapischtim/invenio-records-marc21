@@ -8,6 +8,17 @@
 Changes
 =======
 
+Version v0.17.2 (release 2024-01-07)
+
+- setup: add support for python3.10 and 3.11
+- fix: controlfield not correct build for marcxml
+- fix: ind1 could be undefined
+- ui: move react-records-marc21 code here
+- fix: rebuild-index not working
+- fix: missing special for AVE
+- bugfix: add schema to record
+
+
 Version v0.17.1 (release 2023-12-01)
 
 - alembic: add missing deletion_status
