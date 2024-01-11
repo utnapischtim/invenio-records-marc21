@@ -8,6 +8,11 @@
 Changes
 =======
 
+Version v0.17.3 (release 2024-01-11)
+
+- fix: indexer needs queue name
+
+
 Version v0.17.2 (release 2024-01-07)
 
 - setup: add support for python3.10 and 3.11
