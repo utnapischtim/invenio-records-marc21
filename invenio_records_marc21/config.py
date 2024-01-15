@@ -24,7 +24,7 @@ from invenio_stats.processors import EventsIndexer, anonymize_user, flag_robots
 from invenio_stats.queries import TermsQuery
 
 from .resources.serializers.datacite import Marc21DataCite43JSONSerializer
-from .services import facets
+from .services import Marc21RecordPermissionPolicy, facets
 from .services.pids import Marc21DataCitePIDProvider
 from .utils import build_record_unique_id
 
@@ -486,3 +486,10 @@ MARC21_STATS_QUERIES = {
         },
     },
 }
+MARC21_PERMISSION_POLICY = Marc21RecordPermissionPolicy
+#
+# Record review requests
+#
+MARC21_RECORD_REVIEWS = [
+    "community-submission",
+]
