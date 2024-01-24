@@ -84,6 +84,8 @@ class Marc21RecordServiceConfig(RecordServiceConfig, ConfiguratorMixin):
     # Parent class
     parent_record_cls = Marc21Parent
 
+    service_id = "marc21-records"
+
     indexer_cls = RecordIndexer
     indexer_queue_name = "marc21-records"
     draft_indexer_cls = RecordIndexer
@@ -186,7 +188,7 @@ class Marc21RecordServiceConfig(RecordServiceConfig, ConfiguratorMixin):
             "{+api}/publications/{id}/draft/actions/publish", when=is_draft
         ),
         "versions": RecordLink("{+api}/publications/{id}/versions"),
-        "communities": RecordLink("{+api}/records/{id}/communities"),
+        "communities": RecordLink("{+api}/publications/{id}/communities"),
         "communities-suggestions": RecordLink(
             "{+api}/publications/{id}/communities-suggestions"
         ),
