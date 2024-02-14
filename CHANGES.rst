@@ -8,6 +8,15 @@
 Changes
 =======
 
+Version v0.18.0 (release 2024-02-14)
+
+- fix: dashboard-visibility not working
+- modification(search): : Apply Same Style to Publication Search Bar
+- setup: increase upper limits
+- black: fix v24.2.0
+- fix: frontent serializer following whitespace
+
+
 Version v0.17.3 (release 2024-01-11)
 
 - fix: indexer needs queue name
