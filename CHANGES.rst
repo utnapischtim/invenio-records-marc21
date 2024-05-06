@@ -8,6 +8,14 @@
 Changes
 =======
 
+Version v0.21.0 (release 2024-05-06)
+
+- modification: change permission for managing record access
+- modifciation: documentation for statistic
+- modification: landing page record title
+- modification: init statistic for a record
+
+
 Version v0.20.0 (release 2024-03-08)
 
 - deps: remove upper limit of rdm-records
