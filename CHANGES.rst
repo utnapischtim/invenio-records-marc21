@@ -8,6 +8,12 @@
 Changes
 =======
 
+Version v0.21.1 (release 2024-05-19)
+
+- translations: update wording
+- bugfix: search records user dashboard
+
+
 Version v0.21.0 (release 2024-05-06)
 
 - modification: change permission for managing record access
