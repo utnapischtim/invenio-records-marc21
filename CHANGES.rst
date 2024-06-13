@@ -8,6 +8,12 @@
 Changes
 =======
 
+Version v0.21.2 (release 2024-06-13)
+
+- feat: active dashoard menu item
+- fix: typo on attribute name
+
+
 Version v0.21.1 (release 2024-05-19)
 
 - translations: update wording
