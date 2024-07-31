@@ -5,7 +5,7 @@
 # Copyright (C) 2020-2021 CERN.
 # Copyright (C) 2020 Northwestern University.
 # Copyright (C) 2021 TU Wien.
-# Copyright (C) 2021-2023 Graz University of Technology.
+# Copyright (C) 2021-2024 Graz University of Technology.
 #
 # Invenio-Records-Marc21 is free software; you can redistribute it and/or
 # modify it under the terms of the MIT License; see LICENSE file for more
@@ -126,6 +126,9 @@ class Marc21RecordResource(RDMRecordResource):
     @request_data  # TODO: probably needs to change
     def review_update(self):
         """Update a review request."""
+        print(
+            f"Marc21RecordResource.review_update self.service: {self.service}, self.service.review: {self.service.review}"
+        )
         type = resource_requestctx.data.pop("type")
         type = f"marc21-{type}"
         resource_requestctx.data["type"] = type
@@ -155,7 +158,6 @@ class Marc21RecordResource(RDMRecordResource):
             require_review=require_review,
         )
         return item.to_dict(), 202
-
 
 
 class Marc21ParentRecordLinksResource(RecordResource):

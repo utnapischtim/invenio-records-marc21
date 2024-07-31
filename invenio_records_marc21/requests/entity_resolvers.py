@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright (C) 2021 CERN.
-# Copyright (C) 2023 Graz University of Technology.
+# Copyright (C) 2023-2024 Graz University of Technology.
 # Copyright (C) 2023 TU Wien.
 #
 # Invenio-RDM-Records is free software; you can redistribute it and/or modify
@@ -9,7 +9,6 @@
 
 """Entity resolver for records aware of drafts and records."""
 
-import re
 
 from invenio_access.permissions import system_identity
 from invenio_pidstore.errors import PIDDoesNotExistError, PIDUnregistered
@@ -17,7 +16,6 @@ from invenio_records_resources.references.entity_resolvers import (
     RecordProxy,
     RecordResolver,
     ServiceResultProxy,
-    ServiceResultResolver,
 )
 from sqlalchemy.orm.exc import NoResultFound
 
