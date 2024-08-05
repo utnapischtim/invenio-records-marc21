@@ -126,9 +126,6 @@ class Marc21RecordResource(RDMRecordResource):
     @request_data  # TODO: probably needs to change
     def review_update(self):
         """Update a review request."""
-        print(
-            f"Marc21RecordResource.review_update self.service: {self.service}, self.service.review: {self.service.review}"
-        )
         type = resource_requestctx.data.pop("type")
         type = f"marc21-{type}"
         resource_requestctx.data["type"] = type

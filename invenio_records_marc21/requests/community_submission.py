@@ -24,7 +24,7 @@ from invenio_rdm_records.requests.community_submission import (
 )
 from invenio_requests.customizations import actions
 
-from ..proxies import current_records_marc21 as service
+from ..proxies import current_records_marc21_service as service
 
 
 #
@@ -36,12 +36,16 @@ class SubmitAction(actions.SubmitAction):
     def execute(self, identity, uow):
         """Execute the submit action."""
         draft = self.request.topic.resolve()
-        service.records_service._validate_draft(identity, draft)
+        service._validate_draft(identity, draft)
+
+        try:
+            title = draft.metadata.get("fields", {})["245"][0]["subfields"]["a"][0]
+        except KeyError:
+            title = "No title"
+
         # Set the record's title as the request title.
-        fields = draft.metadata.get("fields", None)
-        self.request["title"] = (
-            str(fields.get("245", "No Title")) if fields is not None else "NO Title"
-        )
+        self.request["title"] = title
+
         super().execute(identity, uow)
 
 
@@ -54,23 +58,13 @@ class AcceptAction(actions.AcceptAction):
         # community receivers and record topics.
         draft = self.request.topic.resolve()
         community = self.request.receiver.resolve()
-        # service._validate_draft(identity, draft) # todo
-
-        # validate record and community access
-        # todo
-        # if not is_access_restriction_valid(draft, community):
-        #     raise InvalidAccessRestrictions()
+        service._validate_draft(identity, draft)
 
         # Unset review from record (still accessible from request)
         # The curator (receiver) should still have access, via the community
         # The creator (uploader) should also still have access, because
         # they're the uploader
-
         draft.parent.review = None
-
-        # TODO:
-        # - Put below into a service method
-        # - Check permissions
 
         # Add community to record.
         is_default = self.request.type.set_as_default
@@ -81,16 +75,12 @@ class AcceptAction(actions.AcceptAction):
         if getattr(community, "parent", None):
             draft.parent.communities.add(community.parent, request=self.request)
 
-        # todo
         uow.register(
-            ParentRecordCommitOp(
-                draft.parent, indexer_context=dict(service=service.records_service)
-            )
+            ParentRecordCommitOp(draft.parent, indexer_context={"service": service})
         )
-        print(f"AcceptAction.execute draft: {draft}, parent: {draft.parent}")
+
         # Publish the record
-        # TODO: Ensure that the accepting user has permissions to publish.
-        service.records_service.publish(identity, draft.pid.pid_value, uow=uow)
+        service.publish(identity, draft.pid.pid_value, uow=uow)
         uow.register(
             NotificationOp(
                 CommunityInclusionAcceptNotificationBuilder.build(
