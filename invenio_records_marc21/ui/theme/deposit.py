@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2021 Graz University of Technology.
+# Copyright (C) 2021-2024 Graz University of Technology.
 #
 # Invenio-Records-Marc21 is free software; you can redistribute it and/or modify it
 # under the terms of the MIT License; see LICENSE file for more details.
@@ -32,7 +32,6 @@ def get_user_communities_memberships():
     """Return current identity communities memberships."""
     memberships = current_communities.service.members.read_memberships(g.identity)
     return {id: role for (id, role) in memberships["memberships"]}
-
 
 
 def get_user_roles(identity):
@@ -69,6 +68,6 @@ def deposit_config(**kwargs):
         user_communities_memberships=get_user_communities_memberships(),
         # UploadFilesToolbar  disable file upload
         canHaveMetadataOnlyRecords=True,
-        **kwargs
+        **kwargs,
     )
     return config

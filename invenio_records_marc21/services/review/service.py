@@ -13,10 +13,6 @@
 from flask import current_app
 from invenio_drafts_resources.services.records.uow import ParentRecordCommitOp
 from invenio_i18n import lazy_gettext as _
-from invenio_notifications.services.uow import NotificationOp
-from invenio_rdm_records.notifications.builders import (
-    CommunityInclusionNotificationBuilder,
-)
 from invenio_rdm_records.services.errors import ReviewNotFoundError
 from invenio_rdm_records.services.review import ReviewService
 from invenio_records_resources.services.uow import RecordIndexOp, unit_of_work
@@ -25,10 +21,6 @@ from marshmallow import ValidationError
 from ...proxies import current_records_marc21
 from ...requests.decorators import request_next_link
 
-
-class Marc21CommunityInclusionNotificationBuilder(CommunityInclusionNotificationBuilder):
-
-    type = "marc21-community-submission"
 
 class Marc21ReviewService(ReviewService):
     """Marc21 Record review service.
@@ -92,12 +84,5 @@ class Marc21ReviewService(ReviewService):
                 identity, community, request, uow
             )
 
-        uow.register(
-            NotificationOp(
-                Marc21CommunityInclusionNotificationBuilder.build(
-                    request_item._request,
-                )
-            )
-        )
         uow.register(RecordIndexOp(draft, indexer=self.indexer))
         return request_item

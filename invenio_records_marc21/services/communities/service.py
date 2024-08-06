@@ -26,6 +26,7 @@ from ...proxies import current_records_marc21
 class Marc21RecordCommunitiesService(RecordCommunitiesService):
     """Marc21 community record service."""
 
+    # TODO: check if this function is necessary
     def _include(self, identity, community_id, comment, require_review, record, uow):
         """Create request to add the community to the record."""
         # check if the community exists

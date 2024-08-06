@@ -12,26 +12,23 @@
 
 from __future__ import absolute_import, print_function
 
-from invenio_rdm_records.proxies import current_rdm_records
 from invenio_rdm_records.services.pids import PIDManager, PIDsService
 from invenio_records_resources.resources import FileResource
 from invenio_records_resources.services import FileService
-from invenio_rdm_records.services import RecordRequestsService
+
 from . import config
 from .resources import (
     Marc21DraftFilesResourceConfig,
     Marc21ParentRecordLinksResource,
     Marc21ParentRecordLinksResourceConfig,
-    Marc21RecordCommunitiesResource,
-    Marc21RecordCommunitiesResourceConfig,
     Marc21RecordFilesResourceConfig,
     Marc21RecordResource,
     Marc21RecordResourceConfig,
 )
 from .services import (
-    Marc21RecordRequestsConfig,
     Marc21DraftFilesServiceConfig,
     Marc21RecordFilesServiceConfig,
+    Marc21RecordRequestsConfig,
     Marc21RecordService,
     Marc21RecordServiceConfig,
 )
@@ -116,9 +113,6 @@ class InvenioRecordsMARC21(object):
         self.record_communities_service = Marc21RecordCommunitiesService(
             config=service_config.record_communities,
         )
-        self.record_requests_service = RecordRequestsService(
-            config=service_config.record_requests
-        )
 
     def init_resources(self, app):
         """Initialize resources."""
@@ -138,10 +132,4 @@ class InvenioRecordsMARC21(object):
 
         self.parent_record_links_resource = Marc21ParentRecordLinksResource(
             service=self.records_service, config=Marc21ParentRecordLinksResourceConfig
-        )
-
-        # Record's communities
-        self.record_communities_resource = Marc21RecordCommunitiesResource(
-            service=self.record_communities_service,
-            config=Marc21RecordCommunitiesResourceConfig.build(app),
         )

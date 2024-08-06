@@ -13,4 +13,7 @@
 from .community_inclusion import Marc21CommunityInclusion
 from .community_submission import Marc21CommunitySubmission
 
-__all__ = ("Marc21CommunityInclusion", "Marc21CommunitySubmission",)
+__all__ = (
+    "Marc21CommunityInclusion",
+    "Marc21CommunitySubmission",
+)

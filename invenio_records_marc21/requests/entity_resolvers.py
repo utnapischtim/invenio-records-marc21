@@ -72,28 +72,3 @@ class Marc21RecordResolver(RecordResolver):
     def matches_entity(self, entity):
         """Check if the entity is a draft or a record."""
         return isinstance(entity, (Marc21Draft, Marc21Record))
-
-
-class Marc21RecordServiceResultProxy(ServiceResultProxy):
-    """Proxy to resolve Marc21Draft and Marc21Record."""
-
-    def _get_record(self, pid_value):
-        """Fetch the published record."""
-        return self.service.read(system_identity, pid_value)
-
-    def _resolve(self):
-        """Resolve the result item from the proxy's reference dict."""
-        pid_value = self._parse_ref_dict_id()
-
-        draft = None
-        try:
-            draft = self.service.read_draft(system_identity, pid_value)
-        except (PIDDoesNotExistError, NoResultFound):
-            record = self._get_record(pid_value)
-        else:
-            # no exception raised. If published, get the published record instead
-            record = (
-                draft if not draft._record.is_published else self._get_record(pid_value)
-            )
-
-        return record.to_dict()

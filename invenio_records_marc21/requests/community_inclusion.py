@@ -16,9 +16,9 @@ from invenio_rdm_records.requests import CommunityInclusion
 #
 # Request
 #
+# todo remove it, it is not necessary
 class Marc21CommunityInclusion(CommunityInclusion):
     """Community inclusion request for adding a record to a community."""
 
     type_id = "marc21-community-inclusion"
-    allowed_topic_ref_types = ["record"]
-
+    allowed_topic_ref_types = ["x38dexe"]

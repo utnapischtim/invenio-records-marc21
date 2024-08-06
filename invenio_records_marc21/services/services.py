@@ -2,7 +2,7 @@
 #
 # This file is part of Invenio.
 #
-# Copyright (C) 2021-2023 Graz University of Technology.
+# Copyright (C) 2021-2024 Graz University of Technology.
 #
 # Invenio-Records-Marc21 is free software; you can redistribute it and/or
 # modify it under the terms of the MIT License; see LICENSE file for more
@@ -157,34 +157,6 @@ class Marc21RecordService(RDMRecordService):
         if record.has_draft and lifted_embargo_from_draft:
             self.indexer.index(draft)
 
-    def search_draft_or_record(
-        self, identity, id_, params=None, search_preference=None, expand=False, **kwargs
-    ):
-        """Search for record's or draft."""
-        try:
-            record = self.record_cls.pid.resolve(id_, registered_only=False)
-        except NoResultFound:
-            record = self.draft_cls.pid.resolve(id_, registered_only=False)
-
-        self.require_permission(identity, "read", record=record)
-
-        # Prepare and execute the search
-        params = params or {}
-
-        search_result = self._search(
-            "search_versions",
-            identity,
-            params,
-            search_preference,
-            record_cls=self.record_cls,
-            search_opts=self.config.search_versions,
-            extra_filter=dsl.Q(
-                "term", **{"parent.id": str(record.parent.pid.pid_value)}
-            ),
-            permission_action="read",
-            **kwargs
-        ).execute()
-
     def _rebuild_index(self, indexer, model_cls):
         records = (
             db.session.query(model_cls.id)
@@ -197,7 +169,6 @@ class Marc21RecordService(RDMRecordService):
             except Exception:
                 pass
 
-
     def rebuild_index(self, identity, uow=None):
         """Reindex all records managed by this service.
 
@@ -207,6 +178,7 @@ class Marc21RecordService(RDMRecordService):
         self._rebuild_index(self.draft_indexer, self.draft_cls.model_cls)
 
         return True
+
 
 #
 # Record files
