@@ -8,6 +8,27 @@
 Changes
 =======
 
+Version v0.22.0 (release 2024-10-26)
+
+- ui: add separator ti author detail
+- setup: move to python 3.12
+- fix: empty values shouldn't be displayed
+- ui: published could be in 260 too
+- permission: add role creator
+- change: allow ' ' as not set indicator
+- remove marcxml transport layer
+- ui: add affiliation
+- fix: multiple 700 not send to client
+- fix: apply header change from rdm-records
+- fix: the following / prevents rspack from building
+- setup: migrate to finalize_app
+- upgrade: add script to upgrade parent
+- feat: files serializer use marc21 accept header
+- style: improve codequality
+- feat: resource type to search facets
+- feat: index static metadata fields
+
+
 Version v0.21.2 (release 2024-06-13)
 
 - feat: active dashoard menu item
