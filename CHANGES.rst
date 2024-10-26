@@ -8,6 +8,11 @@
 Changes
 =======
 
+Version v0.22.1 (release 2024-10-26)
+
+- fix: creator only allowed to interact with owned records
+
+
 Version v0.22.0 (release 2024-10-26)
 
 - ui: add separator ti author detail
