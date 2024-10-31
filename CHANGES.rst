@@ -8,6 +8,13 @@
 Changes
 =======
 
+Version v0.22.2 (release 2024-10-31)
+
+- fix: fields could be missing
+- ui: add elements to details
+- fix(deposit): page render and save a empty record
+
+
 Version v0.22.1 (release 2024-10-26)
 
 - fix: creator only allowed to interact with owned records
