@@ -230,7 +230,7 @@ from .services import (
     create_record,
 )
 
-__version__ = "0.22.1"
+__version__ = "0.22.2"
 
 __all__ = (
     "__version__",
