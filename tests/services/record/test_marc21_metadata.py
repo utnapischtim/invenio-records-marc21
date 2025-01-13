@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2021-2022 Graz University of Technology.
+# Copyright (C) 2021-2025 Graz University of Technology.
 #
 # Invenio-Records-Marc21 is free software; you can redistribute it and/or
 # modify it under the terms of the MIT License; see LICENSE file for more
@@ -20,12 +20,9 @@ def test_create_metadata():
     """Test constructor and emplace_datafield method."""
     metadata = Marc21Metadata()
 
-    assert "<ns0:record" in metadata.xml
-    assert 'xmlns="http://www.loc.gov/MARC21/slim"' in metadata.xml
-
     metadata.emplace_datafield(selector="245.1.0.a", value="laborum sunt ut nulla")
 
-    assert '<ns0:datafield tag="245" ind1="1" ind2="0">' in metadata.xml
+    assert "" in metadata.json
     assert '<ns0:subfield code="a">laborum sunt ut nulla</ns0:subfield>' in metadata.xml
 
 

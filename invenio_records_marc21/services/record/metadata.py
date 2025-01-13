@@ -100,7 +100,7 @@ class JsonToXmlVisitor:
 class Marc21Metadata:
     """MARC21 Record class to facilitate storage of records in MARC21 format."""
 
-    def __init__(self, *, metadata=None, json=None):
+    def __init__(self, *, json=None):
         """Default constructor of the class."""
         self.set_default()
 
