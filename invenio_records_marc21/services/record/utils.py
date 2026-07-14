@@ -60,6 +60,7 @@ def create_record(
 
     try:
         for file_path in file_paths:
+            print(f"create_record file_path: {file_path}")
             add_file_to_record(
                 marcid=draft.id,
                 file_path=file_path,
