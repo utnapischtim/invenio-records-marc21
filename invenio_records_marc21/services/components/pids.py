@@ -83,12 +83,24 @@ class PIDsComponent(BasePIDsComponent):
         self.service.pids.pid_manager.validate(pids, record, errors, raise_errors=True)
         record.pids = pids
 
+        required_schemes = set(self.service.config.pids_required)
+
+        conditional_schemes = self.service.config.pids_conditional
+        for scheme in required_schemes:
+            condition_func = conditional_schemes.get(scheme)
+            if condition_func and not condition_func(record):
+                required_schemes.remove(scheme)
+        print(
+            f"PIDsComponent.create required_schemes: {required_schemes}, conditional_schemes: {conditional_schemes}"
+        )
         pids = self.service.pids.pid_manager.create_all(
             record,
             pids=pids,
-            schemes=set(self.service.config.pids_required),
+            schemes=required_schemes,
         )
-
+        print(
+            f"PIDsComponent.create pids: {pids}, self.service.config.pids_required: {self.service.config.pids_required}"
+        )
         record.pids = pids
 
         if "doi" in pids and data:
@@ -116,10 +128,17 @@ class PIDsComponent(BasePIDsComponent):
             if record_id != draft_id:
                 changed_pids[scheme] = record_pids[scheme]
         self.service.pids.pid_manager.discard_all(changed_pids)
+
         pids = self.service.pids.pid_manager.create_all(
             draft,
             pids=draft_pids,
             schemes=missing_required_schemes,
+        )
+        print(
+            f"PIDsComponent.publish draft_schemes: {draft_schemes}, record_schemes: {record_schemes}"
+        )
+        print(
+            f"PIDsComponent.publish pids: {pids}, missing_required_schemes: {missing_required_schemes}"
         )
         self.service.pids.pid_manager.reserve_all(draft, pids)
         record.pids = pids
