@@ -8,6 +8,10 @@
 Changes
 =======
 
+Version v0.34.3 (released 2026-10-12)
+
+- fix(serializer): missing options parameter
+
 Version v0.34.2 (released 2026-10-01)
 
 - fix(permissions): add new permission
