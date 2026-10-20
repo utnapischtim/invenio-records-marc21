@@ -8,6 +8,10 @@
 Changes
 =======
 
+Version v0.34.4 (released 2026-10-20)
+
+- chore(types): improve types
+
 Version v0.34.3 (released 2026-10-12)
 
 - fix(serializer): missing options parameter
