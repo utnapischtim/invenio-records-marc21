@@ -80,7 +80,7 @@ class PIDsComponent(BasePIDsComponent):
         It validates and add the pids to the draft.
         """
         pids = data.get("pids", {})
-        self.service.pids.pid_manager.validate(pids, record, errors, raise_errors=True)
+        self.service.pids.pid_manager.validate(pids, record, errors, raise_errors=False)
         record.pids = pids
 
         required_schemes = set(self.service.config.pids_required)

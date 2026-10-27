@@ -11,8 +11,17 @@
 """Resources configuration."""
 
 import marshmallow as ma
-from flask_resources import RequestBodyParser, ResponseHandler
+from flask_resources import (
+    RequestBodyParser,
+    ResponseHandler,
+    create_error_handler,
+)
 from invenio_drafts_resources.resources import RecordResourceConfig
+from invenio_rdm_records.resources.errors import (
+    HTTPJSONValidationWithMessageAsListException,
+)
+from invenio_rdm_records.services.errors import ValidationErrorWithMessageAsList
+from invenio_records_resources.resources.errors import ErrorHandlersMixin
 from invenio_records_resources.resources.files import FileResourceConfig
 from invenio_records_resources.resources.records.args import SearchRequestArgsSchema
 
@@ -75,6 +84,13 @@ class Marc21RecordResourceConfig(RecordResourceConfig):
     request_view_args = {
         "pid_value": ma.fields.Str(),
         "pid_type": ma.fields.Str(),
+    }
+
+    error_handlers = {
+        **ErrorHandlersMixin.error_handlers,
+        ValidationErrorWithMessageAsList: create_error_handler(
+            lambda e: HTTPJSONValidationWithMessageAsListException(e)
+        ),
     }
 
 

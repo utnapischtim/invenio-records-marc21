@@ -44,6 +44,7 @@ export class Marc21DepositForm extends Component {
     this.templates = props.templates || [];
     this.files = props.files;
     this.recordSerializer = new Marc21RecordSerializer();
+    this.sectionsConfig = {};
 
     this.noFiles = false;
     if (
@@ -65,7 +66,10 @@ export class Marc21DepositForm extends Component {
         permissions={permissions}
         recordSerializer={this.recordSerializer}
       >
-        <FormFeedback fieldPath="message" />
+        <FormFeedback
+          fieldPath="message"
+          sectionsConfig={this.sectionsConfig}
+        />
         <Container style={{ marginTop: "10px" }}>
           <Grid>
             <Grid.Row>
